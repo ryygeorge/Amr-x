@@ -1,0 +1,25 @@
+body { font-family: 'Inter', sans-serif; background: #fff; margin: 0; color: #204a6e; }
+header { background: #fff; border-bottom: none; }
+.navbar { display: flex; align-items: center; justify-content: flex-end; padding: 22px 38px 20px 38px; max-width: 1400px; margin: 0 auto; position: relative; }
+.nav-left { display: flex; align-items: center; position: absolute; left: 38px; top: 22px; }
+.site-title-link { display: flex; align-items: center; text-decoration: none; }
+.logo-img { width: 46px; height: 46px; border-radius: 50%; margin-right: 11px; background: #eef5ff; border: 2px solid #e3ecfa; }
+.site-title { font-size: 1.27em; font-weight: 700; color: #2c53cd; letter-spacing: 0.6px; }
+.nav-right { display: flex; align-items: center; gap: 36px; }
+.nav-right .nav-link { color: #2463eb; font-size: 1.16em; font-weight: 500; text-decoration: none; padding: 8px 16px; border-radius: 8px; transition: color 0.15s, background 0.15s; }
+.nav-right .nav-link:hover, .nav-right .nav-link.active { color: #2371f1; background: #f3f7ff; }
+main { max-width: 600px; margin: 70px auto 0; padding: 0 12px; }
+.upload-section { padding: 24px 0; }
+.upload-section h2 { text-align: center; font-size: 2em; color: #2463eb; margin-bottom: 36px; }
+.upload-container { background: #f4f8ff; border-radius: 32px; box-shadow: 0 8px 40px rgba(90,130,190,0.12); padding: 48px 30px 36px; }
+.upload-area { border: 3px dashed #2463eb; border-radius: 16px; padding: 40px 20px; margin-bottom: 20px; transition: background 0.15s; text-align: center; }
+.upload-area:hover { background: #f3f7ff; }
+.upload-icon { font-size: 4em; margin-bottom: 16px; }
+.upload-area h3 { color: #2463eb; margin-bottom: 8px; }
+.upload-area p { color: #5a82be; margin-bottom: 16px; }
+.browse-btn { background: #2463eb; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 1em; font-family: 'Inter', sans-serif; font-weight: 500; }
+.file-list { margin: 16px 0; text-align: left; }
+.file-list p { color: #2463eb; margin: 8px 0; }
+.card-btn { background: linear-gradient(89deg, #2463eb 60%, #13d3cb 100%); color: #fff; font-weight: 700; border: none; border-radius: 16px; padding: 15px 32px; cursor: pointer; font-family: 'Inter', sans-serif; }
+.card-btn:hover { background: #1e3578; }
+footer { background: #fff; color: #2463eb; text-align: center; padding: 14px 0; font-size: 1em; font-weight: 600; }

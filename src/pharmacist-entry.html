@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pharmacist Entry | AMR-X</title>
+  <link rel="stylesheet" href="styles/pharmacist-entry.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<header>
+  <div class="navbar">
+    <div class="nav-left">
+      <a href="index.html" class="site-title-link">
+        <span class="site-title">AMR-X</span>
+      </a>
+    </div>
+    <div class="nav-right">
+      <a href="pharma.html" class="nav-link">Dashboard</a>
+      <a href="pharmacist-entry.html" class="nav-link active">Pharmacist Entry</a>
+      <a href="upload-data.html" class="nav-link">Upload Data</a>
+      <a href="index.html" class="nav-link">Home</a>
+    </div>
+  </div>
+</header>
+<main>
+  <section class="form-section">
+    <h2>Pharmacist Data Entry</h2>
+    <form class="medicine-form">
+      <div class="form-group">
+        <label for="medicinesSold">Which medicines sold?</label>
+        <input type="text" id="medicinesSold" name="medicinesSold" required placeholder="E.g. Ciprofloxacin, Amoxicillin">
+      </div>
+      <div class="form-group">
+        <label for="quantity">Quantity sold</label>
+        <input type="number" id="quantity" name="quantity" required placeholder="Number of units/bottles">
+      </div>
+      <div class="form-group">
+        <label for="dosage">Dosage prescribed</label>
+        <input type="text" id="dosage" name="dosage" required placeholder="E.g. 500mg twice daily">
+      </div>
+      <div class="form-group">
+        <label for="cured">Did patients get cured?</label>
+        <select id="cured" name="cured" required>
+          <option value="">Select status</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+          <option value="partial">Partially</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="feedback">Feedback or observations</label>
+        <textarea id="feedback" name="feedback" rows="3" placeholder="Any side effects, patient responses, etc."></textarea>
+      </div>
+      <button type="submit" class="card-btn">Submit Data</button>
+    </form>
+    <div id="successMsg"></div>
+  </section>
+</main>
+<footer>
+  <p>&copy; 2025 AMR-X</p>
+</footer>
+<script>
+document.querySelector('.medicine-form').onsubmit = function(e) {
+  e.preventDefault();
+  document.getElementById('successMsg').innerHTML = "<p style='color:#13d3cb;font-weight:600;margin-top:20px;'>Data submitted successfully!</p>";
+  this.reset();
+};
+</script>
+</body>
+</html>

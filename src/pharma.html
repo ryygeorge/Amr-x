@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | AMR-X</title>
+  <link rel="stylesheet" href="styles/pharma.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<header>
+  <div class="navbar">
+    <div class="nav-left">
+      <a href="index.html" class="site-title-link">
+        <span class="site-title">AMR-X</span>
+      </a>
+    </div>
+    <div class="nav-right">
+      <a href="pharma.html" class="nav-link active">Dashboard</a>
+      <a href="pharmacist-entry.html" class="nav-link">Pharmacist Entry</a>
+      <a href="upload-data.html" class="nav-link">Upload Data</a>
+      <a href="index.html" class="nav-link">Home</a>
+    </div>
+  </div>
+</header>
+<main>
+  <section class="pharma-section">
+    <h2>AMR Dashboard</h2>
+    <div class="summary-box">
+      <p><strong>Total Cases:</strong> 182 &nbsp;|&nbsp; <strong>High Risk:</strong> 24 &nbsp;|&nbsp; <strong>Hospitals:</strong> 3</p>
+    </div>
+    <div class="pharma-content">
+      <div class="graph-box">
+        <h3>Antibiotic Use Over Time</h3>
+        <canvas id="barChart" height="200"></canvas>
+      </div>
+      <div class="graph-box">
+        <h3>AMR Case Distribution</h3>
+        <canvas id="pieChart" height="200"></canvas>
+      </div>
+    </div>
+    <div class="data-table">
+      <h3>AMR Data Summary</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Antibiotic</th>
+            <th>Hospital</th>
+            <th>Cases</th>
+            <th>Resistance %</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Ciprofloxacin</td><td>St Mercy</td><td>72</td><td>56%</td></tr>
+          <tr><td>Amoxicillin</td><td>Green Valley</td><td>48</td><td>42%</td></tr>
+          <tr><td>Ceftriaxone</td><td>General Health</td><td>33</td><td>35%</td></tr>
+          <tr><td>Azithromycin</td><td>St Mercy</td><td>29</td><td>17%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+<footer>
+  <p>&copy; 2025 AMR-X</p>
+</footer>
+<script>
+new Chart(document.getElementById("barChart"), {
+    type: 'bar',
+    data: {
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+        datasets: [{
+            label: 'Ciprofloxacin',
+            data: [15, 23, 28, 32, 25, 19],
+            backgroundColor: '#2463eb'
+        }, {
+            label: 'Amoxicillin',
+            data: [21, 17, 19, 18, 22, 25],
+            backgroundColor: '#13d3cb'
+        }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+});
+new Chart(document.getElementById("pieChart"), {
+    type: 'pie',
+    data: {
+        labels: ["St Mercy", "Green Valley", "General Health"],
+        datasets: [{
+            data: [44, 33, 23],
+            backgroundColor: ["#2463eb", "#13d3cb", "#7fc8f8"]
+        }]
+    },
+    options: {responsive: true}
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Portal | AMR-X</title>
+  <link rel="stylesheet" href="styles/user.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<header>
+  <div class="navbar">
+    <div class="nav-left">
+      <a href="index.html" class="site-title-link">
+        <span class="site-title">AMR-X</span>
+      </a>
+    </div>
+    <div class="nav-right">
+      <a href="user.html" class="nav-link active">User Portal</a>
+      <a href="pharma.html" class="nav-link">Pharma Portal</a>
+      <a href="index.html" class="nav-link">Home</a>
+    </div>
+  </div>
+</header>
+<main>
+  <section class="user-section">
+    <h2>AMR User Feedback</h2>
+    <form class="user-form">
+      <div class="form-group">
+        <label for="userName">Your Name</label>
+        <input type="text" id="userName" name="userName" required placeholder="Enter your name">
+      </div>
+      <div class="form-group">
+        <label for="medicine">Medicine Used</label>
+        <input type="text" id="medicine" name="medicine" required placeholder="E.g. Amoxicillin">
+      </div>
+      <div class="form-group">
+        <label for="effect">Effectiveness</label>
+        <select id="effect" name="effect" required>
+          <option value="">Select</option>
+          <option value="cured">Cured</option>
+          <option value="partial">Partial Relief</option>
+          <option value="no">No Effect</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="sideEffects">Side Effects</label>
+        <input type="text" id="sideEffects" name="sideEffects" placeholder="Any side effects?">
+      </div>
+      <div class="form-group">
+        <label for="comments">Comments/Feedback</label>
+        <textarea id="comments" name="comments" rows="3" placeholder="Write your experience (optional)"></textarea>
+      </div>
+      <button type="submit" class="card-btn">Submit</button>
+    </form>
+    <div id="userSuccess"></div>
+  </section>
+</main>
+<footer>
+  <p>&copy; 2025 AMR-X</p>
+</footer>
+<script>
+document.querySelector('.user-form').onsubmit = function(e) {
+  e.preventDefault();
+  document.getElementById('userSuccess').innerHTML = "<p style='color:#13d3cb;font-weight:600;margin-top:18px;'>Thank you for your feedback!</p>";
+  this.reset();
+};
+</script>
+</body>
+</html>
