@@ -17,23 +17,42 @@
     </div>
     <div class="nav-right">
       <a href="user.html" class="nav-link active">User Portal</a>
-      <a href="pharma.html" class="nav-link">Pharma Portal</a>
       <a href="index.html" class="nav-link">Home</a>
     </div>
   </div>
 </header>
+
 <main>
   <section class="user-section">
     <h2>AMR User Feedback</h2>
-    <form class="user-form">
+
+    <form class="user-form" id="userForm">
       <div class="form-group">
         <label for="userName">Your Name</label>
         <input type="text" id="userName" name="userName" required placeholder="Enter your name">
       </div>
+
       <div class="form-group">
         <label for="medicine">Medicine Used</label>
-        <input type="text" id="medicine" name="medicine" required placeholder="E.g. Amoxicillin">
+        <!-- Dropdown instead of text input -->
+        <select id="medicine" name="medicine" required>
+          <option value="">Select antibiotic</option>
+          <option value="Amoxicillin">Amoxicillin</option>
+          <option value="Ciprofloxacin">Ciprofloxacin</option>
+          <option value="Azithromycin">Azithromycin</option>
+          <option value="Ceftriaxone">Ceftriaxone</option>
+          <option value="Doxycycline">Doxycycline</option>
+          <option value="Amikacin">Amikacin</option>
+          <option value="Cefixime">Cefixime</option>
+          <option value="Meropenem">Meropenem</option>
+          <option value="Piperacillin-Tazobactam">Piperacillin-Tazobactam</option>
+          <option value="Vancomycin">Vancomycin</option>
+          <option value="Other">Other</option>
+        </select>
+        <!-- Shown only if "Other" is selected -->
+        <input type="text" id="medicineOther" placeholder="Enter medicine" style="display:none; margin-top:8px;">
       </div>
+
       <div class="form-group">
         <label for="effect">Effectiveness</label>
         <select id="effect" name="effect" required>
@@ -43,28 +62,58 @@
           <option value="no">No Effect</option>
         </select>
       </div>
+
       <div class="form-group">
         <label for="sideEffects">Side Effects</label>
         <input type="text" id="sideEffects" name="sideEffects" placeholder="Any side effects?">
       </div>
+
       <div class="form-group">
         <label for="comments">Comments/Feedback</label>
         <textarea id="comments" name="comments" rows="3" placeholder="Write your experience (optional)"></textarea>
       </div>
+
       <button type="submit" class="card-btn">Submit</button>
     </form>
+
     <div id="userSuccess"></div>
   </section>
 </main>
+
 <footer>
   <p>&copy; 2025 AMR-X</p>
 </footer>
+
 <script>
-document.querySelector('.user-form').onsubmit = function(e) {
-  e.preventDefault();
-  document.getElementById('userSuccess').innerHTML = "<p style='color:#13d3cb;font-weight:600;margin-top:18px;'>Thank you for your feedback!</p>";
-  this.reset();
-};
+  // Toggle "Other" input for medicine
+  const medSelect = document.getElementById('medicine');
+  const medOther  = document.getElementById('medicineOther');
+  medSelect.addEventListener('change', () => {
+    medOther.style.display = (medSelect.value === 'Other') ? 'block' : 'none';
+  });
+
+  // Keep your existing submit behavior
+  document.getElementById('userForm').onsubmit = function(e) {
+    e.preventDefault();
+
+    // If you later send this to backend, use the resolved medicine value:
+    const medicineResolved = (medSelect.value === 'Other' ? (medOther.value || '').trim() : medSelect.value);
+
+    // Example: add this to your payload when you wire backend
+    // const payload = {
+    //   userName: document.getElementById('userName').value,
+    //   medicine: medicineResolved,
+    //   effect: document.getElementById('effect').value,
+    //   sideEffects: document.getElementById('sideEffects').value,
+    //   comments: document.getElementById('comments').value
+    // };
+
+    document.getElementById('userSuccess').innerHTML =
+      "<p style='color:#13d3cb;font-weight:600;margin-top:18px;'>Thank you for your feedback!</p>";
+
+    this.reset();
+    medOther.style.display = 'none';
+  };
 </script>
 </body>
 </html>

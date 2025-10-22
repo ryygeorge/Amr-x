@@ -46,20 +46,38 @@
 const fileInput = document.getElementById('fileInput');
 const fileList = document.getElementById('fileList');
 const uploadBtn = document.getElementById('uploadBtn');
-fileInput.onchange = function() { displayFiles(this.files); };
+
+fileInput.onchange = () => displayFiles(fileInput.files);
+
 function displayFiles(files) {
   fileList.innerHTML = '';
-  for (let file of files) {
-    const fileDiv = document.createElement('div');
-    fileDiv.innerHTML = `<p>📄 ${file.name} (${(file.size/1024).toFixed(1)} KB)</p>`;
-    fileList.appendChild(fileDiv);
+  for (let f of files) {
+    const p = document.createElement('p');
+    p.textContent = `📄 ${f.name} (${(f.size/1024).toFixed(1)} KB)`;
+    fileList.appendChild(p);
   }
-  uploadBtn.style.display = files.length > 0 ? 'block' : 'none';
+  uploadBtn.style.display = files.length ? 'block' : 'none';
 }
-uploadBtn.onclick = function() {
-  alert('Files uploaded successfully!');
-  fileList.innerHTML = ''; this.style.display = 'none';
+
+uploadBtn.onclick = async () => {
+  const files = fileInput.files;
+  if (!files.length) return;
+
+  const fd = new FormData();
+  for (let f of files) fd.append('files', f); // field name must match multer.array('files') [web:10]
+
+  try {
+    const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: fd });
+    const out = await res.json();
+    alert('Uploaded: ' + out.files.map(f => f.name).join(', '));
+    fileList.innerHTML = '';
+    uploadBtn.style.display = 'none';
+    fileInput.value = '';
+  } catch(err) {
+    alert('Upload failed: ' + err.message);
+  }
 };
 </script>
+
 </body>
 </html>

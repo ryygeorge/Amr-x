@@ -24,12 +24,15 @@
     </div>
   </div>
 </header>
+
 <main>
+  <!-- Existing Hospital/AMR section (unchanged) -->
   <section class="pharma-section">
     <h2>AMR Dashboard</h2>
     <div class="summary-box">
       <p><strong>Total Cases:</strong> 182 &nbsp;|&nbsp; <strong>High Risk:</strong> 24 &nbsp;|&nbsp; <strong>Hospitals:</strong> 3</p>
     </div>
+
     <div class="pharma-content">
       <div class="graph-box">
         <h3>Antibiotic Use Over Time</h3>
@@ -40,6 +43,7 @@
         <canvas id="pieChart" height="200"></canvas>
       </div>
     </div>
+
     <div class="data-table">
       <h3>AMR Data Summary</h3>
       <table>
@@ -60,38 +64,193 @@
       </table>
     </div>
   </section>
+
+  <!-- New Pharmacist Logs section (below) -->
+  <section class="pharma-section" id="pharmacist-logs">
+    <h2>Pharmacist Logs</h2>
+
+    <div class="summary-box">
+      <p id="pharm-summary"><strong>Total Logs:</strong> 0 &nbsp;|&nbsp; <strong>Cured Yes:</strong> 0 &nbsp;|&nbsp; <strong>Cured No:</strong> 0</p>
+    </div>
+
+    <div class="pharma-content">
+      <div class="graph-box">
+        <h3>Quantities by Medicine</h3>
+        <canvas id="pharmBar" height="200"></canvas>
+      </div>
+      <div class="graph-box">
+        <h3>Cured Distribution</h3>
+        <canvas id="pharmPie" height="200"></canvas>
+      </div>
+    </div>
+
+    <div class="data-table">
+      <h3>Recent Pharmacist Entries</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Medicine</th>
+            <th>Qty</th>
+            <th>Dosage</th>
+            <th>Cured</th>
+            <th>Feedback</th>
+          </tr>
+        </thead>
+        <tbody id="pharmTbody">
+          <tr><td colspan="5">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 </main>
+
 <footer>
   <p>&copy; 2025 AMR-X</p>
 </footer>
+
+<!-- Existing script (kept) -->
 <script>
-new Chart(document.getElementById("barChart"), {
+(async function () {
+  let data;
+  try {
+    const r = await fetch('http://localhost:5000/api/pharma-summary');
+    data = await r.json();
+  } catch (e) {
+    console.warn('Falling back to static data:', e.message);
+    data = {
+      totalCases: 182, highRisk: 24, hospitals: 3,
+      bar: {
+        labels: ["Jan","Feb","Mar","Apr","May","Jun"],
+        datasets: [
+          { label: "Ciprofloxacin", data: [15,23,28,32,25,19], color: "#2463eb" },
+          { label: "Amoxicillin",   data: [21,17,19,18,22,25], color: "#13d3cb" }
+        ]
+      },
+      pie: { labels: ["St Mercy","Green Valley","General Health"], data: [44,33,23], colors: ["#2463eb","#13d3cb","#7fc8f8"] },
+      table: [
+        { antibiotic: "Ciprofloxacin", hospital: "St Mercy", cases: 72, resistance: "56%" },
+        { antibiotic: "Amoxicillin", hospital: "Green Valley", cases: 48, resistance: "42%" },
+        { antibiotic: "Ceftriaxone", hospital: "General Health", cases: 33, resistance: "35%" },
+        { antibiotic: "Azithromycin", hospital: "St Mercy", cases: 29, resistance: "17%" }
+      ]
+    };
+  }
+
+  // Summary
+  const summary = document.querySelector('.summary-box p');
+  if (summary) {
+    summary.innerHTML = `<strong>Total Cases:</strong> ${data.totalCases} &nbsp;|&nbsp; <strong>High Risk:</strong> ${data.highRisk} &nbsp;|&nbsp; <strong>Hospitals:</strong> ${data.hospitals}`;
+  }
+
+  // Bar (hospital section)
+  new Chart(document.getElementById("barChart"), {
     type: 'bar',
     data: {
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-        datasets: [{
-            label: 'Ciprofloxacin',
-            data: [15, 23, 28, 32, 25, 19],
-            backgroundColor: '#2463eb'
-        }, {
-            label: 'Amoxicillin',
-            data: [21, 17, 19, 18, 22, 25],
-            backgroundColor: '#13d3cb'
-        }]
+      labels: data.bar.labels,
+      datasets: data.bar.datasets.map(d => ({
+        label: d.label, data: d.data, backgroundColor: d.color
+      }))
     },
     options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
-});
-new Chart(document.getElementById("pieChart"), {
+  });
+
+  // Pie (hospital section)
+  new Chart(document.getElementById("pieChart"), {
     type: 'pie',
-    data: {
-        labels: ["St Mercy", "Green Valley", "General Health"],
-        datasets: [{
-            data: [44, 33, 23],
-            backgroundColor: ["#2463eb", "#13d3cb", "#7fc8f8"]
-        }]
-    },
-    options: {responsive: true}
-});
+    data: { labels: data.pie.labels, datasets: [{ data: data.pie.data, backgroundColor: data.pie.colors }] },
+    options: { responsive: true }
+  });
+
+  // Table (hospital section)
+  const tbody = document.querySelector('.data-table tbody');
+  if (tbody && Array.isArray(data.table)) {
+    tbody.innerHTML = '';
+    for (const row of data.table) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${row.antibiotic}</td><td>${row.hospital}</td><td>${row.cases}</td><td>${row.resistance}</td>`;
+      tbody.appendChild(tr);
+    }
+  }
+})();
 </script>
+
+<!-- New script for Pharmacist Logs -->
+<script>
+  window.addEventListener('DOMContentLoaded', initPharmacistLogs);
+
+  async function initPharmacistLogs() {
+    // Fetch entries from your backend
+    let entries = [];
+    try {
+      const r = await fetch('http://localhost:5000/api/pharmacist-entry');
+      const j = await r.json();
+      if (j && j.ok && Array.isArray(j.data)) entries = j.data;
+    } catch (e) {
+      console.warn('Pharmacist logs fetch failed:', e.message);
+    }
+
+    // Update summary line
+    const s = v => String(v||'').toLowerCase();
+    const total = entries.length;
+    const yes = entries.filter(x => s(x.cured)==='yes').length;
+    const no  = entries.filter(x => s(x.cured)==='no').length;
+    const summary = document.getElementById('pharm-summary');
+    summary.innerHTML =
+      `<strong>Total Logs:</strong> ${total} &nbsp;|&nbsp; ` +
+      `<strong>Cured Yes:</strong> ${yes} &nbsp;|&nbsp; ` +
+      `<strong>Cured No:</strong> ${no}`;
+
+    // Render table
+    const tb = document.getElementById('pharmTbody');
+    if (!entries.length) {
+      tb.innerHTML = `<tr><td colspan="5">No pharmacist entries yet</td></tr>`;
+    } else {
+      tb.innerHTML = entries.slice(0, 15).map(e => `
+        <tr>
+          <td>${escapeHtml(e.medicinesSold || '-')}</td>
+          <td>${e.quantity ?? '-'}</td>
+          <td>${escapeHtml(e.dosage || '-')}</td>
+          <td>${escapeHtml(e.cured || '-')}</td>
+          <td>${escapeHtml(e.feedback || '-')}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Prepare data for charts
+    // Bar: quantities by medicine (top 6)
+    const sums = {};
+    for (const r of entries) {
+      const key = (r.medicinesSold || 'Unknown').trim();
+      const q = Number(r.quantity || 0);
+      sums[key] = (sums[key] || 0) + q;
+    }
+    const top = Object.entries(sums).sort((a,b)=>b[1]-a[1]).slice(0,6);
+    const barLabels = top.map(([k])=>k);
+    const barValues = top.map(([,v])=>v);
+
+    // Pie: cured distribution
+    const partial = entries.filter(x => s(x.cured).startsWith('part')).length;
+    const pieLabels = ['Yes','No','Partial','Other'];
+    const pieValues = [yes, no, partial, total - (yes+no+partial)];
+
+    // Render pharmacist charts
+    new Chart(document.getElementById('pharmBar'), {
+      type: 'bar',
+      data: { labels: barLabels, datasets: [{ label: 'Quantity', data: barValues, backgroundColor: '#2463eb' }] },
+      options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+    });
+
+    new Chart(document.getElementById('pharmPie'), {
+      type: 'pie',
+      data: { labels: pieLabels, datasets: [{ data: pieValues, backgroundColor: ['#2463eb','#13d3cb','#7fc8f8','#a5b4fc'] }] },
+      options: { responsive: true }
+    });
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+  }
+</script>
+
 </body>
 </html>
