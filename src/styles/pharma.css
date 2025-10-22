@@ -1,0 +1,34 @@
+body { font-family: 'Inter', Arial, sans-serif; background: #fff; margin: 0; color: #204a6e; }
+header { background: #fff; border-bottom: none; }
+.navbar { display: flex; align-items: center; justify-content: flex-end; padding: 22px 38px 20px 38px; max-width: 1400px; margin: 0 auto; position: relative; }
+.nav-left { display: flex; align-items: center; position: absolute; left: 38px; top: 22px; }
+.site-title-link { display: flex; align-items: center; text-decoration: none; }
+.logo-img { width: 46px; height: 46px; border-radius: 50%; margin-right: 11px; background: #eef5ff; border: 2px solid #e3ecfa; }
+.site-title { font-size: 1.27em; font-weight: 700; color: #2c53cd; letter-spacing: 0.6px; }
+.nav-right { display: flex; align-items: center; gap: 36px; }
+.nav-right .nav-link { color: #2463eb; font-size: 1.16em; font-weight: 500; text-decoration: none; padding: 8px 16px; border-radius: 8px; transition: color 0.15s, background 0.15s; }
+.nav-right .nav-link:hover, .nav-right .nav-link.active { color: #2371f1; background: #f3f7ff; }
+
+main { max-width: 1000px; margin: 70px auto 0; padding: 0 18px; }
+.pharma-section { padding: 24px 0; }
+.pharma-section h2 { text-align: center; font-size: 2em; color: #2463eb; margin-bottom: 36px; }
+
+.summary-box { background: #f8fafb; border-radius: 16px; padding: 16px 20px; margin-bottom: 28px; text-align: center; font-size: 1.1em; color: #2463eb; }
+
+.pharma-content { display: flex; flex-wrap: wrap; gap: 32px; justify-content: center; margin-bottom: 28px; }
+.graph-box { background: linear-gradient(128deg, #f4f8ff 55%, #f1fffd 100%); border-radius: 30px; box-shadow: 0 6px 38px 0 rgba(90,130,190,0.10); padding: 20px 32px 18px 32px; min-width: 330px; max-width: 370px; flex: 1 1 340px; text-align: center; }
+.graph-box h3 { font-size: 1.1em; color: #2463eb; font-weight: 600; margin-bottom: 15px; }
+
+.data-table { background: linear-gradient(128deg, #f4f8ff 45%, #f1fffd 100%); border-radius: 24px; box-shadow: 0 4px 24px 0 rgba(90,130,190,0.07); padding: 22px 32px 10px 32px; margin: 30px auto; max-width: 700px; }
+.data-table h3 { color: #2463eb; margin-bottom: 11px; }
+.data-table table { width: 100%; border-collapse: collapse; font-size: 1em; }
+.data-table th, .data-table td { padding: 11px 7px; border-bottom: 1.5px solid #e3ecfa; text-align: center; }
+.data-table th { background: #edf6ff; color: #1e3578; font-weight: 600; }
+.data-table td { color: #2463eb; }
+
+footer { background: #fff; color: #2463eb; text-align: center; padding: 14px 0; font-size: 1em; font-weight: 600; }
+
+@media (max-width: 900px) {
+  .pharma-content { flex-direction: column; align-items: center; }
+  .graph-box { max-width: 96vw; }
+}

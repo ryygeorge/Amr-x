@@ -1,0 +1,123 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(120deg, #f3f8ff, #f0fffc 68%, #fff 100%);
+    margin: 0;
+    color: #142b46;
+    min-height: 100vh;
+}
+
+header {
+    background: transparent;
+    box-shadow: none;
+    border-bottom: none;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 54px 24px 54px;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.site-title-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.logo-img {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    margin-right: 16px;
+    background: #ecefff;
+    border: 3px solid #cce1fa;
+}
+
+.site-title {
+    font-size: 2.15rem;
+    font-weight: 800;
+    color: #1d57d3;
+    letter-spacing: 0.7px;
+}
+
+.landing-nav .nav-link {
+    color: #2176f8;
+    margin-left: 28px;
+    font-size: 1.18em;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 7px 16px;
+    border-radius: 8px;
+    transition: color 0.15s, background 0.15s;
+}
+
+.landing-nav .nav-link:hover,
+.landing-nav .nav-link.active {
+    color: #fff;
+    background: #2463eb;
+}
+
+.main-content {
+    max-width: 650px;
+    margin: 82px auto 0 auto;
+    padding: 40px 18px;
+    text-align: center;
+}
+
+.main-content h1 {
+    font-weight: 800;
+    font-size: 2.4em;
+    color: #2463eb;
+    margin-bottom: 18px;
+    letter-spacing: 0.7px;
+}
+
+.main-content p {
+    font-size: 1.28em;
+    margin: 0 0 28px 0;
+    color: #20536a;
+    line-height: 1.65;
+}
+
+.cta-btn {
+    background: linear-gradient(90deg, #2463eb 60%, #13d3cb 100%);
+    color: #fff;
+    font-size: 1.13em;
+    border: none;
+    border-radius: 14px;
+    padding: 16px 54px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+    cursor: pointer;
+    margin-top: 18px;
+    box-shadow: 0 2px 8px #2176f833;
+    transition: background 0.17s;
+    text-decoration: none;
+    display: inline-block;
+}
+.cta-btn:hover {
+    background: #143395;
+}
+
+footer {
+    background: transparent;
+    color: #2c53cd;
+    text-align: center;
+    padding: 26px 0 10px 0;
+    font-size: 1em;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+}
+
+@media (max-width: 740px) {
+    .topbar {
+        flex-direction: column;
+        padding: 15px 8vw;
+        gap: 18px;
+    }
+    .logo-img { width: 40px; height: 40px; margin-right: 9px; }
+    .site-title { font-size: 1.18rem; }
+}

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Data | AMR-X</title>
+  <link rel="stylesheet" href="styles/upload-data.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<header>
+  <div class="navbar">
+    <div class="nav-left">
+      <a href="index.html" class="site-title-link">
+        <span class="site-title">AMR-X</span>
+      </a>
+    </div>
+    <div class="nav-right">
+      <a href="pharma.html" class="nav-link">Dashboard</a>
+      <a href="pharmacist-entry.html" class="nav-link">Pharmacist Entry</a>
+      <a href="upload-data.html" class="nav-link active">Upload Data</a>
+      <a href="index.html" class="nav-link">Home</a>
+    </div>
+  </div>
+</header>
+<main>
+  <section class="upload-section">
+    <h2>Upload Data Files</h2>
+    <div class="upload-container">
+      <div class="upload-area" id="uploadArea">
+        <div class="upload-icon">📁</div>
+        <h3>Drop files here or click to browse</h3>
+        <p>Supported formats: CSV, Excel (.xlsx), JSON</p>
+        <input type="file" id="fileInput" multiple accept=".csv,.xlsx,.json" hidden>
+        <button type="button" class="browse-btn" onclick="document.getElementById('fileInput').click()">Choose Files</button>
+      </div>
+      <div class="file-list" id="fileList"></div>
+      <button type="button" class="card-btn" id="uploadBtn" style="display:none;">Upload Files</button>
+    </div>
+  </section>
+</main>
+<footer>
+  <p>&copy; 2025 AMR-X</p>
+</footer>
+<script>
+const fileInput = document.getElementById('fileInput');
+const fileList = document.getElementById('fileList');
+const uploadBtn = document.getElementById('uploadBtn');
+
+fileInput.onchange = () => displayFiles(fileInput.files);
+
+function displayFiles(files) {
+  fileList.innerHTML = '';
+  for (let f of files) {
+    const p = document.createElement('p');
+    p.textContent = `📄 ${f.name} (${(f.size/1024).toFixed(1)} KB)`;
+    fileList.appendChild(p);
+  }
+  uploadBtn.style.display = files.length ? 'block' : 'none';
+}
+
+uploadBtn.onclick = async () => {
+  const files = fileInput.files;
+  if (!files.length) return;
+
+  const fd = new FormData();
+  for (let f of files) fd.append('files', f); // field name must match multer.array('files') [web:10]
+
+  try {
+    const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: fd });
+    const out = await res.json();
+    alert('Uploaded: ' + out.files.map(f => f.name).join(', '));
+    fileList.innerHTML = '';
+    uploadBtn.style.display = 'none';
+    fileInput.value = '';
+  } catch(err) {
+    alert('Upload failed: ' + err.message);
+  }
+};
+</script>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+
+# Env & secrets
+.env
+.env.*
+serviceAccountKey.json
+*.secret.json
+
+# Uploads and build artifacts
+uploads/
+dist/
+build/
+coverage/
+
+# OS/editor cruft
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
