@@ -32,7 +32,6 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;           /* add this line */
   padding: 16px 54px;
   max-width: 1300px;
   margin: 0 auto;
