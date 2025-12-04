@@ -13,6 +13,7 @@ let profileChip = null;
 let profileMenu = null;
 let styleInjected = false;
 
+
 // Inject small CSS just for the profile chip + menu
 function injectProfileStyles() {
   if (styleInjected) return;
@@ -90,6 +91,13 @@ function injectProfileStyles() {
   `;
   document.head.appendChild(style);
 }
+function setAuthNavVisible(show) {
+  const authLinks = document.querySelectorAll(".landing-nav .auth-link");
+  authLinks.forEach((link) => {
+    link.style.display = show ? "" : "none"; // "" = use CSS default
+  });
+}
+
 
 function destroyProfileUI() {
   if (profileChip && profileChip.parentElement) {
@@ -110,10 +118,18 @@ function renderProfileUI(displayName) {
   if (document.body.dataset.hideProfile === "true") return;
 
   // Find header containers
-  const navRight = document.querySelector(".navbar .nav-right");
-  const landingNav = document.querySelector(".topbar .landing-nav");
-  const container = navRight || landingNav;
-  const headerWrapper = document.querySelector(".navbar") || document.querySelector(".topbar");
+  // Prefer the dedicated right-side container in the header
+const navRight =
+  document.querySelector(".topbar .nav-right") ||
+  document.querySelector(".navbar .nav-right");
+
+const landingNav =
+  document.querySelector(".topbar .landing-nav") ||
+  document.querySelector(".navbar .landing-nav");
+
+const container = navRight || landingNav;
+const headerWrapper = document.querySelector(".topbar") || document.querySelector(".navbar");
+
 
   if (!container || !headerWrapper) return;
 
@@ -191,6 +207,7 @@ function renderProfileUI(displayName) {
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     destroyProfileUI();
+    setAuthNavVisible(true);   // 👈 show Login / Sign Up when logged out
     return;
   }
 
@@ -218,4 +235,8 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   renderProfileUI(displayName);
+
+  // 👇 hide Login / Sign Up when logged in
+  setAuthNavVisible(false);
 });
+
