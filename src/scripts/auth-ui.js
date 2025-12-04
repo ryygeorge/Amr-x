@@ -9,9 +9,19 @@ import {
   getDoc
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
+
 let profileChip = null;
 let profileMenu = null;
 let styleInjected = false;
+
+// show / hide "Login" / "Sign Up" links in headers
+function setAuthLinksVisible(isVisible) {
+  const els = document.querySelectorAll(".auth-link");
+  els.forEach((el) => {
+    el.style.display = isVisible ? "" : "none";
+  });
+}
+
 
 // Inject small CSS just for the profile chip + menu
 function injectProfileStyles() {
@@ -190,9 +200,14 @@ function renderProfileUI(displayName) {
 // Listen for auth state changes
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
+    // logged out → show Login / Sign Up again
+    setAuthLinksVisible(true);
     destroyProfileUI();
     return;
   }
+
+  // logged in → hide Login / Sign Up
+  setAuthLinksVisible(false);
 
   // Get nice display name
   let displayName = user.displayName || "";
@@ -210,7 +225,6 @@ onAuthStateChanged(auth, async (user) => {
     displayName = user.email ? user.email.split("@")[0] : "User";
   }
 
-  // Save for pharma greeting
   try {
     localStorage.setItem("pharmaName", displayName);
   } catch (e) {
@@ -219,3 +233,4 @@ onAuthStateChanged(auth, async (user) => {
 
   renderProfileUI(displayName);
 });
+
