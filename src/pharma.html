@@ -3,16 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard | AMR-X</title>
+  <title>Pharmacist Dashboard | AMR-X</title>
   <link rel="stylesheet" href="styles/pharma.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+
 <header>
   <div class="navbar">
     <div class="nav-left">
       <a href="index.html" class="site-title-link">
+        <div class="logo-img"></div>
         <span class="site-title">AMR-X</span>
       </a>
     </div>
@@ -26,7 +28,13 @@
 </header>
 
 <main>
-  <!-- Existing Hospital/AMR section (unchanged) -->
+  <!-- Greeting -->
+  <section class="pharma-section greeting-section">
+    <h1 id="welcomeText">Welcome, Pharmacist!</h1>
+    <p class="greeting-subtitle">Here’s a quick view of resistance and antibiotic use across your hospitals.</p>
+  </section>
+
+  <!-- Hospital / AMR section -->
   <section class="pharma-section">
     <h2>AMR Dashboard</h2>
     <div class="summary-box">
@@ -65,7 +73,7 @@
     </div>
   </section>
 
-  <!-- New Pharmacist Logs section (below) -->
+  <!-- Pharmacist Logs section -->
   <section class="pharma-section" id="pharmacist-logs">
     <h2>Pharmacist Logs</h2>
 
@@ -108,7 +116,46 @@
   <p>&copy; 2025 AMR-X</p>
 </footer>
 
-<!-- Existing script (kept) -->
+<!-- Greeting: get name from localStorage or API -->
+<script>
+(async function () {
+  let name = null;
+
+  // 1) Try localStorage first (e.g. set after login)
+  try {
+    name = localStorage.getItem('pharmaName')
+        || localStorage.getItem('userName')
+        || localStorage.getItem('name');
+  } catch (e) {
+    console.warn('localStorage not available', e.message);
+  }
+
+  // 2) If not found, try fetching from backend (adjust endpoint to your API)
+  if (!name) {
+    try {
+      const res = await fetch('http://localhost:5000/api/me', { credentials: 'include' });
+      if (res.ok) {
+        const j = await res.json();
+        if (j) {
+          name = j.name || j.fullName || j.username || null;
+        }
+      }
+    } catch (e) {
+      console.warn('Could not fetch user name from API:', e.message);
+    }
+  }
+
+  if (name) {
+    const firstName = String(name).split(' ')[0];
+    const welcomeEl = document.getElementById('welcomeText');
+    if (welcomeEl) {
+      welcomeEl.textContent = `Welcome, ${firstName}!`;
+    }
+  }
+})();
+</script>
+
+<!-- Script for AMR dashboard -->
 <script>
 (async function () {
   let data;
@@ -122,11 +169,11 @@
       bar: {
         labels: ["Jan","Feb","Mar","Apr","May","Jun"],
         datasets: [
-          { label: "Ciprofloxacin", data: [15,23,28,32,25,19], color: "#2463eb" },
-          { label: "Amoxicillin",   data: [21,17,19,18,22,25], color: "#13d3cb" }
+          { label: "Ciprofloxacin", data: [15,23,28,32,25,19], color: "#22c1c3" },
+          { label: "Amoxicillin",   data: [21,17,19,18,22,25], color: "#38bdf8" }
         ]
       },
-      pie: { labels: ["St Mercy","Green Valley","General Health"], data: [44,33,23], colors: ["#2463eb","#13d3cb","#7fc8f8"] },
+      pie: { labels: ["St Mercy","Green Valley","General Health"], data: [44,33,23], colors: ["#38bdf8","#22d3ee","#6366f1"] },
       table: [
         { antibiotic: "Ciprofloxacin", hospital: "St Mercy", cases: 72, resistance: "56%" },
         { antibiotic: "Amoxicillin", hospital: "Green Valley", cases: 48, resistance: "42%" },
@@ -137,7 +184,7 @@
   }
 
   // Summary
-  const summary = document.querySelector('.summary-box p');
+  const summary = document.querySelector('.pharma-section .summary-box p');
   if (summary) {
     summary.innerHTML = `<strong>Total Cases:</strong> ${data.totalCases} &nbsp;|&nbsp; <strong>High Risk:</strong> ${data.highRisk} &nbsp;|&nbsp; <strong>Hospitals:</strong> ${data.hospitals}`;
   }
@@ -148,38 +195,71 @@
     data: {
       labels: data.bar.labels,
       datasets: data.bar.datasets.map(d => ({
-        label: d.label, data: d.data, backgroundColor: d.color
+        label: d.label,
+        data: d.data,
+        backgroundColor: d.color
       }))
     },
-    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { color: '#e5edff' }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: '#e5edff' },
+          grid: { color: 'rgba(148,163,184,0.25)' }
+        },
+        y: {
+          ticks: { color: '#e5edff' },
+          grid: { color: 'rgba(148,163,184,0.25)' },
+          beginAtZero: true
+        }
+      }
+    }
   });
 
   // Pie (hospital section)
   new Chart(document.getElementById("pieChart"), {
     type: 'pie',
-    data: { labels: data.pie.labels, datasets: [{ data: data.pie.data, backgroundColor: data.pie.colors }] },
-    options: { responsive: true }
+    data: {
+      labels: data.pie.labels,
+      datasets: [{
+        data: data.pie.data,
+        backgroundColor: data.pie.colors
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          labels: { color: '#e5edff' }
+        }
+      }
+    }
   });
 
   // Table (hospital section)
-  const tbody = document.querySelector('.data-table tbody');
-  if (tbody && Array.isArray(data.table)) {
-    tbody.innerHTML = '';
+  const tableContainer = document.querySelector('.pharma-section .data-table tbody');
+  if (tableContainer && Array.isArray(data.table)) {
+    tableContainer.innerHTML = '';
     for (const row of data.table) {
       const tr = document.createElement('tr');
       tr.innerHTML = `<td>${row.antibiotic}</td><td>${row.hospital}</td><td>${row.cases}</td><td>${row.resistance}</td>`;
-      tbody.appendChild(tr);
+      tableContainer.appendChild(tr);
     }
   }
 })();
 </script>
 
-<!-- New script for Pharmacist Logs -->
+<!-- Script for Pharmacist Logs -->
 <script>
   window.addEventListener('DOMContentLoaded', initPharmacistLogs);
 
   async function initPharmacistLogs() {
-    // Fetch entries from your backend
     let entries = [];
     try {
       const r = await fetch('http://localhost:5000/api/pharmacist-entry');
@@ -189,7 +269,6 @@
       console.warn('Pharmacist logs fetch failed:', e.message);
     }
 
-    // Update summary line
     const s = v => String(v||'').toLowerCase();
     const total = entries.length;
     const yes = entries.filter(x => s(x.cured)==='yes').length;
@@ -200,7 +279,7 @@
       `<strong>Cured Yes:</strong> ${yes} &nbsp;|&nbsp; ` +
       `<strong>Cured No:</strong> ${no}`;
 
-    // Render table
+    // Table
     const tb = document.getElementById('pharmTbody');
     if (!entries.length) {
       tb.innerHTML = `<tr><td colspan="5">No pharmacist entries yet</td></tr>`;
@@ -216,8 +295,7 @@
       `).join('');
     }
 
-    // Prepare data for charts
-    // Bar: quantities by medicine (top 6)
+    // Charts
     const sums = {};
     for (const r of entries) {
       const key = (r.medicinesSold || 'Unknown').trim();
@@ -228,23 +306,68 @@
     const barLabels = top.map(([k])=>k);
     const barValues = top.map(([,v])=>v);
 
-    // Pie: cured distribution
     const partial = entries.filter(x => s(x.cured).startsWith('part')).length;
     const pieLabels = ['Yes','No','Partial','Other'];
     const pieValues = [yes, no, partial, total - (yes+no+partial)];
 
-    // Render pharmacist charts
     new Chart(document.getElementById('pharmBar'), {
       type: 'bar',
-      data: { labels: barLabels, datasets: [{ label: 'Quantity', data: barValues, backgroundColor: '#2463eb' }] },
-      options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+      data: {
+        labels: barLabels,
+        datasets: [{
+          label: 'Quantity',
+          data: barValues,
+          backgroundColor: '#22c1c3'
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#e5edff' },
+            grid: { color: 'rgba(148,163,184,0.25)' }
+          },
+          y: {
+            ticks: { color: '#e5edff' },
+            grid: { color: 'rgba(148,163,184,0.25)' },
+            beginAtZero: true
+          }
+        }
+      }
     });
 
     new Chart(document.getElementById('pharmPie'), {
-      type: 'pie',
-      data: { labels: pieLabels, datasets: [{ data: pieValues, backgroundColor: ['#2463eb','#13d3cb','#7fc8f8','#a5b4fc'] }] },
-      options: { responsive: true }
-    });
+    type: 'pie',
+   data: {
+     labels: pieLabels,
+     datasets: [{
+        data: pieValues,
+       backgroundColor: [
+          '#3bc8d6', // Yes - cyan-teal
+         '#475569', // No - slate gray
+          '#64748b', // Partial - steel blue
+          '#94a3b8'  // Other - muted gray-blue
+        ],
+        borderColor: "rgba(0,0,0,0.3)",
+       borderWidth: 1
+      }]
+   },
+    options: {
+      responsive: true,
+      plugins: {
+       legend: {
+         labels: {
+            color: '#e5e7eb',
+            font: { size: 12 }
+           }
+        }
+     }
+    }
+  });
+
   }
 
   function escapeHtml(s) {

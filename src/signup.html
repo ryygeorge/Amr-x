@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AMR-X | Sign Up</title>
+  <link rel="stylesheet" href="styles/signup.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<header>
+  <div class="topbar">
+    <a href="index.html" class="site-title-link">
+      <div class="logo-img"></div>
+      <span class="site-title">AMR-X</span>
+    </a>
+    <nav class="landing-nav">
+      <a href="index.html#mainContent" class="nav-link">Overview</a>
+      <a href="index.html#section-resistance" class="nav-link">Antibiotic Resistance</a>
+      <a href="index.html#section-amrx" class="nav-link">How AMR-X Helps</a>
+      <a href="choose.html" class="nav-link">Choose Portal</a>
+      <a href="login.html" class="nav-link">Login</a>
+      <a href="signup.html" class="nav-link signup active">Sign Up</a>
+    </nav>
+  </div>
+</header>
+
+<main class="auth-wrapper">
+  <div class="auth-glow"></div>
+
+  <section class="auth-card">
+    <h1 id="signupTitle">Create your AMR-X account</h1>
+    <p class="subtitle" id="signupSubtitle">
+      This account lets you access AMR-X as a clinician, pharmacist or admin based on your role.
+    </p>
+
+    <form class="auth-form" id="signupForm">
+      <label for="name">Full name</label>
+      <input type="text" id="name" placeholder="Your name" required>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="you@example.com" required>
+
+      <label for="role">Role</label>
+      <select id="role" required>
+        <option value="">Select your role</option>
+        <option value="clinician">Clinician / nurse</option>
+        <option value="pharma">Pharmacist / stewardship</option>
+        <option value="admin">Admin</option>
+      </select>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" placeholder="Create a strong password" required>
+
+      <label for="confirm-password">Confirm password</label>
+      <input type="password" id="confirm-password" placeholder="Re-enter your password" required>
+
+      <p class="form-error" id="signupError"></p>
+
+      <button type="submit" class="primary-btn">Sign Up</button>
+
+      <p class="alt-link">
+        Already have an account?
+        <a id="loginLink" href="login.html">Login instead</a>
+      </p>
+    </form>
+  </section>
+</main>
+
+<footer>
+  <p>&copy; 2025 AMR-X</p>
+</footer>
+
+<script>
+  // Use ?role=pharma / admin / clinician to pre-select and adjust texts
+  const params = new URLSearchParams(window.location.search);
+  const role = params.get("role"); // pharma | admin | clinician | null
+
+  const roleSelect = document.getElementById("role");
+  const signupTitle = document.getElementById("signupTitle");
+  const signupSubtitle = document.getElementById("signupSubtitle");
+  const loginLink = document.getElementById("loginLink");
+
+  if (role === "pharma") {
+    roleSelect.value = "pharma";
+    signupTitle.textContent = "Sign up for the Pharmacist Portal";
+    signupSubtitle.textContent =
+      "Create an AMR-X account tailored to pharmacy and stewardship analytics.";
+    loginLink.href = "login.html?role=pharma";
+  } else if (role === "admin") {
+    roleSelect.value = "admin";
+    signupTitle.textContent = "Sign up for the Admin Portal";
+    signupSubtitle.textContent =
+      "Create an AMR-X admin account to manage users, hospitals and reports.";
+    loginLink.href = "login.html?role=admin";
+  } else if (role === "clinician") {
+    roleSelect.value = "clinician";
+    signupTitle.textContent = "Sign up for the Clinician Portal";
+    signupSubtitle.textContent =
+      "Create an AMR-X account focused on clinician and bedside workflows.";
+    loginLink.href = "login.html?role=clinician";
+  } else {
+    loginLink.href = "login.html";
+  }
+</script>
+<script type="module" src="scripts/signup.js"></script>
+</body>
+</html>
