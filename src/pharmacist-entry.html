@@ -12,6 +12,7 @@
   <div class="navbar">
     <div class="nav-left">
       <a href="index.html" class="site-title-link">
+        <div class="logo-img"></div>
         <span class="site-title">AMR-X</span>
       </a>
     </div>
@@ -27,6 +28,9 @@
 <main>
   <section class="form-section">
     <h2>Pharmacist Data Entry</h2>
+    <p class="form-subtitle">
+      Log antibiotics dispensed and treatment outcomes to keep AMR trends up to date.
+    </p>
 
     <!-- Single form with the working id -->
     <form id="pharmacist-form" class="medicine-form">
@@ -53,12 +57,26 @@
 
       <div class="form-group">
         <label for="quantity">Quantity sold</label>
-        <input type="number" id="quantity" name="quantity" required placeholder="Number of units/bottles" min="0" value="0">
+        <input
+          type="number"
+          id="quantity"
+          name="quantity"
+          required
+          placeholder="Number of units/bottles"
+          min="0"
+          value="0"
+        >
       </div>
 
       <div class="form-group">
         <label for="dosage">Dosage prescribed</label>
-        <input type="text" id="dosage" name="dosage" required placeholder="E.g. 500mg twice daily">
+        <input
+          type="text"
+          id="dosage"
+          name="dosage"
+          required
+          placeholder="E.g. 500mg twice daily"
+        >
       </div>
 
       <div class="form-group">
@@ -73,13 +91,18 @@
 
       <div class="form-group">
         <label for="feedback">Feedback or observations</label>
-        <textarea id="feedback" name="feedback" rows="3" placeholder="Any side effects, patient responses, etc."></textarea>
+        <textarea
+          id="feedback"
+          name="feedback"
+          rows="3"
+          placeholder="Any side effects, patient responses, etc."
+        ></textarea>
       </div>
 
       <button type="submit" class="card-btn">Submit Data</button>
     </form>
 
-    <div id="successMsg"></div>
+    <div id="successMsg" class="success-message"></div>
   </section>
 </main>
 
@@ -95,7 +118,7 @@
     medOther.style.display = (medSel.value === 'Other') ? 'block' : 'none';
   });
 
-  // Submit handler (unchanged logic; works with select)
+  // Submit handler (logic unchanged)
   window.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('pharmacist-form');
 
@@ -120,9 +143,12 @@
         });
         const data = await res.json();
         if (data.ok) {
-          document.getElementById('successMsg').textContent = 'Saved: ' + data.id;
+          const successDiv = document.getElementById('successMsg');
+          successDiv.textContent = 'Entry saved successfully.';
+          successDiv.classList.add('visible');
           form.reset();
           medOther.style.display = 'none';
+          setTimeout(() => successDiv.classList.remove('visible'), 2500);
         } else {
           alert('Error: ' + data.error);
         }

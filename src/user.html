@@ -7,11 +7,12 @@
   <link rel="stylesheet" href="styles/user.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body data-hide-profile="true">
 <header>
   <div class="navbar">
     <div class="nav-left">
       <a href="index.html" class="site-title-link">
+        <div class="logo-img"></div>
         <span class="site-title">AMR-X</span>
       </a>
     </div>
@@ -25,6 +26,9 @@
 <main>
   <section class="user-section">
     <h2>AMR User Feedback</h2>
+    <p class="user-subtitle">
+      Share how antibiotics worked for you to help hospitals understand real-world outcomes.
+    </p>
 
     <form class="user-form" id="userForm">
       <div class="form-group">
@@ -76,7 +80,7 @@
       <button type="submit" class="card-btn">Submit</button>
     </form>
 
-    <div id="userSuccess"></div>
+    <div id="userSuccess" class="success-message"></div>
   </section>
 </main>
 
@@ -88,18 +92,21 @@
   // Toggle "Other" input for medicine
   const medSelect = document.getElementById('medicine');
   const medOther  = document.getElementById('medicineOther');
+
   medSelect.addEventListener('change', () => {
     medOther.style.display = (medSelect.value === 'Other') ? 'block' : 'none';
   });
 
-  // Keep your existing submit behavior
+  // Submit behavior (same logic, just cleaner success UI)
   document.getElementById('userForm').onsubmit = function(e) {
     e.preventDefault();
 
-    // If you later send this to backend, use the resolved medicine value:
-    const medicineResolved = (medSelect.value === 'Other' ? (medOther.value || '').trim() : medSelect.value);
+    const medicineResolved = (medSelect.value === 'Other'
+      ? (medOther.value || '').trim()
+      : medSelect.value
+    );
 
-    // Example: add this to your payload when you wire backend
+    // later you can send this to backend:
     // const payload = {
     //   userName: document.getElementById('userName').value,
     //   medicine: medicineResolved,
@@ -108,11 +115,14 @@
     //   comments: document.getElementById('comments').value
     // };
 
-    document.getElementById('userSuccess').innerHTML =
-      "<p style='color:#13d3cb;font-weight:600;margin-top:18px;'>Thank you for your feedback!</p>";
+    const msg = document.getElementById('userSuccess');
+    msg.textContent = "Thank you for your feedback!";
+    msg.classList.add('visible');
 
     this.reset();
     medOther.style.display = 'none';
+
+    setTimeout(() => msg.classList.remove('visible'), 2500);
   };
 </script>
 </body>

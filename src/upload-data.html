@@ -12,6 +12,7 @@
   <div class="navbar">
     <div class="nav-left">
       <a href="index.html" class="site-title-link">
+        <div class="logo-img"></div>
         <span class="site-title">AMR-X</span>
       </a>
     </div>
@@ -23,29 +24,48 @@
     </div>
   </div>
 </header>
+
 <main>
   <section class="upload-section">
     <h2>Upload Data Files</h2>
+    <p class="upload-subtitle">
+      Bulk upload AMR, antibiogram or pharmacy usage files in one place.
+    </p>
+
     <div class="upload-container">
-      <div class="upload-area" id="uploadArea">
+      <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
         <div class="upload-icon">📁</div>
         <h3>Drop files here or click to browse</h3>
         <p>Supported formats: CSV, Excel (.xlsx), JSON</p>
         <input type="file" id="fileInput" multiple accept=".csv,.xlsx,.json" hidden>
-        <button type="button" class="browse-btn" onclick="document.getElementById('fileInput').click()">Choose Files</button>
+        <button type="button" class="browse-btn">Choose Files</button>
       </div>
+
       <div class="file-list" id="fileList"></div>
-      <button type="button" class="card-btn" id="uploadBtn" style="display:none;">Upload Files</button>
+
+      <button type="button" class="card-btn" id="uploadBtn" style="display:none;">
+        Upload Files
+      </button>
     </div>
   </section>
 </main>
+
 <footer>
   <p>&copy; 2025 AMR-X</p>
 </footer>
+
 <script>
 const fileInput = document.getElementById('fileInput');
 const fileList = document.getElementById('fileList');
 const uploadBtn = document.getElementById('uploadBtn');
+const uploadArea = document.getElementById('uploadArea');
+const browseBtn = document.querySelector('.browse-btn');
+
+// Trigger file dialog
+browseBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  fileInput.click();
+});
 
 fileInput.onchange = () => displayFiles(fileInput.files);
 
@@ -56,7 +76,7 @@ function displayFiles(files) {
     p.textContent = `📄 ${f.name} (${(f.size/1024).toFixed(1)} KB)`;
     fileList.appendChild(p);
   }
-  uploadBtn.style.display = files.length ? 'block' : 'none';
+  uploadBtn.style.display = files.length ? 'inline-flex' : 'none';
 }
 
 uploadBtn.onclick = async () => {
@@ -64,7 +84,7 @@ uploadBtn.onclick = async () => {
   if (!files.length) return;
 
   const fd = new FormData();
-  for (let f of files) fd.append('files', f); // field name must match multer.array('files') [web:10]
+  for (let f of files) fd.append('files', f); // field name must match multer.array('files')
 
   try {
     const res = await fetch('http://localhost:5000/api/upload', { method: 'POST', body: fd });
