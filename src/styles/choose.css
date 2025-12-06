@@ -71,6 +71,12 @@ header {
               border 0.16s ease, box-shadow 0.16s ease,
               transform 0.16s ease;
 }
+.landing-nav {
+  display: flex;
+  align-items: center;
+  gap: 14px; /* spacing between Home & Choose Portal */
+}
+
 
 .landing-nav .nav-link.signup {
   background: linear-gradient(120deg, #2563eb, #22d3ee);

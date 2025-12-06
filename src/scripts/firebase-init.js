@@ -6,8 +6,8 @@ import {
   browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-storage.js";
 
-// 🔴 PUT YOUR REAL FIREBASE CONFIG HERE
 const firebaseConfig = {
   apiKey: "AIzaSyDdmFP5OKVl-hRdeODEvLOzKq4_vKnr-tY",
   authDomain: "amr-xp.firebaseapp.com",
@@ -18,22 +18,16 @@ const firebaseConfig = {
   measurementId: "G-H7P34PN5WS"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
 // AUTH
 const auth = getAuth(app);
-
-// ✅ Make login persist even after refresh / home / closing tab
-setPersistence(auth, browserLocalPersistence)
-  .then(() => {
-    console.log("✔ Firebase persistence enabled");
-  })
-  .catch((error) => {
-    console.error("Persistence error:", error);
-  });
+setPersistence(auth, browserLocalPersistence).catch(console.error);
 
 // DB
 const db = getFirestore(app);
 
-export { app, auth, db };
+// STORAGE ✅
+const storage = getStorage(app);
+
+export { app, auth, db, storage };

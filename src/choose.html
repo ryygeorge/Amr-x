@@ -15,13 +15,12 @@
       <span class="site-title">AMR-X</span>
     </a>
 
-    <!-- Simple nav; profile chip will appear on the right here -->
+    <!-- nav; profile chip appears at the right here via auth-ui.js -->
     <nav class="landing-nav">
-      <a href="choose.html" class="nav-link active">Choose Portal</a>
+      <a href="index.html" class="nav-link">Home</a>
     </nav>
   </div>
 </header>
-
 
 <main class="choose-wrapper">
   <div class="choose-glow"></div>
@@ -71,7 +70,6 @@
         </ul>
 
         <div class="portal-actions">
-          <!-- JS will decide where to go based on login status -->
           <a href="#" id="pharmaSignupBtn" class="cta-btn primary">
             Sign up as Pharmacist
           </a>
@@ -88,7 +86,6 @@
   <p>&copy; 2025 AMR-X</p>
 </footer>
 
-<!-- Auth-aware portal routing -->
 <script type="module" src="scripts/auth-ui.js"></script>
 <script type="module" src="scripts/choose.js"></script>
 </body>

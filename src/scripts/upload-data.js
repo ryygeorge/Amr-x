@@ -7,23 +7,37 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 import * as XLSX from "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/+esm";
 
-// --- DOM elements ---
-const fileInput = document.getElementById("fileInput");
-const fileList  = document.getElementById("fileList");
-const uploadBtn = document.getElementById("uploadBtn");
+// DOM elements
+const fileInput  = document.getElementById("fileInput");
+const fileList   = document.getElementById("fileList");
+const uploadBtn  = document.getElementById("uploadBtn");
 const uploadArea = document.getElementById("uploadArea");
-const browseBtn = document.querySelector(".browse-btn");
+const browseBtn  = document.querySelector(".browse-btn");
 
-// --- UI wiring (same behaviour as before) ---
+// Open file picker
 browseBtn?.addEventListener("click", (e) => {
   e.stopPropagation();
   fileInput.click();
 });
 
+// Click area to open picker
 uploadArea?.addEventListener("click", () => {
   fileInput.click();
 });
 
+// Drag & drop support
+uploadArea?.addEventListener("dragover", (e) => {
+  e.preventDefault();
+});
+
+uploadArea?.addEventListener("drop", (e) => {
+  e.preventDefault();
+  if (!e.dataTransfer?.files?.length) return;
+  fileInput.files = e.dataTransfer.files;
+  displayFiles(fileInput.files);
+});
+
+// Show selected files
 fileInput.onchange = () => displayFiles(fileInput.files);
 
 function displayFiles(files) {
@@ -36,18 +50,17 @@ function displayFiles(files) {
   uploadBtn.style.display = files.length ? "inline-flex" : "none";
 }
 
-// --- Helpers to read & parse files ---
-
+// Helpers
 function readFileAsText(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = (e) => resolve(e.target.result);
+    reader.onload = (e) => resolve(e.target?.result || "");
     reader.onerror = reject;
     reader.readAsText(file);
   });
 }
 
-// very simple CSV parser (no fancy quoted commas)
+// basic CSV parser (no fancy quoting)
 function parseCsv(text) {
   const lines = text.split(/\r?\n/).filter((l) => l.trim() !== "");
   if (!lines.length) return [];
@@ -76,11 +89,9 @@ async function parseXlsx(file) {
   return rows;
 }
 
-// --- Firestore write: store for ML later ---
-// uploads collection -> one doc per file
-// each file doc -> subcollection "rows" with each row as a doc
+// Firestore: store file + rows
 async function storeFileDataInFirestore(file, rows) {
-  const uploadsCol = collection(db, "mlUploads"); // name it whatever you want
+  const uploadsCol = collection(db, "mlUploads");
 
   const uploadDocRef = await addDoc(uploadsCol, {
     fileName: file.name,
@@ -93,7 +104,6 @@ async function storeFileDataInFirestore(file, rows) {
 
   const rowsCol = collection(uploadDocRef, "rows");
 
-  // naive: one write per row (fine for small/medium files)
   for (const row of rows) {
     await addDoc(rowsCol, row);
   }
@@ -104,12 +114,17 @@ async function storeFileDataInFirestore(file, rows) {
   };
 }
 
-// --- Upload button handler ---
+// Upload handler
 uploadBtn.onclick = async () => {
   const files = fileInput.files;
   if (!files.length) return;
 
-  // validate types
+  if (!auth.currentUser) {
+    alert("Please log in before uploading data.");
+    return;
+  }
+
+  // Validate file types
   for (let f of files) {
     const name = f.name.toLowerCase();
     if (!name.endsWith(".csv") && !name.endsWith(".xlsx")) {
@@ -120,14 +135,15 @@ uploadBtn.onclick = async () => {
 
   uploadBtn.disabled = true;
   uploadBtn.textContent = "Uploading...";
+  uploadBtn.classList.remove("upload-success");
 
   const storedFiles = [];
 
   try {
     for (let file of files) {
       const lower = file.name.toLowerCase();
-
       let rows = [];
+
       if (lower.endsWith(".csv")) {
         const text = await readFileAsText(file);
         rows = parseCsv(text);
@@ -153,15 +169,27 @@ uploadBtn.onclick = async () => {
       alert("Uploaded & stored in database:\n" + summary);
     }
 
+    // Clear selected files UI
     fileList.innerHTML = "";
-    uploadBtn.style.display = "none";
     fileInput.value = "";
+
+    // ✅ Show green tick state
+    uploadBtn.disabled = false;
+    uploadBtn.textContent = "Uploaded ✔";
+    uploadBtn.classList.add("upload-success");
+
+    // After 1.4s, reset text and hide button until next selection
+    setTimeout(() => {
+      uploadBtn.textContent = "Upload Files";
+      uploadBtn.classList.remove("upload-success");
+      uploadBtn.style.display = "none";
+    }, 1400);
 
   } catch (err) {
     console.error(err);
     alert("Upload failed: " + err.message);
-  } finally {
     uploadBtn.disabled = false;
     uploadBtn.textContent = "Upload Files";
+    uploadBtn.classList.remove("upload-success");
   }
 };

@@ -14,7 +14,7 @@ body {
   overflow-x: hidden;
 }
 
-/* BACKGROUND (same feel as pharma dashboard, no image here) */
+/* BACKGROUND */
 body::before {
   content: "";
   position: fixed;
@@ -26,8 +26,7 @@ body::before {
   z-index: -3;
 }
 
-/* HEADER / NAVBAR (aligned with pharma / pharmacist-entry) */
-
+/* HEADER / NAVBAR */
 header {
   position: fixed;
   top: 0;
@@ -120,15 +119,13 @@ header {
 }
 
 /* MAIN LAYOUT */
-
 main {
   max-width: 720px;
   margin: 100px auto 0;
   padding: 22px 16px 50px 16px;
 }
 
-/* UPLOAD SECTION CARD */
-
+/* UPLOAD SECTION */
 .upload-section {
   padding: 24px 0;
 }
@@ -159,7 +156,6 @@ main {
 }
 
 /* UPLOAD AREA */
-
 .upload-area {
   border: 2px dashed rgba(148, 163, 184, 0.8);
   border-radius: 16px;
@@ -200,7 +196,6 @@ main {
 }
 
 /* BROWSE BUTTON */
-
 .browse-btn {
   background: rgba(15, 23, 42, 1);
   color: #e5e7eb;
@@ -226,7 +221,6 @@ main {
 }
 
 /* FILE LIST */
-
 .file-list {
   margin: 12px 2px 18px 2px;
   text-align: left;
@@ -241,7 +235,6 @@ main {
 }
 
 /* UPLOAD BUTTON */
-
 .card-btn {
   background: linear-gradient(120deg, #22c1c3, #38bdf8);
   color: #020617;
@@ -268,8 +261,15 @@ main {
   filter: brightness(1.03);
 }
 
-/* FOOTER */
+/* SUCCESS STATE (green tick) */
+.upload-success {
+  background: linear-gradient(120deg, #22c55e, #4ade80) !important;
+  color: #ffffff !important;
+  box-shadow: 0 12px 30px rgba(34, 197, 94, 0.4);
+  transform: translateY(-1px);
+}
 
+/* FOOTER */
 footer {
   background: transparent;
   color: #94a3b8;
@@ -279,7 +279,6 @@ footer {
 }
 
 /* RESPONSIVE */
-
 @media (max-width: 900px) {
   .nav-left {
     position: static;
