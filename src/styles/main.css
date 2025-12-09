@@ -17,8 +17,12 @@ body {
   min-height: 100vh;
 }
 
+/* small utility */
+.hidden { display: none !important; }
+
 /* HEADER */
 
+/* header remains fixed and provides stacking context */
 header {
   position: fixed;
   top: 0;
@@ -28,6 +32,12 @@ header {
   backdrop-filter: blur(10px);
 }
 
+/* Make header inner containers positioning contexts so absolutely-positioned profile sits inside them */
+.topbar, .navbar {
+  position: relative;
+}
+
+/* Layout for topbar (landing) */
 .topbar {
   display: flex;
   align-items: center;
@@ -37,6 +47,18 @@ header {
   margin: 0 auto;
 }
 
+/* reserve space on the right so nav items won't run under the profile chip.
+   Tune value if you need more/less reserved space. */
+.landing-nav {
+  padding-right: 160px; /* space for profile */
+}
+
+/* For .navbar-based pages (pharmacist pages), reserve space via nav-right margin */
+.navbar .nav-right {
+  margin-right: 160px; /* space for profile */
+}
+
+/* site title */
 .site-title-link {
   display: flex;
   align-items: center;
@@ -61,7 +83,8 @@ header {
 
 /* NAV */
 
-.landing-nav .nav-link {
+.landing-nav .nav-link,
+.navbar .nav-right .nav-link {
   color: #bfdbfe;
   margin-left: 18px;
   font-size: 0.9rem;
@@ -82,13 +105,129 @@ header {
 }
 
 .landing-nav .nav-link:hover,
-.landing-nav .nav-link.active {
+.landing-nav .nav-link.active,
+.navbar .nav-right .nav-link.active {
   color: #f9fafb;
   background: rgba(15, 23, 42, 0.9);
   border-color: rgba(148, 163, 184, 0.7);
   box-shadow: 0 8px 20px rgba(15, 23, 42, 0.6);
   transform: translateY(-1px);
 }
+
+/* PROFILE PLACEHOLDER & CHIP
+   Absolutely positioned inside the header context; by default placeholder is non-interactive
+   while the skeleton is present. When the interactive chip is created, JS enables pointer-events. */
+
+/* explicit placeholder element if present in the markup */
+#profilePlaceholder,
+.amrx-profile-fallback {
+  position: absolute;
+  right: 36px; /* align with header padding; tweak as needed */
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  z-index: 60;
+  pointer-events: none; /* skeleton non-interactive; JS will set to 'auto' for real chip */
+  min-width: 0;
+}
+
+/* interactive chip appearance */
+.profile-chip {
+  pointer-events: auto; /* chip itself is clickable; placeholder has pointer-events toggled by JS */
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(148,163,184,0.06);
+  color: #e5e7eb;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+  outline: none;
+  user-select: none;
+  font-size: 0.9rem;
+}
+
+/* Hover / focus visuals */
+.profile-chip:hover,
+.profile-chip:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(56,189,248,0.06);
+  background: linear-gradient(120deg, rgba(34,193,195,0.04), rgba(56,189,248,0.03));
+}
+
+.profile-chip:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* initial circle */
+.profile-initial {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #e5e7eb;
+  background: linear-gradient(120deg,#0f1724,#0b1220);
+  border: 1px solid rgba(148,163,184,0.12);
+  font-size: 0.95rem;
+}
+
+/* small name text */
+.profile-name {
+  font-size: 0.9rem;
+  color: #e5e7eb;
+  white-space: nowrap;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* skeleton state (non-interactive) */
+.profile-skeleton {
+  opacity: 0.95;
+}
+
+/* profile menu (dropdown) */
+.profile-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 24px;
+  min-width: 190px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(15,23,42,0.98);
+  border: 1px solid rgba(51,65,85,0.9);
+  box-shadow: 0 18px 40px rgba(15,23,42,1);
+  font-size: 0.85rem;
+  color: #e5e7eb;
+  z-index: 99;
+  display: none;
+}
+
+.profile-menu-header { margin-bottom: 8px; color: #9ca3c9; }
+.profile-menu-header strong { color: #e5e7eb; }
+
+.profile-logout-btn {
+  margin-top: 6px;
+  width: 100%;
+  border-radius: 999px;
+  border: none;
+  padding: 8px 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(120deg,#ef4444,#f97373);
+  color: #f9fafb;
+  box-shadow: 0 8px 20px rgba(127,29,29,0.6);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.profile-logout-btn:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(127,29,29,0.85); }
 
 /* HERO */
 
@@ -125,7 +264,6 @@ header {
   z-index: -2;
 }
 
-
 /* HERO CONTENT */
 
 .hero-content {
@@ -133,21 +271,6 @@ header {
   padding: 0 22px;
   max-width: 720px;
   margin-top: 40px;
-}
-
-.hero-content h1 {
-  font-size: clamp(2.8rem, 6vw, 4.2rem);
-  font-weight: 800;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #e5edff;
-  margin-bottom: 10px;
-}
-
-.hero-subtitle {
-  font-size: clamp(1.05rem, 2vw, 1.25rem);
-  color: #c3d3ff;
-  margin-bottom: 10px;
 }
 
 /* ROTATING FACT TEXT */
@@ -255,23 +378,16 @@ header {
 }
 
 @keyframes scrollPulse {
-  0% {
-    transform: translateY(0);
-    opacity: 0;
-  }
-  30% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(40px);
-    opacity: 0;
-  }
+  0% { transform: translateY(0); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translateY(40px); opacity: 0; }
 }
 
 /* MAIN */
-main {
-  background: transparent;
-}
+main { background: transparent; }
+
+/* Keep the rest of your CSS (dashboard panels, responsiveness, etc.) unchanged. */
+/* ... rest of your existing CSS ... */
 
 
 /* SECTION 1: OVERVIEW */
