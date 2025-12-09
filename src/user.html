@@ -27,54 +27,83 @@
   <section class="user-section">
     <h2>AMR User Feedback</h2>
     <p class="user-subtitle">
-      Share how antibiotics worked for you to help hospitals understand real-world outcomes.
+      Share details about your infections and antibiotic use to help hospitals understand real-world outcomes.
     </p>
 
     <form class="user-form" id="userForm">
       <div class="form-group">
-        <label for="userName">Your Name</label>
-        <input type="text" id="userName" name="userName" required placeholder="Enter your name">
+        <label for="age">Age</label>
+        <input
+          type="number"
+          id="age"
+          name="age"
+          min="0"
+          max="120"
+          required
+          placeholder="Enter your age"
+        >
       </div>
 
       <div class="form-group">
-        <label for="medicine">Medicine Used</label>
-        <!-- Dropdown instead of text input -->
-        <select id="medicine" name="medicine" required>
-          <option value="">Select antibiotic</option>
-          <option value="Amoxicillin">Amoxicillin</option>
-          <option value="Ciprofloxacin">Ciprofloxacin</option>
-          <option value="Azithromycin">Azithromycin</option>
-          <option value="Ceftriaxone">Ceftriaxone</option>
-          <option value="Doxycycline">Doxycycline</option>
-          <option value="Amikacin">Amikacin</option>
-          <option value="Cefixime">Cefixime</option>
-          <option value="Meropenem">Meropenem</option>
-          <option value="Piperacillin-Tazobactam">Piperacillin-Tazobactam</option>
-          <option value="Vancomycin">Vancomycin</option>
-          <option value="Other">Other</option>
+        <label for="gender">Gender</label>
+        <select id="gender" name="gender" required>
+          <option value="">Select gender</option>
+          <option value="female">Female</option>
+          <option value="male">Male</option>
+          <option value="other">Other</option>
+          <option value="prefer_not_say">Prefer not to say</option>
         </select>
-        <!-- Shown only if "Other" is selected -->
-        <input type="text" id="medicineOther" placeholder="Enter medicine" style="display:none; margin-top:8px;">
       </div>
 
       <div class="form-group">
-        <label for="effect">Effectiveness</label>
-        <select id="effect" name="effect" required>
+        <label for="infectionFrequency">Infection frequency</label>
+        <select id="infectionFrequency" name="infectionFrequency" required>
           <option value="">Select</option>
-          <option value="cured">Cured</option>
-          <option value="partial">Partial Relief</option>
-          <option value="no">No Effect</option>
+          <option value="rarely">Rarely (0–1 per year)</option>
+          <option value="sometimes">Sometimes (2–3 per year)</option>
+          <option value="often">Often (&gt;3 per year)</option>
         </select>
       </div>
 
       <div class="form-group">
-        <label for="sideEffects">Side Effects</label>
-        <input type="text" id="sideEffects" name="sideEffects" placeholder="Any side effects?">
+        <label for="symptoms">Symptoms</label>
+        <textarea
+          id="symptoms"
+          name="symptoms"
+          rows="3"
+          required
+          placeholder="Describe your main symptoms"
+        ></textarea>
       </div>
 
       <div class="form-group">
-        <label for="comments">Comments/Feedback</label>
-        <textarea id="comments" name="comments" rows="3" placeholder="Write your experience (optional)"></textarea>
+        <label for="pastAntibioticUse">Past antibiotic use</label>
+        <textarea
+          id="pastAntibioticUse"
+          name="pastAntibioticUse"
+          rows="3"
+          placeholder="Which antibiotics have you used before and when?"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="hospitalVisits">Hospital visits</label>
+        <textarea
+          id="hospitalVisits"
+          name="hospitalVisits"
+          rows="3"
+          placeholder="Any recent hospital or clinic visits? (reason and date)"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="riskFactors">Any risk factors</label>
+        <textarea
+          id="riskFactors"
+          name="riskFactors"
+          rows="3"
+          placeholder="E.g., diabetes, recent surgery, long-term catheter, etc."
+        ></textarea>
       </div>
 
       <button type="submit" class="card-btn">Submit</button>
@@ -89,30 +118,19 @@
 </footer>
 
 <script>
-  // Toggle "Other" input for medicine
-  const medSelect = document.getElementById('medicine');
-  const medOther  = document.getElementById('medicineOther');
-
-  medSelect.addEventListener('change', () => {
-    medOther.style.display = (medSelect.value === 'Other') ? 'block' : 'none';
-  });
-
-  // Submit behavior (same logic, just cleaner success UI)
-  document.getElementById('userForm').onsubmit = function(e) {
+  // Submit behavior
+  document.getElementById('userForm').onsubmit = function (e) {
     e.preventDefault();
 
-    const medicineResolved = (medSelect.value === 'Other'
-      ? (medOther.value || '').trim()
-      : medSelect.value
-    );
-
-    // later you can send this to backend:
+    // Later you can send this to backend:
     // const payload = {
-    //   userName: document.getElementById('userName').value,
-    //   medicine: medicineResolved,
-    //   effect: document.getElementById('effect').value,
-    //   sideEffects: document.getElementById('sideEffects').value,
-    //   comments: document.getElementById('comments').value
+    //   age: document.getElementById('age').value,
+    //   gender: document.getElementById('gender').value,
+    //   infectionFrequency: document.getElementById('infectionFrequency').value,
+    //   symptoms: document.getElementById('symptoms').value,
+    //   pastAntibioticUse: document.getElementById('pastAntibioticUse').value,
+    //   hospitalVisits: document.getElementById('hospitalVisits').value,
+    //   riskFactors: document.getElementById('riskFactors').value
     // };
 
     const msg = document.getElementById('userSuccess');
@@ -120,7 +138,6 @@
     msg.classList.add('visible');
 
     this.reset();
-    medOther.style.display = 'none';
 
     setTimeout(() => msg.classList.remove('visible'), 2500);
   };

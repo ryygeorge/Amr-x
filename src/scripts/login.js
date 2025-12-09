@@ -2,6 +2,7 @@
 import { auth, db } from "./firebase-init.js";
 import {
   signInWithEmailAndPassword,
+  signOut,
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 import {
   doc,
@@ -18,7 +19,7 @@ const signupLink = document.getElementById("signupLink");
 const loginForm = document.getElementById("loginForm");
 const loginError = document.getElementById("loginError");
 
-// Safety: adjust UI text based on ?role=
+// ---------- Role-based UI text ----------
 if (urlRole === "pharma") {
   loginTitle.textContent = "Login to Pharmacist Portal";
   loginSubtitle.textContent =
@@ -38,7 +39,7 @@ if (urlRole === "pharma") {
   signupLink.href = "signup.html";
 }
 
-// Handle login
+// ---------- Handle login ----------
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   loginError.textContent = "";
@@ -47,29 +48,28 @@ loginForm.addEventListener("submit", async (e) => {
   const password = document.getElementById("password").value;
 
   try {
+    // 1) Sign in with Firebase Auth
     const userCred = await signInWithEmailAndPassword(auth, email, password);
     const user = userCred.user;
 
-    // Fetch extra data (including role and name) from Firestore
+    // 2) Load profile from Firestore
     const userDocRef = doc(db, "users", user.uid);
     const userSnap = await getDoc(userDocRef);
 
-    let storedRole = urlRole || null; // start with URL hint if present
-    let displayName = "";
-
-    if (userSnap.exists()) {
-      const data = userSnap.data();
-
-      if (data && data.role) {
-        storedRole = data.role;
-      }
-
-      if (data && (data.name || data.fullName)) {
-        displayName = data.name || data.fullName;
-      }
+    // 🔒 If Firestore profile is missing, treat account as removed
+    if (!userSnap.exists()) {
+      await signOut(auth);
+      loginError.textContent =
+        "This account has been removed. Please contact the admin or sign up again.";
+      return;
     }
 
-    // Fallback displayName if not in Firestore
+    const data = userSnap.data() || {};
+
+    let storedRole = urlRole || data.role || null;
+    let displayName = data.name || data.fullName || "";
+
+    // 3) Fallback display name if not in Firestore
     if (!displayName) {
       if (user.displayName) {
         displayName = user.displayName;
@@ -78,7 +78,7 @@ loginForm.addEventListener("submit", async (e) => {
       }
     }
 
-    // Normalize role just for consistency (even though redirect is same)
+    // 4) Normalise role
     let normalizedRole = String(storedRole || "")
       .trim()
       .toLowerCase();
@@ -93,7 +93,7 @@ loginForm.addEventListener("submit", async (e) => {
       normalizedRole = "clinician"; // default if nothing set
     }
 
-    // Save for greeting on pharma.html
+    // 5) Save to localStorage for greeting etc.
     try {
       localStorage.setItem("pharmaName", displayName);
       localStorage.setItem("role", normalizedRole);
@@ -101,7 +101,7 @@ loginForm.addEventListener("submit", async (e) => {
       console.warn("Could not use localStorage:", err.message);
     }
 
-    // ✅ Redirect ALL ROLES to the same pharma portal
+    // 6) Redirect (all roles → same portal for now)
     window.location.href = "pharma.html";
   } catch (error) {
     console.error(error);

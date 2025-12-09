@@ -1,11 +1,15 @@
 // scripts/upload-data.js
-import { db, auth } from "./firebase-init.js";
+import { db, auth, storage } from "./firebase-init.js";
 import {
   collection,
   addDoc,
   serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-import * as XLSX from "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/+esm";
+import {
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-storage.js";
 
 // DOM elements
 const fileInput  = document.getElementById("fileInput");
@@ -14,18 +18,20 @@ const uploadBtn  = document.getElementById("uploadBtn");
 const uploadArea = document.getElementById("uploadArea");
 const browseBtn  = document.querySelector(".browse-btn");
 
-// Open file picker
+/* ---------- UI WIRING ---------- */
+
+// open picker from button
 browseBtn?.addEventListener("click", (e) => {
   e.stopPropagation();
   fileInput.click();
 });
 
-// Click area to open picker
+// open picker from area click
 uploadArea?.addEventListener("click", () => {
   fileInput.click();
 });
 
-// Drag & drop support
+// drag & drop support
 uploadArea?.addEventListener("dragover", (e) => {
   e.preventDefault();
 });
@@ -37,84 +43,53 @@ uploadArea?.addEventListener("drop", (e) => {
   displayFiles(fileInput.files);
 });
 
-// Show selected files
+// display selected files
 fileInput.onchange = () => displayFiles(fileInput.files);
 
 function displayFiles(files) {
   fileList.innerHTML = "";
   for (let f of files) {
     const p = document.createElement("p");
-    p.textContent = `📄 ${f.name} (${(f.size / 1024).toFixed(1)} KB)`;
+    p.textContent = `📄 ${f.name} (${(f.size / 1024 / 1024).toFixed(2)} MB)`;
     fileList.appendChild(p);
   }
   uploadBtn.style.display = files.length ? "inline-flex" : "none";
 }
 
-// Helpers
-function readFileAsText(file) {
+/* ---------- HELPERS ---------- */
+
+// Upload one file to Firebase Storage with progress callback
+function uploadFileToStorage(file, uid, onProgress) {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => resolve(e.target?.result || "");
-    reader.onerror = reject;
-    reader.readAsText(file);
+    const safeName = file.name.replace(/[^\w.\-]/g, "_");
+    const path = `ml-uploads/${uid}/${Date.now()}-${safeName}`;
+    const storageRef = ref(storage, path);
+
+    const uploadTask = uploadBytesResumable(storageRef, file);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        if (onProgress) {
+          const pct = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          onProgress(pct);
+        }
+      },
+      (error) => reject(error),
+      async () => {
+        try {
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          resolve({ path, downloadURL });
+        } catch (err) {
+          reject(err);
+        }
+      }
+    );
   });
 }
 
-// basic CSV parser (no fancy quoting)
-function parseCsv(text) {
-  const lines = text.split(/\r?\n/).filter((l) => l.trim() !== "");
-  if (!lines.length) return [];
+/* ---------- MAIN UPLOAD HANDLER ---------- */
 
-  const headers = lines[0].split(",").map((h) => h.trim());
-  const rows = [];
-
-  for (let i = 1; i < lines.length; i++) {
-    const parts = lines[i].split(",");
-    const obj = {};
-    headers.forEach((h, idx) => {
-      obj[h || `col_${idx}`] = (parts[idx] ?? "").trim();
-    });
-    rows.push(obj);
-  }
-
-  return rows;
-}
-
-async function parseXlsx(file) {
-  const data = await file.arrayBuffer();
-  const workbook = XLSX.read(data, { type: "array" });
-  const sheetName = workbook.SheetNames[0];
-  const sheet = workbook.Sheets[sheetName];
-  const rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
-  return rows;
-}
-
-// Firestore: store file + rows
-async function storeFileDataInFirestore(file, rows) {
-  const uploadsCol = collection(db, "mlUploads");
-
-  const uploadDocRef = await addDoc(uploadsCol, {
-    fileName: file.name,
-    fileSize: file.size,
-    mimeType: file.type || null,
-    rowCount: rows.length,
-    uploadedAt: serverTimestamp(),
-    uploaderUid: auth.currentUser ? auth.currentUser.uid : null,
-  });
-
-  const rowsCol = collection(uploadDocRef, "rows");
-
-  for (const row of rows) {
-    await addDoc(rowsCol, row);
-  }
-
-  return {
-    id: uploadDocRef.id,
-    rowCount: rows.length,
-  };
-}
-
-// Upload handler
 uploadBtn.onclick = async () => {
   const files = fileInput.files;
   if (!files.length) return;
@@ -124,67 +99,82 @@ uploadBtn.onclick = async () => {
     return;
   }
 
-  // Validate file types
+  // allow only CSV & XLSX, and put a max size guard (frontend only)
+  const MAX_SIZE = 1024 * 1024 * 1024; // 1 GB per file (adjust if you want)
   for (let f of files) {
     const name = f.name.toLowerCase();
     if (!name.endsWith(".csv") && !name.endsWith(".xlsx")) {
       alert("Only CSV and Excel (.xlsx) files are allowed.");
       return;
     }
+    if (f.size > MAX_SIZE) {
+      alert(
+        `"${f.name}" is too large (${(f.size / 1024 / 1024).toFixed(
+          1
+        )} MB). Please upload files smaller than 1 GB for now.`
+      );
+      return;
+    }
   }
 
   uploadBtn.disabled = true;
-  uploadBtn.textContent = "Uploading...";
+  uploadBtn.textContent = "Uploading… 0%";
   uploadBtn.classList.remove("upload-success");
 
-  const storedFiles = [];
+  const uploadedFiles = [];
 
   try {
     for (let file of files) {
-      const lower = file.name.toLowerCase();
-      let rows = [];
+      // 1) Upload to Storage with progress
+      const { path, downloadURL } = await uploadFileToStorage(
+        file,
+        auth.currentUser.uid,
+        (pct) => {
+          uploadBtn.textContent = `Uploading… ${pct.toFixed(0)}%`;
+        }
+      );
 
-      if (lower.endsWith(".csv")) {
-        const text = await readFileAsText(file);
-        rows = parseCsv(text);
-      } else if (lower.endsWith(".xlsx")) {
-        rows = await parseXlsx(file);
-      }
+      // 2) Create metadata doc in Firestore for ML/backend
+      const docRef = await addDoc(collection(db, "mlUploads"), {
+        fileName: file.name,
+        fileSize: file.size,
+        mimeType: file.type || null,
+        storagePath: path,
+        downloadURL,
+        status: "uploaded",       // later ML can change to 'processing' / 'ready'
+        uploadedAt: serverTimestamp(),
+        uploaderUid: auth.currentUser.uid,
+      });
 
-      if (!rows.length) {
-        console.warn(`No rows parsed from ${file.name}`);
-        continue;
-      }
-
-      const info = await storeFileDataInFirestore(file, rows);
-      storedFiles.push({ name: file.name, rows: info.rowCount });
+      uploadedFiles.push({
+        name: file.name,
+        id: docRef.id,
+      });
     }
 
-    if (!storedFiles.length) {
-      alert("No valid data found to store.");
+    if (!uploadedFiles.length) {
+      alert("No files were uploaded.");
     } else {
-      const summary = storedFiles
-        .map((f) => `${f.name} (${f.rows} rows)`)
+      const summary = uploadedFiles
+        .map((f) => `${f.name} (doc id: ${f.id})`)
         .join("\n");
-      alert("Uploaded & stored in database:\n" + summary);
+      alert("Files uploaded successfully:\n" + summary);
     }
 
-    // Clear selected files UI
+    // Clear selection
     fileList.innerHTML = "";
     fileInput.value = "";
 
-    // ✅ Show green tick state
+    // success state
     uploadBtn.disabled = false;
     uploadBtn.textContent = "Uploaded ✔";
     uploadBtn.classList.add("upload-success");
 
-    // After 1.4s, reset text and hide button until next selection
     setTimeout(() => {
       uploadBtn.textContent = "Upload Files";
       uploadBtn.classList.remove("upload-success");
       uploadBtn.style.display = "none";
-    }, 1400);
-
+    }, 1500);
   } catch (err) {
     console.error(err);
     alert("Upload failed: " + err.message);

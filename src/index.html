@@ -17,10 +17,13 @@
     <nav class="landing-nav">
       <a href="#section-overview" class="nav-link">Overview</a>
 
-      <!-- These disappear when logged in -->
-      <a href="choose.html" class="nav-link auth-link">Login</a>
-      <a href="choose.html" class="nav-link signup auth-link">Sign Up</a>
+      <!-- HIDDEN BY DEFAULT; JS will show these only if logged out -->
+      <a href="choose.html" class="nav-link auth-link" id="navLogin" style="display:none">Login</a>
+      <a href="choose.html" class="nav-link signup auth-link" id="navSignup" style="display:none">Sign Up</a>
     </nav>
+
+    <!-- PROFILE PLACEHOLDER: instant non-interactive skeleton will be injected here -->
+    <div id="profilePlaceholder" aria-hidden="true" style="min-width:84px; display:flex; align-items:center; justify-content:flex-end;"></div>
   </div>
 </header>
 
@@ -40,8 +43,20 @@
     <p class="rotating-text" id="rotatingText">Loading...</p>
 
     <div class="hero-actions">
-      <a href="choose.html" class="cta-btn primary">Get Started</a>
-      <a href="choose.html" class="cta-btn ghost">Login / Sign Up</a>
+      <!-- This will go to pharma.html when logged in, choose.html when logged out -->
+      <a href="choose.html" class="cta-btn primary" id="heroGetStarted">
+        Get Started
+      </a>
+
+      <!-- HIDDEN BY DEFAULT; JS will show this only if logged out -->
+      <a
+        href="choose.html"
+        class="cta-btn ghost auth-link"
+        id="heroLoginCta"
+        style="display:none"
+      >
+        Login / Sign Up
+      </a>
     </div>
   </div>
 
@@ -84,7 +99,8 @@
 
     <!-- Big call-to-action at the bottom -->
     <div style="margin-top: 40px; text-align: center;">
-      <a href="choose.html" class="cta-btn primary">
+      <!-- Also reroutes to pharma.html when logged in -->
+      <a href="choose.html" class="cta-btn primary" id="overviewGetStarted">
         Get started with AMR-X
       </a>
     </div>
@@ -134,6 +150,7 @@ if (scrollDown && mainContent) {
   });
 }
 </script>
+
 <script type="module" src="scripts/auth-ui.js"></script>
 </body>
 </html>

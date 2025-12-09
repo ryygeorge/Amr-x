@@ -22,14 +22,18 @@
       <a href="upload-data.html" class="nav-link active">Upload Data</a>
       <a href="index.html" class="nav-link">Home</a>
     </div>
+
+    <!-- PROFILE PLACEHOLDER -->
+    <div id="profilePlaceholder" aria-hidden="true" style="min-width:84px; display:flex; align-items:center; justify-content:flex-end;"></div>
   </div>
 </header>
+
 
 <main>
   <section class="upload-section">
     <h2>Upload Data Files</h2>
     <p class="upload-subtitle">
-      Bulk upload AMR, antibiogram or pharmacy usage files in one place.
+      Upload AMR, antibiogram, or pharmacy usage files. Large CSV/Excel files are supported.
     </p>
 
     <div class="upload-container">
@@ -54,7 +58,7 @@
   <p>&copy; 2025 AMR-X</p>
 </footer>
 
-<!-- Upload logic -->
+<!-- Upload logic (Storage + Firestore metadata) -->
 <script type="module" src="scripts/upload-data.js"></script>
 <!-- Existing auth/profile UI -->
 <script type="module" src="scripts/auth-ui.js"></script>
