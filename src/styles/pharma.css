@@ -42,15 +42,15 @@ header {
 /* ====== Profile chip & header spacing (AMR-X) ====== */
 
 /* Reserve right-side header space to avoid overlap.
-   Tune 160px if you need more or less space for long names. */
-.landing-nav { padding-right: 160px; }
-.navbar .nav-right { margin-right: 160px; }
+   Reduced to 110px so nav doesn't look empty. */
+.landing-nav { padding-right: 110px; }
+.navbar .nav-right { margin-right: 110px; }
 
 /* Placeholder for profile, absolutely positioned inside header (.topbar or .navbar). */
 #profilePlaceholder,
 .amrx-profile-fallback {
   position: absolute;
-  right: 36px;
+  right: 18px;
   top: 50%;
   transform: translateY(-50%);
   display: flex;

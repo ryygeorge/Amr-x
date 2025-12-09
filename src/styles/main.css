@@ -48,14 +48,14 @@ header {
 }
 
 /* reserve space on the right so nav items won't run under the profile chip.
-   Tune value if you need more/less reserved space. */
+   Reduced from 160px -> 110px so the header looks tight but still avoids overlap. */
 .landing-nav {
-  padding-right: 160px; /* space for profile */
+  padding-right: 110px; /* space for profile */
 }
 
 /* For .navbar-based pages (pharmacist pages), reserve space via nav-right margin */
 .navbar .nav-right {
-  margin-right: 160px; /* space for profile */
+  margin-right: 110px; /* space for profile */
 }
 
 /* site title */
@@ -122,7 +122,7 @@ header {
 #profilePlaceholder,
 .amrx-profile-fallback {
   position: absolute;
-  right: 36px; /* align with header padding; tweak as needed */
+  right: 18px; /* moved closer to edge (was 36px) so gap shrinks */
   top: 50%;
   transform: translateY(-50%);
   display: flex;
@@ -660,4 +660,8 @@ footer {
   .panel-section {
     padding: 70px 18px;
   }
+
+  /* On very small screens reduce the reserved space so nav items remain usable */
+  .landing-nav { padding-right: 80px; }
+  .navbar .nav-right { margin-right: 80px; }
 }
