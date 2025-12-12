@@ -91,45 +91,131 @@
   <p>&copy; 2025 AMR-X</p>
 </footer>
 
-<script>
-  // Submit handler
-  window.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('pharmacist-form');
+<!-- Paste this at the bottom of pharmacist-entry.html, before </body> -->
+<!-- Paste this in pharmacist-entry.html (replace your existing module script block) -->
+<script type="module">
+  import { db } from "./scripts/firebase-init.js";
+  import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  // Helper: prefer explicit ids we've seen in your project
+  function findPharmForm() {
+    // prefer exact ids in order
+    const preferIds = ['pharmForm', 'pharmacist-form', 'pharmacist_form'];
+    for (const id of preferIds) {
+      const el = document.getElementById(id);
+      if (el) return el;
+    }
+    // fallback to first <form> on page (keeps prior behavior)
+    const forms = document.getElementsByTagName('form');
+    if (forms.length) {
+      console.warn("pharmForm not found; using first <form> on page as fallback. Consider adding id='pharmForm' or id='pharmacist-form' to be explicit.");
+      return forms[0];
+    }
+    return null;
+  }
+
+  function setStatus(el, text='', cls='') {
+    if (!el) return;
+    el.textContent = text;
+    el.className = cls ? `status ${cls}` : 'status';
+  }
+
+  // small heuristic: treat certain field names as numeric
+  const numericHints = ['quantity','qty','count','num','amount'];
+
+  function isNumericField(name, el) {
+    if (!name) return false;
+    if (el.type === 'number') return true;
+    const lower = name.toLowerCase();
+    return numericHints.some(h => lower.includes(h));
+  }
+
+  function collectFormData(formEl) {
+    const payload = {};
+    // pick explicit inputs, selects, textareas with name attribute
+    const elements = Array.from(formEl.querySelectorAll('input[name], select[name], textarea[name]'));
+    elements.forEach(el => {
+      const name = el.name;
+      if (!name) return;
+      if (el.type === 'checkbox') { payload[name] = el.checked; return; }
+      if (el.type === 'radio') { if (el.checked) payload[name] = el.value; return; }
+      let val = el.value;
+      if (isNumericField(name, el)) {
+        if (val === '' || val == null) payload[name] = null;
+        else {
+          const n = Number(val);
+          payload[name] = Number.isNaN(n) ? val : n;
+        }
+      } else payload[name] = (val === '' ? null : val);
+    });
+    return payload;
+  }
+
+  async function init() {
+    if (document.readyState === 'loading') {
+      await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve, {once:true}));
+    }
+
+    // optional status element you may add to HTML: <div id="status"></div>
+    const statusEl = document.getElementById('status') || document.getElementById('successMsg');
+
+    const form = findPharmForm();
+    if (!form) {
+      console.error("Form not found on page. Make sure there's a <form> element (id='pharmacist-form' is recommended).");
+      if (statusEl) setStatus(statusEl, "Form not found.", "error");
+      return;
+    }
+
+    // make sure the form doesn't have an old submit handler
+    form.onsubmit = null;
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const payload = {
-        species: document.getElementById('species').value,
-        susceptibility: document.getElementById('susceptibility').value,
-        prescriptionDetails: document.getElementById('prescriptionDetails').value,
-        clinicalNotes: document.getElementById('clinicalNotes').value
-      };
+      if (statusEl) setStatus(statusEl, '', '');
+
+      // HTML5 validation
+      if (!form.checkValidity()) {
+        if (statusEl) setStatus(statusEl, 'Please fill required fields', 'error');
+        return;
+      }
+
+      const payload = collectFormData(form);
+      payload.createdAt = serverTimestamp();
+
+      // debug: show payload (non-sensitive) in console
+      console.log('Saving pharmacist entry payload:', payload);
 
       try {
-        const res = await fetch('http://localhost:5000/api/pharmacist-entry', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await res.json();
-
-        if (data.ok) {
-          const successDiv = document.getElementById('successMsg');
-          successDiv.textContent = 'Entry saved successfully.';
-          successDiv.classList.add('visible');
-          form.reset();
-          setTimeout(() => successDiv.classList.remove('visible'), 2500);
-        } else {
-          alert('Error: ' + (data.error || 'Unknown error'));
+        // write to Firestore collection "pharmacist_entries"
+        await addDoc(collection(db, "pharmacist_entries"), payload);
+        if (statusEl) {
+          setStatus(statusEl, 'Saved ✓', 'success');
+          // also add visible class if using .success-message
+          statusEl.classList && statusEl.classList.add('visible');
         }
+        form.reset();
+        // clear status after short delay
+        setTimeout(() => {
+          if (statusEl) {
+            setStatus(statusEl, '', '');
+            statusEl.classList && statusEl.classList.remove('visible');
+          }
+        }, 1800);
       } catch (err) {
-        alert('Failed: ' + err.message);
+        // helpful debugging output
+        console.error('Error saving pharmacist entry:', err);
+        // if this is a Firebase permission error, it usually contains "Missing or insufficient permissions"
+        if (statusEl) setStatus(statusEl, 'Save failed — check console for details', 'error');
       }
     });
-  });
+  }
+
+  init();
 </script>
+
+
+
 <script type="module" src="scripts/auth-ui.js"></script>
 </body>
 </html>

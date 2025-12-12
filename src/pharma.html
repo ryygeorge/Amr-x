@@ -260,124 +260,128 @@
 </script>
 
 <!-- Script for Pharmacist Logs -->
-<script>
-  window.addEventListener('DOMContentLoaded', initPharmacistLogs);
+<script type="module">
+  import { db } from "./scripts/firebase-init.js";
+  import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-  async function initPharmacistLogs() {
-    let entries = [];
-    try {
-      const r = await fetch('http://localhost:5000/api/pharmacist-entry');
-      const j = await r.json();
-      if (j && j.ok && Array.isArray(j.data)) entries = j.data;
-    } catch (e) {
-      console.warn('Pharmacist logs fetch failed:', e.message);
+  // Prefer explicit id of your form. We support both 'pharmForm' and 'pharmacist-form' as fallbacks.
+  function findPharmForm() {
+    const byExplicit = document.getElementById('pharmacist-form') || document.getElementById('pharmForm');
+    if (byExplicit) return byExplicit;
+    const forms = document.getElementsByTagName('form');
+    if (forms.length) {
+      console.warn("No explicit form id found. Using first <form> on the page. Consider adding id='pharmacist-form' to be explicit.");
+      return forms[0];
     }
+    return null;
+  }
 
-    const s = v => String(v||'').toLowerCase();
-    const total = entries.length;
-    const yes = entries.filter(x => s(x.cured)==='yes').length;
-    const no  = entries.filter(x => s(x.cured)==='no').length;
-    const summary = document.getElementById('pharm-summary');
-    summary.innerHTML =
-      `<strong>Total Logs:</strong> ${total} &nbsp;|&nbsp; ` +
-      `<strong>Cured Yes:</strong> ${yes} &nbsp;|&nbsp; ` +
-      `<strong>Cured No:</strong> ${no}`;
-
-    // Table
-    const tb = document.getElementById('pharmTbody');
-    if (!entries.length) {
-      tb.innerHTML = `<tr><td colspan="5">No pharmacist entries yet</td></tr>`;
-    } else {
-      tb.innerHTML = entries.slice(0, 15).map(e => `
-        <tr>
-          <td>${escapeHtml(e.medicinesSold || '-')}</td>
-          <td>${e.quantity ?? '-'}</td>
-          <td>${escapeHtml(e.dosage || '-')}</td>
-          <td>${escapeHtml(e.cured || '-')}</td>
-          <td>${escapeHtml(e.feedback || '-')}</td>
-        </tr>
-      `).join('');
+  function showStatus(text = '', klass = '') {
+    // Use the visible element in your HTML
+    const el = document.getElementById('successMsg') || document.getElementById('status');
+    if (!el) return;
+    el.textContent = text;
+    el.className = klass ? `success-message ${klass}` : 'success-message';
+    if (text && klass === 'visible') {
+      // auto-hide after 2s
+      setTimeout(() => {
+        el.textContent = '';
+        el.className = 'success-message';
+      }, 1800);
     }
+  }
 
-    // Charts
-    const sums = {};
-    for (const r of entries) {
-      const key = (r.medicinesSold || 'Unknown').trim();
-      const q = Number(r.quantity || 0);
-      sums[key] = (sums[key] || 0) + q;
-    }
-    const top = Object.entries(sums).sort((a,b)=>b[1]-a[1]).slice(0,6);
-    const barLabels = top.map(([k])=>k);
-    const barValues = top.map(([,v])=>v);
+  // detect numeric-like fields (keeps previous behavior)
+  const numericHints = ['quantity','qty','count','num','amount'];
+  function isNumericField(name, el) {
+    if (!name) return false;
+    if (el && el.type === 'number') return true;
+    const lower = String(name).toLowerCase();
+    return numericHints.some(h => lower.includes(h));
+  }
 
-    const partial = entries.filter(x => s(x.cured).startsWith('part')).length;
-    const pieLabels = ['Yes','No','Partial','Other'];
-    const pieValues = [yes, no, partial, total - (yes+no+partial)];
-
-    new Chart(document.getElementById('pharmBar'), {
-      type: 'bar',
-      data: {
-        labels: barLabels,
-        datasets: [{
-          label: 'Quantity',
-          data: barValues,
-          backgroundColor: '#22c1c3'
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: false }
-        },
-        scales: {
-          x: {
-            ticks: { color: '#e5edff' },
-            grid: { color: 'rgba(148,163,184,0.25)' }
-          },
-          y: {
-            ticks: { color: '#e5edff' },
-            grid: { color: 'rgba(148,163,184,0.25)' },
-            beginAtZero: true
-          }
+  function collectFormData(formEl) {
+    const payload = {};
+    const elements = Array.from(formEl.querySelectorAll('input[name], select[name], textarea[name]'));
+    elements.forEach(el => {
+      const name = el.name;
+      if (!name) return;
+      if (el.type === 'checkbox') { payload[name] = el.checked; return; }
+      if (el.type === 'radio') { if (el.checked) payload[name] = el.value; return; }
+      let val = el.value;
+      if (isNumericField(name, el)) {
+        if (val === '' || val == null) payload[name] = null;
+        else {
+          const n = Number(val);
+          payload[name] = Number.isNaN(n) ? val : n;
         }
+      } else payload[name] = (val === '' ? null : val);
+    });
+    return payload;
+  }
+
+  async function init() {
+    if (document.readyState === 'loading') {
+      await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve, {once:true}));
+    }
+
+    const form = findPharmForm();
+    if (!form) {
+      console.error("Form not found. Make sure pharmacist-entry.html contains a <form id='pharmacist-form'> element.");
+      showStatus("Form missing", "error");
+      return;
+    }
+
+    // remove any old handlers safely
+    form.onsubmit = null;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // browser-level validation
+      if (!form.checkValidity()) {
+        showStatus("Please fill required fields", "error");
+        return;
+      }
+
+      const payload = collectFormData(form);
+      payload.createdAt = serverTimestamp();
+
+      try {
+        await addDoc(collection(db, "pharmacist_entries"), payload);
+        showStatus("Saved ✓", "visible");
+        form.reset();
+      } catch (err) {
+        console.error('Error saving pharmacist entry:', err);
+
+        // Detect permission error to give clearer message
+        const msg = (err && err.code === 'permission-denied') ||
+                    (err && /permission/i.test(String(err.message || ''))) ?
+                    'Permission denied: Firestore rules prevent this write.' :
+                    'Save failed — check console';
+
+        showStatus(msg, 'error');
+
+        // Helpful hint in console for the developer
+        console.warn('If this is a dev environment, you can temporarily allow writes in Firestore rules or authenticate the user. See README in console output.');
       }
     });
-
-    new Chart(document.getElementById('pharmPie'), {
-    type: 'pie',
-   data: {
-     labels: pieLabels,
-     datasets: [{
-        data: pieValues,
-       backgroundColor: [
-          '#3bc8d6', // Yes - cyan-teal
-         '#475569', // No - slate gray
-          '#64748b', // Partial - steel blue
-          '#94a3b8'  // Other - muted gray-blue
-        ],
-        borderColor: "rgba(0,0,0,0.3)",
-       borderWidth: 1
-      }]
-   },
-    options: {
-      responsive: true,
-      plugins: {
-       legend: {
-         labels: {
-            color: '#e5e7eb',
-            font: { size: 12 }
-           }
-        }
-     }
-    }
-  });
-
   }
 
-  function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
-  }
+  init();
 </script>
+
+<!-- load firebase init (must export `db`) -->
+<script type="module" src="scripts/firebase-init.js"></script>
+
+<!-- firestore listener & new charts -->
+<script type="module" src="scripts/pharma-firestore.js"></script>
+
+
 <script type="module" src="scripts/auth-ui.js"></script>
+
+
+
+
 </body>
 </html>

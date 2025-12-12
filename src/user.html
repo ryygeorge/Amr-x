@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>User Portal | AMR-X</title>
-  <link rel="stylesheet" href="styles/user.css">
+  <link rel="stylesheet" href="styles/user.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body data-hide-profile="true">
@@ -30,7 +30,7 @@
       Share details about your infections and antibiotic use to help hospitals understand real-world outcomes.
     </p>
 
-    <form class="user-form" id="userForm">
+    <form class="user-form" id="userForm" autocomplete="off">
       <div class="form-group">
         <label for="age">Age</label>
         <input
@@ -50,8 +50,6 @@
           <option value="">Select gender</option>
           <option value="female">Female</option>
           <option value="male">Male</option>
-          <option value="other">Other</option>
-          <option value="prefer_not_say">Prefer not to say</option>
         </select>
       </div>
 
@@ -59,9 +57,9 @@
         <label for="infectionFrequency">Infection frequency</label>
         <select id="infectionFrequency" name="infectionFrequency" required>
           <option value="">Select</option>
-          <option value="rarely">Rarely (0–1 per year)</option>
-          <option value="sometimes">Sometimes (2–3 per year)</option>
-          <option value="often">Often (&gt;3 per year)</option>
+          <option value="rarely">Rarely (0–1 per month)</option>
+          <option value="sometimes">Sometimes (2–3 per month)</option>
+          <option value="often">Often (&gt;3 per month)</option>
         </select>
       </div>
 
@@ -110,6 +108,7 @@
     </form>
 
     <div id="userSuccess" class="success-message"></div>
+    <div id="userError" class="error-message" style="color:#f87171; margin-top:8px;"></div>
   </section>
 </main>
 
@@ -117,30 +116,65 @@
   <p>&copy; 2025 AMR-X</p>
 </footer>
 
-<script>
-  // Submit behavior
-  document.getElementById('userForm').onsubmit = function (e) {
+<!-- Firebase SDK (modular) - loaded as module -->
+<script type="module">
+  // Import the functions you need from the Firebase SDKs
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+  // TODO: Replace with your project's actual Firebase config
+  const firebaseConfig = {
+    apiKey: "REPLACE_WITH_YOUR_API_KEY",
+    authDomain: "REPLACE_WITH_AUTH_DOMAIN",
+    projectId: "REPLACE_WITH_PROJECT_ID",
+    storageBucket: "REPLACE_WITH_STORAGE_BUCKET",
+    messagingSenderId: "REPLACE_WITH_SENDER_ID",
+    appId: "REPLACE_WITH_APP_ID"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const feedbackCol = collection(db, "user_feedback");
+
+  // Form handling
+  const form = document.getElementById('userForm');
+  const msg = document.getElementById('userSuccess');
+  const err = document.getElementById('userError');
+
+  form.onsubmit = async function (e) {
     e.preventDefault();
+    err.textContent = "";
 
-    // Later you can send this to backend:
-    // const payload = {
-    //   age: document.getElementById('age').value,
-    //   gender: document.getElementById('gender').value,
-    //   infectionFrequency: document.getElementById('infectionFrequency').value,
-    //   symptoms: document.getElementById('symptoms').value,
-    //   pastAntibioticUse: document.getElementById('pastAntibioticUse').value,
-    //   hospitalVisits: document.getElementById('hospitalVisits').value,
-    //   riskFactors: document.getElementById('riskFactors').value
-    // };
+    // Gather values
+    const payload = {
+      age: Number(document.getElementById('age').value || null),
+      gender: document.getElementById('gender').value || null,
+      infectionFrequency: document.getElementById('infectionFrequency').value || null,
+      symptoms: document.getElementById('symptoms').value.trim() || null,
+      pastAntibioticUse: document.getElementById('pastAntibioticUse').value.trim() || null,
+      hospitalVisits: document.getElementById('hospitalVisits').value.trim() || null,
+      riskFactors: document.getElementById('riskFactors').value.trim() || null,
+      createdAt: serverTimestamp()
+    };
 
-    const msg = document.getElementById('userSuccess');
-    msg.textContent = "Thank you for your feedback!";
-    msg.classList.add('visible');
+    try {
+      // Save to Firestore
+      await addDoc(feedbackCol, payload);
 
-    this.reset();
+      // UI feedback
+      msg.textContent = "Thank you for your feedback!";
+      msg.classList.add('visible');
+      form.reset();
 
-    setTimeout(() => msg.classList.remove('visible'), 2500);
+      // Clear message after 2.5s
+      setTimeout(() => msg.classList.remove('visible'), 2500);
+    } catch (error) {
+      console.error("Error saving feedback:", error);
+      err.textContent = "Could not submit feedback. Please try again later.";
+    }
   };
 </script>
+
 </body>
 </html>
