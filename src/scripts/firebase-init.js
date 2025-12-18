@@ -45,5 +45,9 @@ try {
   console.warn('Firebase Storage not initialized:', e.message);
 }
 
+// Expose to window so other non-module scripts can detect Firestore easily
+window.firebaseApp = app;
+window.db = db;
+
 // Export the things other modules import
 export { app, auth, db, storage };

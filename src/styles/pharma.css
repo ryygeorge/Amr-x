@@ -408,66 +408,15 @@ footer {
   }
 }
 
-/* -----------------------------
-   Simple CSS / SVG charts (added)
-   ----------------------------- */
+/* === ADDITIONAL SMALL STYLES FOR PHARMACIST LOGS INSIGHTS & LAYOUT === */
 
-/* Simple CSS-based bar chart */
-.simple-bar-chart {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 6px 4px;
-  align-items: stretch;
-  max-width: 420px;
-  margin: 0 auto;
+/* Insights panel */
+#pharmInsights { color: #cbd5f5; line-height: 1.35; }
+#pharmInsights strong { color: #e5e7eb; }
+
+/* Ensure graph-box group wraps nicely */
+.pharma-content .graph-box { min-width: 260px; }
+@media (max-width: 900px) {
+  .pharma-content { flex-direction: column; align-items: stretch; }
+  .pharma-content .graph-box { max-width: 100%; }
 }
-
-.simple-bar {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  font-size: 0.92rem;
-}
-
-.simple-bar .label {
-  width: 36%;
-  min-width: 110px;
-  color: #e5e7eb;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-weight: 600;
-}
-
-.simple-bar .track {
-  width: 52%;
-  background: rgba(148,163,184,0.06);
-  border-radius: 10px;
-  height: 18px;
-  position: relative;
-  overflow: hidden;
-  border: 1px solid rgba(55,65,81,0.6);
-}
-
-.simple-bar .fill {
-  height: 100%;
-  width: 0%;
-  border-radius: 10px;
-  transition: width 450ms ease;
-  background: linear-gradient(90deg,#22c1c3,#38bdf8);
-  box-shadow: 0 6px 18px rgba(34,193,195,0.06);
-}
-
-.simple-bar .value {
-  width: 58px;
-  text-align: right;
-  color: #cbd5f5;
-  font-weight: 700;
-}
-
-/* Simple pie wrapper and legend */
-.simple-pie-wrap { display:flex; gap:12px; align-items:center; justify-content:center; flex-direction:column; }
-.pie-legend { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; font-size:0.88rem; color:#e5e7eb; margin-top:8px; }
-.pie-legend .item { display:flex; gap:8px; align-items:center; padding:4px 6px; }
-.pie-legend .swatch { width:12px; height:12px; border-radius:3px; display:inline-block; border:1px solid rgba(11,17,32,0.25); }
