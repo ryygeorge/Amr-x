@@ -7,6 +7,20 @@
   <link rel="stylesheet" href="styles/pharma.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- leaflet css -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+
+  <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+
+    <style>
+      #map { height: 400px; }
+    </style>
 </head>
 <body>
 
@@ -121,6 +135,11 @@
         </tbody>
       </table>
     </div>
+  </section>
+
+  <section>
+    <h2 style="text-align: center;">Heat Map</h2>
+    <div id="map"></div>
   </section>
 </main>
 
@@ -414,6 +433,51 @@
 
 <!-- load any auth UI module you already use -->
 <script type="module" src="scripts/auth-ui.js"></script>
+
+// Initialize Leaflet map
+  var map = L.map('map');
+  map .setView([51.505, -0.09], 13);
+
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map);
+
+navigator.geolocation.watchPosition(success, error);
+
+let marker, circle, zoomed;
+
+
+function success(pos){
+
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
+    const accuracy = pos.coords.accuracy;
+
+    if(marker){
+        map.removeLayer(marker);
+        map.removeLayer(circle);
+    }
+   marker =  L.marker([lat, lng]).addTo(map);
+   circle =  L.circle([lat, lng],{ radius: accuracy}).addTo(map);
+
+
+   if(!zoomed){
+      zoomed = map.fitBounds(circle.getBounds());
+   }
+
+   map.setView([lat, lng]);
+    
+}
+
+function error(err){
+    
+    if(err.code == 1) {
+      alert("Please allow geoloaction access");
+    }else{
+      alert("Cannot get your current location");
+    }
+}
 
 </body>
 </html>
