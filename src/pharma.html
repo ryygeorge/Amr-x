@@ -429,12 +429,8 @@
     return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
   }
 })();
-</script>
 
-<!-- load any auth UI module you already use -->
-<script type="module" src="scripts/auth-ui.js"></script>
-
-// Initialize Leaflet map
+//Initialize Leaflet map
   var map = L.map('map');
   map .setView([51.505, -0.09], 13);
 
@@ -478,6 +474,12 @@ function error(err){
       alert("Cannot get your current location");
     }
 }
+</script>
+
+<!-- load any auth UI module you already use -->
+<script type="module" src="scripts/auth-ui.js"></script>
+
+
 
 </body>
 </html>
