@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pharmacist Dashboard | AMR-X</title>
   <link rel="stylesheet" href="styles/pharma.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -17,6 +17,11 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""></script>
+
+  <!-- Leaflet Heat Plugin -->
+      <script
+        src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js">
+      </script>
 
     <style>
       #map { height: 400px; }
@@ -38,9 +43,6 @@
       <a href="upload-data.html" class="nav-link">Upload Data</a>
       <a href="index.html" class="nav-link">Home</a>
     </div>
-
-    <!-- PROFILE PLACEHOLDER -->
-    <div id="profilePlaceholder" aria-hidden="true" style="min-width:84px; display:flex; align-items:center; justify-content:flex-end;"></div>
   </div>
 </header>
 
@@ -51,7 +53,7 @@
     <p class="greeting-subtitle">Here’s a quick view of resistance and antibiotic use across your hospitals.</p>
   </section>
 
-  <!-- Hospital / AMR section (unchanged) -->
+  <!-- Hospital / AMR section -->
   <section class="pharma-section">
     <h2>AMR Dashboard</h2>
     <div class="summary-box">
@@ -90,31 +92,22 @@
     </div>
   </section>
 
-  <!-- Pharmacist Logs section (updated) -->
+  <!-- Pharmacist Logs section -->
   <section class="pharma-section" id="pharmacist-logs">
     <h2>Pharmacist Logs</h2>
 
     <div class="summary-box">
-      <p id="pharm-summary"><strong>Total Logs:</strong> 0 &nbsp;|&nbsp; <strong>Recent:</strong> 0</p>
+      <p id="pharm-summary"><strong>Total Logs:</strong> 0 &nbsp;|&nbsp; <strong>Cured Yes:</strong> 0 &nbsp;|&nbsp; <strong>Cured No:</strong> 0</p>
     </div>
 
     <div class="pharma-content">
       <div class="graph-box">
-        <h3>Species Counts</h3>
+        <h3>Quantities by Medicine</h3>
         <canvas id="pharmBar" height="200"></canvas>
       </div>
-
       <div class="graph-box">
-        <h3>Entries Over Time</h3>
-        <canvas id="pharmLine" height="200"></canvas>
-      </div>
-
-      <!-- Insights panel -->
-      <div class="graph-box" style="min-width:260px; max-width:360px;">
-        <h3>Insights & Suggestions</h3>
-        <div id="pharmInsights" style="text-align:left; margin-top:8px; font-size:0.95rem;">
-          <p style="opacity:0.75">Waiting for data…</p>
-        </div>
+        <h3>Cured Distribution</h3>
+        <canvas id="pharmPie" height="200"></canvas>
       </div>
     </div>
 
@@ -123,11 +116,11 @@
       <table>
         <thead>
           <tr>
-            <th>Date/Time</th>
-            <th>Species</th>
-            <th>Prescription</th>
-            <th>Susceptibility</th>
-            <th>Clinical Notes</th>
+            <th>Medicine</th>
+            <th>Qty</th>
+            <th>Dosage</th>
+            <th>Cured</th>
+            <th>Feedback</th>
           </tr>
         </thead>
         <tbody id="pharmTbody">
@@ -147,10 +140,12 @@
   <p>&copy; 2025 AMR-X</p>
 </footer>
 
-<!-- Greeting script (unchanged) -->
+<!-- Greeting: get name from localStorage or API -->
 <script>
 (async function () {
   let name = null;
+
+  // 1) Try localStorage first (e.g. set after login)
   try {
     name = localStorage.getItem('pharmaName')
         || localStorage.getItem('userName')
@@ -158,6 +153,8 @@
   } catch (e) {
     console.warn('localStorage not available', e.message);
   }
+
+  // 2) If not found, try fetching from backend (adjust endpoint to your API)
   if (!name) {
     try {
       const res = await fetch('http://localhost:5000/api/me', { credentials: 'include' });
@@ -171,15 +168,18 @@
       console.warn('Could not fetch user name from API:', e.message);
     }
   }
+
   if (name) {
     const firstName = String(name).split(' ')[0];
     const welcomeEl = document.getElementById('welcomeText');
-    if (welcomeEl) welcomeEl.textContent = `Welcome, ${firstName}!`;
+    if (welcomeEl) {
+      welcomeEl.textContent = `Welcome, ${firstName}!`;
+    }
   }
 })();
 </script>
 
-<!-- Hospital dashboard scripts (unchanged) -->
+<!-- Script for AMR dashboard -->
 <script>
 (async function () {
   let data;
@@ -206,32 +206,67 @@
       ]
     };
   }
+
+  // Summary
   const summary = document.querySelector('.pharma-section .summary-box p');
   if (summary) {
     summary.innerHTML = `<strong>Total Cases:</strong> ${data.totalCases} &nbsp;|&nbsp; <strong>High Risk:</strong> ${data.highRisk} &nbsp;|&nbsp; <strong>Hospitals:</strong> ${data.hospitals}`;
   }
+
+  // Bar (hospital section)
   new Chart(document.getElementById("barChart"), {
     type: 'bar',
     data: {
       labels: data.bar.labels,
       datasets: data.bar.datasets.map(d => ({
-        label: d.label, data: d.data, backgroundColor: d.color
+        label: d.label,
+        data: d.data,
+        backgroundColor: d.color
       }))
     },
     options: {
       responsive: true,
-      plugins: { legend: { position: 'bottom', labels: { color: '#e5edff' } } },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { color: '#e5edff' }
+        }
+      },
       scales: {
-        x: { ticks: { color: '#e5edff' }, grid: { color: 'rgba(148,163,184,0.25)' } },
-        y: { ticks: { color: '#e5edff' }, grid: { color: 'rgba(148,163,184,0.25)' }, beginAtZero: true }
+        x: {
+          ticks: { color: '#e5edff' },
+          grid: { color: 'rgba(148,163,184,0.25)' }
+        },
+        y: {
+          ticks: { color: '#e5edff' },
+          grid: { color: 'rgba(148,163,184,0.25)' },
+          beginAtZero: true
+        }
       }
     }
   });
+
+  // Pie (hospital section)
   new Chart(document.getElementById("pieChart"), {
     type: 'pie',
-    data: { labels: data.pie.labels, datasets: [{ data: data.pie.data, backgroundColor: data.pie.colors }] },
-    options: { responsive: true, plugins: { legend: { labels: { color: '#e5edff' } } } }
+    data: {
+      labels: data.pie.labels,
+      datasets: [{
+        data: data.pie.data,
+        backgroundColor: data.pie.colors
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          labels: { color: '#e5edff' }
+        }
+      }
+    }
   });
+
+  // Table (hospital section)
   const tableContainer = document.querySelector('.pharma-section .data-table tbody');
   if (tableContainer && Array.isArray(data.table)) {
     tableContainer.innerHTML = '';
@@ -244,197 +279,126 @@
 })();
 </script>
 
-<!-- FIRESTORE INIT: loads your firebase-init (must set window.firebaseApp or window.db) -->
-<script type="module" src="scripts/firebase-init.js"></script>
-
-<!-- FIRESTORE LISTENER (module) - this emits "pharmEntries" events on window -->
-<script type="module" src="scripts/pharma-firestore.js"></script>
-
-<!-- Pharmacist UI listener: receives normalized entries and updates UI -->
+<!-- Script for Pharmacist Logs -->
 <script>
-/* Pharmacist UI updater
-   - listens to window 'pharmEntries' CustomEvent (detail = array of raw docs)
-   - safe chart handling: destroys old chart instances before creating new
-   - expects each doc to use fields: species, susceptibility, prescriptionDetails, clinicalNotes, createdAt
-*/
-(function () {
-  // keep references to created charts so we can destroy them cleanly
-  let pharmBarChart = null;
-  let pharmLineChart = null;
+  window.addEventListener('DOMContentLoaded', initPharmacistLogs);
 
-  // helper: safely destroy Chart.js instance if present
-  function safeDestroy(chart) {
-    try { if (chart && typeof chart.destroy === 'function') chart.destroy(); } catch (e) { console.warn('destroy failed', e); }
-  }
-  function clearCanvas(id) {
-    const el = document.getElementById(id);
-    if (!el) return;
-    const existing = Chart.getChart(el);
-    if (existing) existing.destroy();
-  }
-
-  // normalize single firestore doc into predictable object
-  function normalizeDoc(raw) {
-    const doc = raw || {};
-    // createdAt may be Firestore timestamp { seconds, nanoseconds } or number or ISO string
-    let ts = null;
-    if (doc.createdAt && typeof doc.createdAt === 'object' && doc.createdAt.seconds) {
-      ts = doc.createdAt.seconds * 1000;
-    } else if (typeof doc.createdAt === 'number') {
-      ts = doc.createdAt;
-    } else if (typeof doc.createdAt === 'string') {
-      const d = Date.parse(doc.createdAt);
-      ts = isNaN(d) ? null : d;
+  async function initPharmacistLogs() {
+    let entries = [];
+    try {
+      const r = await fetch('http://localhost:5000/api/pharmacist-entry');
+      const j = await r.json();
+      if (j && j.ok && Array.isArray(j.data)) entries = j.data;
+    } catch (e) {
+      console.warn('Pharmacist logs fetch failed:', e.message);
     }
-    return {
-      species: (doc.species || doc.bacterialSpecies || '').toString(),
-      susceptibility: (doc.susceptibility || doc.antibioticResults || '').toString(),
-      prescription: (doc.prescriptionDetails || doc.prescription || '').toString(),
-      notes: (doc.clinicalNotes || doc.notes || doc.feedback || '').toString(),
-      ts: ts || Date.now()
-    };
-  }
 
-  // event handler when firestore listener dispatches data
-  function onEntries(e) {
-    const raw = (e && e.detail) ? e.detail : [];
-    const entries = Array.isArray(raw) ? raw.map(normalizeDoc) : [];
-
-    // Update summary
+    const s = v => String(v||'').toLowerCase();
     const total = entries.length;
-    const recent = entries.slice(0, 10).length;
+    const yes = entries.filter(x => s(x.cured)==='yes').length;
+    const no  = entries.filter(x => s(x.cured)==='no').length;
     const summary = document.getElementById('pharm-summary');
-    if (summary) summary.innerHTML = `<strong>Total Logs:</strong> ${total} &nbsp;|&nbsp; <strong>Recent:</strong> ${recent}`;
+    summary.innerHTML =
+      `<strong>Total Logs:</strong> ${total} &nbsp;|&nbsp; ` +
+      `<strong>Cured Yes:</strong> ${yes} &nbsp;|&nbsp; ` +
+      `<strong>Cured No:</strong> ${no}`;
 
-    // Fill table: most recent first
+    // Table
     const tb = document.getElementById('pharmTbody');
     if (!entries.length) {
       tb.innerHTML = `<tr><td colspan="5">No pharmacist entries yet</td></tr>`;
     } else {
-      const rows = entries.slice().sort((a,b)=> b.ts - a.ts).slice(0, 30).map(e => {
-        const d = new Date(e.ts);
-        return `<tr>
-          <td>${d.toLocaleString()}</td>
-          <td>${escapeHtml(e.species || '-')}</td>
-          <td>${escapeHtml(e.prescription || '-')}</td>
-          <td>${escapeHtml(e.susceptibility || '-')}</td>
-          <td>${escapeHtml(e.notes || '-')}</td>
-        </tr>`;
-      }).join('');
-      tb.innerHTML = rows;
+      tb.innerHTML = entries.slice(0, 15).map(e => `
+        <tr>
+          <td>${escapeHtml(e.medicinesSold || '-')}</td>
+          <td>${e.quantity ?? '-'}</td>
+          <td>${escapeHtml(e.dosage || '-')}</td>
+          <td>${escapeHtml(e.cured || '-')}</td>
+          <td>${escapeHtml(e.feedback || '-')}</td>
+        </tr>
+      `).join('');
     }
 
-    // Build species counts for bar chart
-    const counts = {};
+    // Charts
+    const sums = {};
     for (const r of entries) {
-      const k = (r.species || 'Unknown').trim() || 'Unknown';
-      counts[k] = (counts[k] || 0) + 1;
+      const key = (r.medicinesSold || 'Unknown').trim();
+      const q = Number(r.quantity || 0);
+      sums[key] = (sums[key] || 0) + q;
     }
-    const speciesPairs = Object.entries(counts).sort((a,b)=> b[1]-a[1]).slice(0,8);
-    const barLabels = speciesPairs.map(p=>p[0]);
-    const barValues = speciesPairs.map(p=>p[1]);
+    const top = Object.entries(sums).sort((a,b)=>b[1]-a[1]).slice(0,6);
+    const barLabels = top.map(([k])=>k);
+    const barValues = top.map(([,v])=>v);
 
-    // Build daily totals for line chart
-    const daily = {};
-    for (const r of entries) {
-      const d = new Date(r.ts);
-      const key = d.toISOString().slice(0,10);
-      daily[key] = (daily[key] || 0) + 1;
-    }
-    const dailySorted = Object.entries(daily).sort((a,b)=> new Date(a[0]) - new Date(b[0]));
-    const lineLabels = dailySorted.map(p=>p[0]);
-    const lineValues = dailySorted.map(p=>p[1]);
+    const partial = entries.filter(x => s(x.cured).startsWith('part')).length;
+    const pieLabels = ['Yes','No','Partial','Other'];
+    const pieValues = [yes, no, partial, total - (yes+no+partial)];
 
-    // Insights generation (simple, rule-based)
-    const insights = [];
-    if (barLabels.length) {
-      insights.push(`<strong>Top species:</strong> ${barLabels.slice(0,3).join(', ')}`);
-    } else {
-      insights.push('<strong>Top species:</strong> none recorded');
-    }
-    // scan susceptibility text for "resistant" tokens
-    const susText = entries.map(r => r.susceptibility || '').join(' || ').toLowerCase();
-    const hasResistant = susText.includes('resistant') || susText.includes('r:');
-    const hasSensitive = susText.includes('sensitive') || susText.includes('s:');
-    if (hasResistant && !hasSensitive) insights.push('<strong>Note:</strong> Resistance mentions present — review antibiogram.');
-    if (hasSensitive && !hasResistant) insights.push('<strong>Note:</strong> Mostly sensitive results recorded.');
-
-    // feedback/notes flags
-    const notesText = entries.map(r=>r.notes||'').join(' || ').toLowerCase();
-    const flags = ['severe','allergic','reaction','worse','ineffective','no change','moderate'].filter(k => notesText.includes(k));
-    if (flags.length) insights.push(`<strong>Clinical flags:</strong> ${[...new Set(flags)].join(', ')}`);
-
-    document.getElementById('pharmInsights').innerHTML = insights.map(x=>`<div style="margin-bottom:8px">${x}</div>`).join('');
-
-    // --- Charts: destroy previous instances before creating new ones ---
-    // Species bar chart
-    try { clearCanvas('pharmBar'); } catch(e){/*ignore*/}
-
-    const barCtx = document.getElementById('pharmBar');
-    if (barCtx) {
-      try {
-        pharmBarChart = new Chart(barCtx, {
-          type: 'bar',
-          data: { labels: barLabels, datasets: [{ label: 'Count', data: barValues, backgroundColor: '#22c1c3' }] },
-          options: {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: {
-              x: { ticks: { color: '#e5edff' }, grid: { color: 'rgba(148,163,184,0.12)' } },
-              y: { ticks: { color: '#e5edff' }, grid: { color: 'rgba(148,163,184,0.12)' }, beginAtZero: true }
-            }
-          }
-        });
-      } catch (err) { console.warn('bar chart create failed', err); }
-    }
-
-    // Entries line chart
-    try { clearCanvas('pharmLine'); } catch(e){/*ignore*/}
-
-    const lineCtx = document.getElementById('pharmLine');
-    if (lineCtx) {
-      try {
-        pharmLineChart = new Chart(lineCtx, {
-          type: 'line',
-          data: {
-            labels: lineLabels,
-            datasets: [{
-              label: 'Entries per day',
-              data: lineValues,
-              fill: true,
-              tension: 0.2,
-              backgroundColor: 'rgba(34,193,195,0.08)',
-              borderColor: '#22c1c3',
-              pointRadius: 3
-            }]
+    new Chart(document.getElementById('pharmBar'), {
+      type: 'bar',
+      data: {
+        labels: barLabels,
+        datasets: [{
+          label: 'Quantity',
+          data: barValues,
+          backgroundColor: '#22c1c3'
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#e5edff' },
+            grid: { color: 'rgba(148,163,184,0.25)' }
           },
-          options: {
-            responsive: true,
-            plugins: { legend: { labels: { color: '#e5edff' } } },
-            scales: {
-              x: { ticks: { color: '#e5edff' }, grid: { color: 'rgba(148,163,184,0.08)' } },
-              y: { ticks: { color: '#e5edff' }, grid: { color: 'rgba(148,163,184,0.08)' }, beginAtZero: true }
-            }
+          y: {
+            ticks: { color: '#e5edff' },
+            grid: { color: 'rgba(148,163,184,0.25)' },
+            beginAtZero: true
           }
-        });
-      } catch (err) { console.warn('line chart create failed', err); }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('pharmPie'), {
+    type: 'pie',
+   data: {
+     labels: pieLabels,
+     datasets: [{
+        data: pieValues,
+       backgroundColor: [
+          '#3bc8d6', // Yes - cyan-teal
+         '#475569', // No - slate gray
+          '#64748b', // Partial - steel blue
+          '#94a3b8'  // Other - muted gray-blue
+        ],
+        borderColor: "rgba(0,0,0,0.3)",
+       borderWidth: 1
+      }]
+   },
+    options: {
+      responsive: true,
+      plugins: {
+       legend: {
+         labels: {
+            color: '#e5e7eb',
+            font: { size: 12 }
+           }
+        }
+     }
     }
+  });
+
   }
 
-  // listen for the custom event dispatched by pharma-firestore.js
-  window.addEventListener('pharmEntries', onEntries, { passive: true });
-
-  // helper
   function escapeHtml(s) {
-    return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
   }
-})();
-</script>
 
-<!-- load any auth UI module you already use -->
-<script type="module" src="scripts/auth-ui.js"></script>
-
-// Initialize Leaflet map
+  // Initialize Leaflet map
   var map = L.map('map');
   map .setView([51.505, -0.09], 13);
 
@@ -442,6 +406,62 @@
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
+
+/* ===============================
+   HEAT MAP – BACTERIAL RESISTANCE
+   Kerala (Randomized hotspots)
+================================ */
+
+// [latitude, longitude, intensity]
+// intensity: 0.2 (low resistance) → 1.0 (high resistance)
+
+const bacterialResistanceHeat = [
+
+  // Kochi (High resistance)
+  [9.9312, 76.2673, 0.9],
+  [9.9355, 76.2608, 0.85],
+  [9.9251, 76.2799, 0.8],
+
+  // Kottayam (Medium–High)
+  [9.5916, 76.5222, 0.7],
+  [9.5988, 76.5351, 0.65],
+
+  // Trivandrum (Medium)
+  [8.5241, 76.9366, 0.6],
+  [8.5302, 76.9423, 0.55],
+
+  // Thrissur (Medium–Low)
+  [10.5276, 76.2144, 0.5],
+  [10.5333, 76.2208, 0.45],
+
+  // Kozhikode
+  [11.2588, 75.7804, 0.6],
+  [11.2662, 75.7841, 0.55],
+
+  // Alappuzha
+  [9.4981, 76.3388, 0.5],
+
+  // Palakkad
+  [10.7867, 76.6548, 0.45]
+];
+
+/* ===============================
+   ADD HEATMAP TO EXISTING MAP
+================================ */
+
+L.heatLayer(bacterialResistanceHeat, {
+  radius: 35,
+  blur: 25,
+  maxZoom: 12,
+  gradient: {
+    0.2: 'blue',     // low resistance
+    0.4: 'cyan',
+    0.6: 'yellow',   // moderate
+    0.8: 'orange',
+    1.0: 'red'       // high resistance
+  }
+}).addTo(map);
+
 
 navigator.geolocation.watchPosition(success, error);
 
@@ -478,6 +498,7 @@ function error(err){
       alert("Cannot get your current location");
     }
 }
-
+</script>
+<script type="module" src="scripts/auth-ui.js"></script>
 </body>
 </html>

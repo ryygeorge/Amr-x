@@ -16,6 +16,11 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""></script>
 
+  <!-- Leaflet Heat Plugin -->
+      <script
+        src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js">
+      </script>
+
     <style>
       #map { height: 350px; }
     </style>
@@ -203,6 +208,65 @@
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
+/* ===============================
+   HEAT MAP – BACTERIAL RESISTANCE
+   Kerala (Randomized hotspots)
+================================ */
+
+// [latitude, longitude, intensity]
+// intensity: 0.2 (low resistance) → 1.0 (high resistance)
+
+const bacterialResistanceHeat = [
+
+  // Kochi (High resistance)
+  [9.9312, 76.2673, 0.9],
+  [9.9355, 76.2608, 0.85],
+  [9.9251, 76.2799, 0.8],
+
+  // Kottayam (Medium–High)
+  [9.5916, 76.5222, 0.7],
+  [9.5988, 76.5351, 0.65],
+
+  // Trivandrum (Medium)
+  [8.5241, 76.9366, 0.6],
+  [8.5302, 76.9423, 0.55],
+
+  // Thrissur (Medium–Low)
+  [10.5276, 76.2144, 0.5],
+  [10.5333, 76.2208, 0.45],
+
+  // Kozhikode
+  [11.2588, 75.7804, 0.6],
+  [11.2662, 75.7841, 0.55],
+
+  // Alappuzha
+  [9.4981, 76.3388, 0.5],
+
+  // Palakkad
+  [10.7867, 76.6548, 0.45]
+
+  // // Kanjirappally
+  // [9.5671, 76.7184, 0.4]
+];
+
+/* ===============================
+   ADD HEATMAP TO EXISTING MAP
+================================ */
+
+L.heatLayer(bacterialResistanceHeat, {
+  radius: 35,
+  blur: 25,
+  maxZoom: 12,
+  gradient: {
+    0.2: 'blue',     // low resistance
+    0.4: 'cyan',
+    0.6: 'yellow',   // moderate
+    0.8: 'orange',
+    1.0: 'red'       // high resistance
+  }
+}).addTo(map);
+
+
 navigator.geolocation.watchPosition(success, error);
 
 let marker, circle, zoomed;
@@ -242,3 +306,4 @@ function error(err){
 
 </body>
 </html>
+
