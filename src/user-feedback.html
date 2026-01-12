@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>User Feedback | AMR-X</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="styles/user-feedback.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body data-hide-profile="true">
+
+<!-- ================= HEADER / NAVBAR ================= -->
+<header>
+  <div class="navbar">
+    <div class="nav-left">
+      <a href="index.html" class="site-title-link">
+        <div class="logo-img"></div>
+        <span class="site-title">AMR-X</span>
+      </a>
+    </div>
+
+    <div class="nav-right">
+      <a href="user-dashboard.html" class="nav-link">Dashboard</a>
+      <a href="user-feedback.html" class="nav-link active">User Feedback</a>
+      <a href="choose.html" class="nav-link">Choose Portal</a>
+      <a href="index.html" class="nav-link">Home</a>
+    </div>
+  </div>
+</header>
+
+<!-- ================= MAIN CONTENT ================= -->
+<main>
+  <section class="user-section">
+    <h2>AMR User Feedback</h2>
+    <p class="user-subtitle">
+      Share details about infections and antibiotic usage to improve
+      antimicrobial resistance surveillance.
+    </p>
+
+    <form class="user-form" id="userForm" autocomplete="off">
+
+      <div class="form-group">
+        <label for="age">Age</label>
+        <input
+          type="number"
+          id="age"
+          min="0"
+          max="120"
+          required
+          placeholder="Enter your age"
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="gender">Gender</label>
+        <select id="gender" required>
+          <option value="">Select gender</option>
+          <option value="female">Female</option>
+          <option value="male">Male</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="infectionFrequency">Infection frequency</label>
+        <select id="infectionFrequency" required>
+          <option value="">Select</option>
+          <option value="rarely">Rarely (0–1 per month)</option>
+          <option value="sometimes">Sometimes (2–3 per month)</option>
+          <option value="often">Often (&gt;3 per month)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="symptoms">Symptoms</label>
+        <textarea
+          id="symptoms"
+          rows="3"
+          required
+          placeholder="Describe your main symptoms"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="pastAntibioticUse">Past antibiotic use</label>
+        <textarea
+          id="pastAntibioticUse"
+          rows="3"
+          placeholder="Which antibiotics have you used and when?"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="hospitalVisits">Hospital visits</label>
+        <textarea
+          id="hospitalVisits"
+          rows="3"
+          placeholder="Recent hospital or clinic visits (reason & date)"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="riskFactors">Risk factors</label>
+        <textarea
+          id="riskFactors"
+          rows="3"
+          placeholder="Diabetes, surgery, catheter, etc."
+        ></textarea>
+      </div>
+
+      <button type="submit" class="card-btn">Submit</button>
+    </form>
+
+    <div id="userSuccess" class="success-message"></div>
+    <div id="userError" class="error-message" style="color:#f87171; margin-top:8px;"></div>
+  </section>
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <p>&copy; 2025 AMR-X</p>
+</footer>
+
+<!-- ================= FIREBASE ================= -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from
+    "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDdmFP5OKVl-hRdeODEvLOzKq4_vKnr-tY",
+    authDomain: "amr-xp.firebaseapp.com",
+    projectId: "amr-xp",
+    storageBucket: "amr-xp.firebasestorage.app",
+    messagingSenderId: "656857018113",
+    appId: "1:656857018113:web:7a28925019022878597500"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const feedbackCol = collection(db, "user_feedback");
+
+  const form = document.getElementById("userForm");
+  const msg = document.getElementById("userSuccess");
+  const err = document.getElementById("userError");
+
+  form.onsubmit = async (e) => {
+    e.preventDefault();
+    err.textContent = "";
+
+    const payload = {
+      age: Number(document.getElementById("age").value),
+      gender: document.getElementById("gender").value,
+      infectionFrequency: document.getElementById("infectionFrequency").value,
+      symptoms: document.getElementById("symptoms").value.trim(),
+      pastAntibioticUse: document.getElementById("pastAntibioticUse").value.trim(),
+      hospitalVisits: document.getElementById("hospitalVisits").value.trim(),
+      riskFactors: document.getElementById("riskFactors").value.trim(),
+      createdAt: serverTimestamp()
+    };
+
+    try {
+      await addDoc(feedbackCol, payload);
+      msg.textContent = "Thank you for your feedback!";
+      msg.classList.add("visible");
+      form.reset();
+      setTimeout(() => msg.classList.remove("visible"), 2500);
+    } catch (error) {
+      console.error(error);
+      err.textContent = "Submission failed. Please try again.";
+    }
+  };
+</script>
+
+</body>
+</html>

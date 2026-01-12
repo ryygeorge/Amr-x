@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AMR-X | Dashboard</title>
+  <p class="card-desc" id="locationStatus">
+  Detecting your location to show local AMR trends...
+  </p>
+
+
+  <link rel="stylesheet" href="styles/user-dashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+
+  <style>
+    #map { height: 380px; border-radius: 18px; }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="navbar">
+    <div class="nav-left">
+      <a href="index.html" class="site-title-link">
+        <div class="logo-img"></div>
+        <span class="site-title">AMR-X</span>
+      </a>
+    </div>
+
+    <div class="nav-right">
+      <a href="user-dashboard.html" class="nav-link active">Dashboard</a>
+      <a href="user-feedback.html" class="nav-link">User Feedback</a>
+      <a href="choose.html" class="nav-link">Choose Portal</a>
+      <a href="index.html" class="nav-link">Home</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <h1 class="page-title">AMR Dashboard</h1>
+  <p class="subtitle">
+    Overview of antimicrobial resistance patterns and antibiotic usage.
+  </p>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">Total Cases<br><strong>182</strong></div>
+    <div class="stat-card">High Risk<br><strong>24</strong></div>
+    <div class="stat-card">Hospitals<br><strong>3</strong></div>
+  </div>
+
+  <!-- Heatmap Card -->
+  <section class="card">
+    <h2>Resistance Heatmap</h2>
+    <p class="card-desc">
+      Red zones indicate higher bacterial resistance based on aggregated reports.
+    </p>
+    <div id="map"></div>
+  </section>
+
+  <!-- Explanation -->
+  <section class="card">
+    <h2>How to Read This Map</h2>
+    <ul class="info-list">
+      <li>🔵 Blue – Low resistance</li>
+      <li>🟡 Yellow – Moderate resistance</li>
+      <li>🔴 Red – High resistance</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+  // Default view (Kerala)
+  const map = L.map('map').setView([10.85, 76.27], 7);
+
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18
+  }).addTo(map);
+
+  // ================================
+  // AMR HEAT DATA (Mock – later from DB)
+  // ================================
+  const heatData = [
+    [9.9312, 76.2673, 0.9],  // Kochi
+    [8.5241, 76.9366, 0.6],  // Trivandrum
+    [10.5276, 76.2144, 0.5], // Thrissur
+    [11.2588, 75.7804, 0.65] // Kozhikode
+  ];
+
+  L.heatLayer(heatData, {
+    radius: 30,
+    blur: 22,
+    gradient: {
+      0.2: 'blue',
+      0.4: 'cyan',
+      0.6: 'yellow',
+      0.8: 'orange',
+      1.0: 'red'
+    }
+  }).addTo(map);
+
+  // ================================
+  // USER LOCATION
+  // ================================
+  const statusText = document.getElementById('locationStatus');
+
+  let userMarker, accuracyCircle;
+
+  if ("geolocation" in navigator) {
+    navigator.geolocation.getCurrentPosition(success, error, {
+      enableHighAccuracy: true
+    });
+  } else {
+    statusText.textContent = "Geolocation not supported.";
+  }
+
+  function success(pos) {
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
+    const accuracy = pos.coords.accuracy;
+
+    // Center map to user's locality
+    map.setView([lat, lng], 12);
+
+    // Marker
+    userMarker = L.marker([lat, lng])
+      .addTo(map)
+      .bindPopup("📍 You are here")
+      .openPopup();
+
+    // Accuracy circle
+    accuracyCircle = L.circle([lat, lng], {
+      radius: accuracy,
+      color: '#38bdf8',
+      fillColor: '#38bdf8',
+      fillOpacity: 0.15
+    }).addTo(map);
+
+    statusText.innerHTML = `
+      Showing AMR trends near <strong>your location</strong>.
+    `;
+
+    // Show locality insights
+    showLocalInsights(lat, lng);
+  }
+
+  function error(err) {
+    statusText.textContent =
+      "Location access denied. Showing regional AMR data instead.";
+  }
+
+  // ================================
+  // LOCALITY INSIGHTS (LOGIC)
+  // ================================
+  function showLocalInsights(lat, lng) {
+    /*
+      For now this is rule-based.
+      Later: query Firestore or ML API
+    */
+
+    let riskLevel = "Low";
+    let commonDrug = "Amoxicillin";
+
+    if (lat > 9.8 && lat < 10.1 && lng > 76.1 && lng < 76.4) {
+      riskLevel = "High";
+      commonDrug = "Ciprofloxacin";
+    }
+
+    const infoBox = document.createElement("div");
+    infoBox.className = "card";
+    infoBox.innerHTML = `
+      <h2>Local AMR Snapshot</h2>
+      <p class="card-desc">
+        Based on reported data around your locality.
+      </p>
+      <ul class="info-list">
+        <li>⚠️ Resistance Level: <strong>${riskLevel}</strong></li>
+        <li>💊 Common Antibiotic Used: <strong>${commonDrug}</strong></li>
+        <li>📈 Trend: Increasing misuse reported</li>
+      </ul>
+    `;
+
+    document.querySelector("main").appendChild(infoBox);
+  }
+</script>
+
+</body>
+</html>
