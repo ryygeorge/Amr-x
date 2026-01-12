@@ -397,7 +397,7 @@
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
   }
-})();
+
 
 //Initialize Leaflet map
   var map = L.map('map');
