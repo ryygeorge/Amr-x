@@ -75,118 +75,122 @@
 </main>
 
 <script>
-  // Default view (Kerala)
-  const map = L.map('map').setView([10.85, 76.27], 7);
+
+  document.addEventListener('DOMContentLoaded', function () {
+
+  let marker, circle, zoomed;
+
+  var map = L.map('map');
+  map.setView([51.505, -0.09], 13);
 
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 18
-  }).addTo(map);
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map);
 
-  // ================================
-  // AMR HEAT DATA (Mock – later from DB)
-  // ================================
-  const heatData = [
-    [9.9312, 76.2673, 0.9],  // Kochi
-    [8.5241, 76.9366, 0.6],  // Trivandrum
-    [10.5276, 76.2144, 0.5], // Thrissur
-    [11.2588, 75.7804, 0.65] // Kozhikode
-  ];
+/* ===============================
+   HEAT MAP – BACTERIAL RESISTANCE
+   Kerala (Randomized hotspots)
+================================ */
 
-  L.heatLayer(heatData, {
-    radius: 30,
-    blur: 22,
-    gradient: {
-      0.2: 'blue',
-      0.4: 'cyan',
-      0.6: 'yellow',
-      0.8: 'orange',
-      1.0: 'red'
-    }
-  }).addTo(map);
+// [latitude, longitude, intensity]
+// intensity: 0.2 (low resistance) → 1.0 (high resistance)
 
-  // ================================
-  // USER LOCATION
-  // ================================
-  const statusText = document.getElementById('locationStatus');
+const bacterialResistanceHeat = [
 
-  let userMarker, accuracyCircle;
+  // Kochi (High resistance)
+  [9.9312, 76.2673, 0.9],
+  [9.9355, 76.2608, 0.85],
+  [9.9251, 76.2799, 0.8],
 
-  if ("geolocation" in navigator) {
-    navigator.geolocation.getCurrentPosition(success, error, {
-      enableHighAccuracy: true
-    });
-  } else {
-    statusText.textContent = "Geolocation not supported.";
+  // Kottayam (Medium–High)
+  [9.5916, 76.5222, 0.7],
+  [9.5988, 76.5351, 0.65],
+
+  // Trivandrum (Medium)
+  [8.5241, 76.9366, 0.6],
+  [8.5302, 76.9423, 0.55],
+
+  // Thrissur (Medium–Low)
+  [10.5276, 76.2144, 0.5],
+  [10.5333, 76.2208, 0.45],
+
+  // Kozhikode
+  [11.2588, 75.7804, 0.6],
+  [11.2662, 75.7841, 0.55],
+
+  // Alappuzha
+  [9.4981, 76.3388, 1.0],
+
+  // Palakkad
+  [10.7867, 76.6548, 0.45],
+
+  //kottayam
+  [9.5916, 76.5222, 0.7],
+  [9.5930, 76.5250, 0.6],
+  [9.5890, 76.5200, 0.65],
+
+
+  //kanjirappally
+  [9.5671, 76.7184, 0.8],
+  [9.5700, 76.7200, 0.75],
+  [9.5650, 76.7150, 0.7]
+];
+
+
+/* ===============================
+   ADD HEATMAP TO EXISTING MAP
+================================ */
+
+L.heatLayer(bacterialResistanceHeat, {
+  radius: 35,
+  blur: 25,
+  maxZoom: 12,
+  gradient: {
+    0.2: 'blue',     // low resistance
+    0.4: 'cyan',
+    0.6: 'yellow',   // moderate
+    0.8: 'orange',
+    1.0: 'red'       // high resistance
   }
+}).addTo(map);
 
-  function success(pos) {
+
+navigator.geolocation.watchPosition(success, error);
+
+
+
+function success(pos){
+
     const lat = pos.coords.latitude;
     const lng = pos.coords.longitude;
     const accuracy = pos.coords.accuracy;
 
-    // Center map to user's locality
-    map.setView([lat, lng], 12);
-
-    // Marker
-    userMarker = L.marker([lat, lng])
-      .addTo(map)
-      .bindPopup("📍 You are here")
-      .openPopup();
-
-    // Accuracy circle
-    accuracyCircle = L.circle([lat, lng], {
-      radius: accuracy,
-      color: '#38bdf8',
-      fillColor: '#38bdf8',
-      fillOpacity: 0.15
-    }).addTo(map);
-
-    statusText.innerHTML = `
-      Showing AMR trends near <strong>your location</strong>.
-    `;
-
-    // Show locality insights
-    showLocalInsights(lat, lng);
-  }
-
-  function error(err) {
-    statusText.textContent =
-      "Location access denied. Showing regional AMR data instead.";
-  }
-
-  // ================================
-  // LOCALITY INSIGHTS (LOGIC)
-  // ================================
-  function showLocalInsights(lat, lng) {
-    /*
-      For now this is rule-based.
-      Later: query Firestore or ML API
-    */
-
-    let riskLevel = "Low";
-    let commonDrug = "Amoxicillin";
-
-    if (lat > 9.8 && lat < 10.1 && lng > 76.1 && lng < 76.4) {
-      riskLevel = "High";
-      commonDrug = "Ciprofloxacin";
+    if(marker){
+        map.removeLayer(marker);
+        map.removeLayer(circle);
     }
+   marker =  L.marker([lat, lng]).addTo(map);
+   circle =  L.circle([lat, lng],{ radius: accuracy}).addTo(map);
 
-    const infoBox = document.createElement("div");
-    infoBox.className = "card";
-    infoBox.innerHTML = `
-      <h2>Local AMR Snapshot</h2>
-      <p class="card-desc">
-        Based on reported data around your locality.
-      </p>
-      <ul class="info-list">
-        <li>⚠️ Resistance Level: <strong>${riskLevel}</strong></li>
-        <li>💊 Common Antibiotic Used: <strong>${commonDrug}</strong></li>
-        <li>📈 Trend: Increasing misuse reported</li>
-      </ul>
-    `;
 
-    document.querySelector("main").appendChild(infoBox);
-  }
+   if(!zoomed){
+      zoomed = map.fitBounds(circle.getBounds());
+   }
+
+   map.setView([lat, lng]);
+    
+}
+
+function error(err){
+    
+    if(err.code == 1) {
+      alert("Please allow geoloaction access");
+    }else{
+      alert("Cannot get your current location");
+    }
+}
+});
 </script>
 
 </body>
