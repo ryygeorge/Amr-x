@@ -56,7 +56,7 @@ uploadBtn.onclick = async () => {
   uploadBtn.classList.remove("upload-success");
 
   try {
-    await fetch("http://127.0.0.1:5000/api/upload", {
+    await fetch("http://localhost:3001/api/upload", {
       method: "POST",
       body: formData
     });

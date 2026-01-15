@@ -1,17 +1,9 @@
 // scripts/login.js
-import { auth, db } from "./firebase-init.js";
-import {
-  signInWithEmailAndPassword,
-  signOut,
-} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-import {
-  doc,
-  getDoc,
-} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+import { supabase } from "./supabase-init.js";
 
 // URL role hint: ?role=pharma | admin | clinician
 const params = new URLSearchParams(window.location.search);
-const urlRole = params.get("role"); // "pharma" | "admin" | "clinician" | null
+const urlRole = params.get("role");
 
 const loginTitle = document.getElementById("loginTitle");
 const loginSubtitle = document.getElementById("loginSubtitle");
@@ -19,27 +11,21 @@ const signupLink = document.getElementById("signupLink");
 const loginForm = document.getElementById("loginForm");
 const loginError = document.getElementById("loginError");
 
-// ---------- Role-based UI text ----------
+// Role-based UI text
 if (urlRole === "pharma") {
   loginTitle.textContent = "Login to Pharmacist Portal";
-  loginSubtitle.textContent =
-    "Sign in to see antibiotic usage, resistance trends and stewardship analytics.";
   signupLink.href = "signup.html?role=pharma";
 } else if (urlRole === "admin") {
   loginTitle.textContent = "Login to Admin Portal";
-  loginSubtitle.textContent =
-    "Sign in to manage hospital-wide AMR-X settings, users and reports.";
   signupLink.href = "signup.html?role=admin";
 } else if (urlRole === "clinician") {
   loginTitle.textContent = "Login to Clinician Portal";
-  loginSubtitle.textContent =
-    "Sign in to access clinician-focused AMR views and bedside support.";
   signupLink.href = "signup.html?role=clinician";
 } else {
   signupLink.href = "signup.html";
 }
 
-// ---------- Handle login ----------
+// Handle login
 loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   loginError.textContent = "";
@@ -48,73 +34,113 @@ loginForm.addEventListener("submit", async (e) => {
   const password = document.getElementById("password").value;
 
   try {
-    // 1) Sign in with Firebase Auth
-    const userCred = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCred.user;
+    // 1) Sign in
+    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
 
-    // 2) Load profile from Firestore
-    const userDocRef = doc(db, "users", user.uid);
-    const userSnap = await getDoc(userDocRef);
+    if (authError) throw authError;
 
-    // 🔒 If Firestore profile is missing, treat account as removed
-    if (!userSnap.exists()) {
-      await signOut(auth);
-      loginError.textContent =
-        "This account has been removed. Please contact the admin or sign up again.";
-      return;
+    const user = authData.user;
+    
+    if (!user) {
+      throw new Error("No user returned from authentication");
     }
 
-    const data = userSnap.data() || {};
+    // 2) Check if user exists in our users table
+    let userProfile = null;
+    const { data: profileData, error: profileError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', user.id)
+      .maybeSingle(); // Use maybeSingle instead of single to avoid throwing if not found
 
-    let storedRole = urlRole || data.role || null;
-    let displayName = data.name || data.fullName || "";
+    if (!profileError && profileData) {
+      userProfile = profileData;
+    }
 
-    // 3) Fallback display name if not in Firestore
-    if (!displayName) {
-      if (user.displayName) {
-        displayName = user.displayName;
-      } else {
-        displayName = email.split("@")[0];
+    // 3) If user doesn't exist in users table, create it automatically
+    if (!userProfile) {
+      const displayName = user.user_metadata?.name || email.split("@")[0];
+      const userRole = user.user_metadata?.role || urlRole || "clinician";
+      
+      // Normalize role
+      let normalizedRole = String(userRole).trim().toLowerCase();
+      if (normalizedRole === "pharmacist") normalizedRole = "pharma";
+      if (normalizedRole === "clinicist") normalizedRole = "clinician";
+      if (!normalizedRole) normalizedRole = "clinician";
+      
+      // Insert user profile
+      const { error: insertError } = await supabase
+        .from('users')
+        .insert([
+          {
+            id: user.id,
+            name: displayName,
+            email: user.email,
+            role: normalizedRole
+          }
+        ])
+        .select()
+        .single();
+      
+      if (!insertError) {
+        userProfile = { name: displayName, role: normalizedRole };
+      } else if (insertError.code === '23505') {
+        // Duplicate key - user already exists, fetch it
+        const { data: existingUser } = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+        if (existingUser) userProfile = existingUser;
       }
     }
 
-    // 4) Normalise role
-    let normalizedRole = String(storedRole || "")
-      .trim()
-      .toLowerCase();
+    // 4) Get final user data
+    const displayName = userProfile?.name || user.user_metadata?.name || email.split("@")[0];
+    const userRole = userProfile?.role || user.user_metadata?.role || urlRole || "clinician";
+    
+    // Normalize role again for safety
+    let normalizedRole = String(userRole).trim().toLowerCase();
+    if (normalizedRole === "pharmacist") normalizedRole = "pharma";
+    if (normalizedRole === "clinicist") normalizedRole = "clinician";
+    if (!normalizedRole) normalizedRole = "clinician";
 
-    if (normalizedRole === "pharmacist") {
-      normalizedRole = "pharma";
-    } else if (normalizedRole === "clinicist") {
-      normalizedRole = "clinician";
-    }
-
-    if (!normalizedRole) {
-      normalizedRole = "clinician"; // default if nothing set
-    }
-
-    // 5) Save to localStorage for greeting etc.
+    // 5) Save to localStorage
     try {
       localStorage.setItem("pharmaName", displayName);
       localStorage.setItem("role", normalizedRole);
     } catch (err) {
-      console.warn("Could not use localStorage:", err.message);
+      console.warn("localStorage error:", err.message);
     }
 
-    // 6) Redirect (all roles → same portal for now)
+    // 6) Redirect
     window.location.href = "pharma.html";
+
   } catch (error) {
-    console.error(error);
+    console.error("Login error:", error);
+    
     let message = "Unable to login. Please check your details.";
-
-    if (error.code === "auth/user-not-found") {
+    
+    if (error.message?.includes("Invalid login credentials")) {
+      message = "Invalid email or password.";
+    } else if (error.message?.includes("Email not confirmed")) {
+      message = `
+        <div style="background:#0f172a; padding:12px; border-radius:8px; margin:10px 0;">
+          <strong>Email not confirmed!</strong><br>
+          Please check your email and click the confirmation link first.
+          <br><br>
+          <button onclick="location.reload()" style="background:#3b82f6; color:white; border:none; padding:8px 16px; border-radius:6px; cursor:pointer;">
+            Try Again
+          </button>
+        </div>
+      `;
+    } else if (error.message?.includes("User not found")) {
       message = "No account found with this email.";
-    } else if (error.code === "auth/wrong-password") {
-      message = "Incorrect password.";
-    } else if (error.code === "auth/invalid-email") {
-      message = "Please enter a valid email address.";
     }
-
-    loginError.textContent = message;
+    
+    loginError.innerHTML = message;
   }
 });

@@ -238,11 +238,9 @@
 })();
 </script>
 
-<!-- FIRESTORE INIT: loads your firebase-init (must set window.firebaseApp or window.db) -->
-<script type="module" src="scripts/firebase-init.js"></script>
 
-<!-- FIRESTORE LISTENER (module) - this emits "pharmEntries" events on window -->
-<script type="module" src="scripts/pharma-firestore.js"></script>
+<script type="module" src="scripts/supabase-init.js"></script>
+<script type="module" src="scripts/pharma-supabase.js"></script>
 
 <!-- Pharmacist UI listener: receives normalized entries and updates UI -->
 <script>

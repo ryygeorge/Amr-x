@@ -93,125 +93,108 @@
 
 <!-- Paste this at the bottom of pharmacist-entry.html, before </body> -->
 <!-- Paste this in pharmacist-entry.html (replace your existing module script block) -->
+<!-- Replace the entire <script type="module"> block with this: -->
 <script type="module">
-  import { db } from "./scripts/firebase-init.js";
-  import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+  import { supabase } from "./scripts/supabase-init.js";
 
-  // Helper: prefer explicit ids we've seen in your project
-  function findPharmForm() {
-    // prefer exact ids in order
-    const preferIds = ['pharmForm', 'pharmacist-form', 'pharmacist_form'];
-    for (const id of preferIds) {
-      const el = document.getElementById(id);
-      if (el) return el;
-    }
-    // fallback to first <form> on page (keeps prior behavior)
-    const forms = document.getElementsByTagName('form');
-    if (forms.length) {
-      console.warn("pharmForm not found; using first <form> on page as fallback. Consider adding id='pharmForm' or id='pharmacist-form' to be explicit.");
-      return forms[0];
-    }
-    return null;
-  }
+  const form = document.getElementById('pharmacist-form');
+  const successMsg = document.getElementById('successMsg');
 
-  function setStatus(el, text='', cls='') {
-    if (!el) return;
-    el.textContent = text;
-    el.className = cls ? `status ${cls}` : 'status';
-  }
-
-  // small heuristic: treat certain field names as numeric
-  const numericHints = ['quantity','qty','count','num','amount'];
-
-  function isNumericField(name, el) {
-    if (!name) return false;
-    if (el.type === 'number') return true;
-    const lower = name.toLowerCase();
-    return numericHints.some(h => lower.includes(h));
-  }
-
-  function collectFormData(formEl) {
-    const payload = {};
-    // pick explicit inputs, selects, textareas with name attribute
-    const elements = Array.from(formEl.querySelectorAll('input[name], select[name], textarea[name]'));
-    elements.forEach(el => {
-      const name = el.name;
-      if (!name) return;
-      if (el.type === 'checkbox') { payload[name] = el.checked; return; }
-      if (el.type === 'radio') { if (el.checked) payload[name] = el.value; return; }
-      let val = el.value;
-      if (isNumericField(name, el)) {
-        if (val === '' || val == null) payload[name] = null;
-        else {
-          const n = Number(val);
-          payload[name] = Number.isNaN(n) ? val : n;
-        }
-      } else payload[name] = (val === '' ? null : val);
-    });
-    return payload;
-  }
-
-  async function init() {
-    if (document.readyState === 'loading') {
-      await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve, {once:true}));
-    }
-
-    // optional status element you may add to HTML: <div id="status"></div>
-    const statusEl = document.getElementById('status') || document.getElementById('successMsg');
-
-    const form = findPharmForm();
-    if (!form) {
-      console.error("Form not found on page. Make sure there's a <form> element (id='pharmacist-form' is recommended).");
-      if (statusEl) setStatus(statusEl, "Form not found.", "error");
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Get form values
+    const species = document.getElementById('species').value.trim();
+    const susceptibility = document.getElementById('susceptibility').value.trim();
+    const prescriptionDetails = document.getElementById('prescriptionDetails').value.trim();
+    const clinicalNotes = document.getElementById('clinicalNotes').value.trim();
+    
+    // Get current user
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    
+    if (userError || !user) {
+      showMessage('Please login first!', 'error');
       return;
     }
-
-    // make sure the form doesn't have an old submit handler
-    form.onsubmit = null;
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      if (statusEl) setStatus(statusEl, '', '');
-
-      // HTML5 validation
-      if (!form.checkValidity()) {
-        if (statusEl) setStatus(statusEl, 'Please fill required fields', 'error');
-        return;
-      }
-
-      const payload = collectFormData(form);
-      payload.createdAt = serverTimestamp();
-
-      // debug: show payload (non-sensitive) in console
-      console.log('Saving pharmacist entry payload:', payload);
-
-      try {
-        // write to Firestore collection "pharmacist_entries"
-        await addDoc(collection(db, "pharmacist_entries"), payload);
-        if (statusEl) {
-          setStatus(statusEl, 'Saved ✓', 'success');
-          // also add visible class if using .success-message
-          statusEl.classList && statusEl.classList.add('visible');
-        }
-        form.reset();
-        // clear status after short delay
-        setTimeout(() => {
-          if (statusEl) {
-            setStatus(statusEl, '', '');
-            statusEl.classList && statusEl.classList.remove('visible');
+    
+    // Disable submit button
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+    
+    try {
+      // Insert into Supabase
+      const { data, error } = await supabase
+        .from('pharmacist_entries')
+        .insert([
+          {
+            user_id: user.id,
+            species: species,
+            bacterialSpecies: species,
+            susceptibility: susceptibility,
+            antibioticResults: susceptibility,
+            prescriptionDetails: prescriptionDetails,
+            prescription: prescriptionDetails,
+            clinicalNotes: clinicalNotes,
+            notes: clinicalNotes
           }
-        }, 1800);
-      } catch (err) {
-        // helpful debugging output
-        console.error('Error saving pharmacist entry:', err);
-        // if this is a Firebase permission error, it usually contains "Missing or insufficient permissions"
-        if (statusEl) setStatus(statusEl, 'Save failed — check console for details', 'error');
-      }
-    });
+        ]);
+      
+      if (error) throw error;
+      
+      showMessage('✅ Entry submitted successfully! Redirecting to dashboard...', 'success');
+      form.reset();
+      
+      // Redirect to dashboard after 1.5 seconds
+      setTimeout(() => {
+        window.location.href = 'pharma.html';
+      }, 1500);
+      
+    } catch (error) {
+      console.error('Submission error:', error);
+      showMessage(`❌ Error: ${error.message}`, 'error');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+    }
+  });
+
+  function showMessage(text, type) {
+    if (!successMsg) return;
+    
+    successMsg.textContent = text;
+    successMsg.className = 'success-message';
+    successMsg.classList.add(type);
+    successMsg.style.display = 'block';
+    
+    // Auto-hide error messages after 5 seconds
+    if (type === 'error') {
+      setTimeout(() => {
+        successMsg.style.display = 'none';
+      }, 5000);
+    }
   }
 
-  init();
+  // Also add CSS for message types
+  const style = document.createElement('style');
+  style.textContent = `
+    .success-message.success {
+      background-color: #10b981;
+      color: white;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 16px;
+    }
+    .success-message.error {
+      background-color: #ef4444;
+      color: white;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 16px;
+    }
+  `;
+  document.head.appendChild(style);
 </script>
 
 

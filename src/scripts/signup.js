@@ -1,18 +1,9 @@
 // scripts/signup.js
-import { auth, db } from "./firebase-init.js";
-import {
-  createUserWithEmailAndPassword,
-} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-import {
-  doc,
-  setDoc,
-  serverTimestamp,
-} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+import { supabase } from "./supabase-init.js";
 
 // Get elements
 const params = new URLSearchParams(window.location.search);
-const urlRole = params.get("role"); // "pharma" | "admin" | "clinician" | nu=-----------------------------------------------------------------------------------------]1 
-
+const urlRole = params.get("role");
 
 const roleSelect = document.getElementById("role");
 const signupTitle = document.getElementById("signupTitle");
@@ -25,20 +16,14 @@ const signupError = document.getElementById("signupError");
 if (urlRole === "pharma") {
   roleSelect.value = "pharma";
   signupTitle.textContent = "Sign up for the Pharmacist Portal";
-  signupSubtitle.textContent =
-    "Create an AMR-X account tailored to pharmacy and stewardship analytics.";
   loginLink.href = "login.html?role=pharma";
 } else if (urlRole === "admin") {
   roleSelect.value = "admin";
   signupTitle.textContent = "Sign up for the Admin Portal";
-  signupSubtitle.textContent =
-    "Create an AMR-X admin account to manage users, hospitals and reports.";
   loginLink.href = "login.html?role=admin";
 } else if (urlRole === "clinician") {
   roleSelect.value = "clinician";
   signupTitle.textContent = "Sign up for the Clinician Portal";
-  signupSubtitle.textContent =
-    "Create an AMR-X account focused on clinician and bedside workflows.";
   loginLink.href = "login.html?role=clinician";
 } else {
   loginLink.href = "login.html";
@@ -66,40 +51,84 @@ signupForm.addEventListener("submit", async (e) => {
   }
 
   try {
-    // Create auth user
-    const userCred = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCred.user;
-
-    // Store extra data in Firestore
-    await setDoc(doc(db, "users", user.uid), {
-      name,
+    // 1) Create auth user
+    const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
-      role,            // 'pharma', 'admin', or 'clinician'
-      createdAt: serverTimestamp(),
+      password,
+      options: {
+        data: {
+          name: name,
+          role: role
+        },
+        emailRedirectTo: `${window.location.origin}/login.html`
+      }
     });
 
-    // Optional: store for greeting later
-    try {
-      localStorage.setItem("pharmaName", name);
-      localStorage.setItem("role", role);
-    } catch (err) {
-      console.warn("localStorage not available:", err.message);
+    if (authError) throw authError;
+
+    const user = authData.user;
+
+    // 2) Check if email needs confirmation
+    const needsConfirmation = !authData.session; // No session = needs confirmation
+    
+    if (needsConfirmation) {
+      // Email confirmation required
+      signupError.innerHTML = `
+        <div style="background:#0f172a; padding:16px; border-radius:10px; margin:12px 0; border:1px solid #334155;">
+          ✅ <strong style="color:#22c55e">Check your email!</strong><br><br>
+          We sent a confirmation link to <strong>${email}</strong>.<br>
+          <span style="color:#94a3b8; font-size:0.9em;">
+            Click the link in your email to activate your account, then come back to login.
+          </span>
+        </div>
+      `;
+      signupForm.reset();
+      return; // Stop here
     }
 
-    // ✅ Redirect ALL roles to the same portal
-    window.location.href = "pharma.html";
+    // 3) If email already confirmed (or confirmation disabled), create user profile
+    if (user) {
+      const { error: dbError } = await supabase
+        .from('users')
+        .insert([
+          {
+            id: user.id,
+            name: name,
+            email: email,
+            role: role
+          }
+        ]);
+
+      if (dbError && !dbError.message.includes('duplicate key')) {
+        console.error("User profile creation error:", dbError);
+        // Continue anyway - we'll handle in login
+      }
+
+      // 4) Save to localStorage
+      try {
+        localStorage.setItem("pharmaName", name);
+        localStorage.setItem("role", role);
+      } catch (err) {
+        console.warn("localStorage error:", err.message);
+      }
+
+      // 5) Redirect to dashboard
+      window.location.href = "pharma.html";
+    }
+
   } catch (error) {
-    console.error(error);
+    console.error("Signup error:", error);
+    
     let message = "Something went wrong. Please try again.";
-
-    if (error.code === "auth/email-already-in-use") {
+    
+    if (error.message?.includes("User already registered")) {
       message = "An account with this email already exists.";
-    } else if (error.code === "auth/invalid-email") {
+    } else if (error.message?.includes("invalid")) {
       message = "Please enter a valid email address.";
-    } else if (error.code === "auth/weak-password") {
-      message = "Password is too weak. Try at least 6+ characters.";
+    } else if (error.message?.includes("weak")) {
+      message = "Password is too weak. Try at least 6 characters.";
     }
-
+    
     signupError.textContent = message;
   }
 });
