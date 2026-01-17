@@ -124,20 +124,16 @@
     submitBtn.textContent = 'Submitting...';
     
     try {
-      // Insert into Supabase
+      // Insert into Supabase - USE LOWERCASE COLUMN NAMES!
       const { data, error } = await supabase
         .from('pharmacist_entries')
         .insert([
           {
             user_id: user.id,
-            species: species,
-            bacterialSpecies: species,
-            susceptibility: susceptibility,
-            antibioticResults: susceptibility,
-            prescriptionDetails: prescriptionDetails,
-            prescription: prescriptionDetails,
-            clinicalNotes: clinicalNotes,
-            notes: clinicalNotes
+            bacterialspecies: species,                     // LOWERCASE
+            antibioticresults: susceptibility,             // LOWERCASE
+            prescriptiondetails: prescriptionDetails,      // LOWERCASE
+            clinicalnotes: clinicalNotes                   // LOWERCASE
           }
         ]);
       
@@ -196,7 +192,6 @@
   `;
   document.head.appendChild(style);
 </script>
-
 
 
 <script type="module" src="scripts/auth-ui.js"></script>

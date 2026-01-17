@@ -17,16 +17,16 @@ function dispatchPharmEntriesEvent(items) {
   try {
     // Convert to Firebase-like format for backward compatibility
     const firebaseLikeItems = items.map(item => ({
-      species: item.species || item.bacterialSpecies || '',
-      bacterialSpecies: item.bacterialSpecies || '',
+      species: item.species || item.bacterialSpecies || item.bacterialspecies || '',
+      bacterialSpecies: item.bacterialSpecies || item.bacterialspecies || '',
       bacterial: item.bacterial || '',
       bacteria: item.bacteria || '',
-      prescriptionDetails: item.prescriptionDetails || item.prescription || '',
-      prescription: item.prescription || '',
-      susceptibility: item.susceptibility || item.antibioticResults || '',
-      antibioticResults: item.antibioticResults || '',
-      clinicalNotes: item.clinicalNotes || item.notes || '',
-      notes: item.notes || '',
+      prescriptionDetails: item.prescriptionDetails || item.prescriptiondetails || item.prescription || '',
+      prescription: item.prescription || item.prescriptiondetails || '',
+      susceptibility: item.susceptibility || item.antibioticResults || item.antibioticresults || '',
+      antibioticResults: item.antibioticResults || item.antibioticresults || '',
+      clinicalNotes: item.clinicalNotes || item.clinicalnotes || item.notes || '',
+      notes: item.notes || item.clinicalnotes || '',
       createdAt: item.created_at ? {
         seconds: Math.floor(new Date(item.created_at).getTime() / 1000),
         nanoseconds: 0
@@ -49,12 +49,33 @@ function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 }
 
-// Normalization helpers
+// Normalization helpers - UPDATED TO HANDLE LOWERCASE COLUMNS
 function getField(docObj, candidates) {
   if (!docObj) return undefined;
+  
+  // First check the candidates as given (original case)
   for (const k of candidates) {
-    if (Object.prototype.hasOwnProperty.call(docObj, k) && docObj[k] !== undefined) return docObj[k];
+    if (Object.prototype.hasOwnProperty.call(docObj, k) && docObj[k] !== undefined && docObj[k] !== null && docObj[k] !== '') {
+      return docObj[k];
+    }
   }
+  
+  // Then check lowercase versions of candidates
+  for (const k of candidates) {
+    const lowerKey = k.toLowerCase();
+    if (Object.prototype.hasOwnProperty.call(docObj, lowerKey) && docObj[lowerKey] !== undefined && docObj[lowerKey] !== null && docObj[lowerKey] !== '') {
+      return docObj[lowerKey];
+    }
+  }
+  
+  // Then check snake_case versions
+  for (const k of candidates) {
+    const snakeKey = k.replace(/([A-Z])/g, "_$1").toLowerCase();
+    if (Object.prototype.hasOwnProperty.call(docObj, snakeKey) && docObj[snakeKey] !== undefined && docObj[snakeKey] !== null && docObj[snakeKey] !== '') {
+      return docObj[snakeKey];
+    }
+  }
+  
   return undefined;
 }
 
@@ -62,7 +83,8 @@ function getField(docObj, candidates) {
 function formatTimestamp(ts) {
   if (!ts) return '-';
   try {
-    return new Date(ts).toLocaleString();
+    const date = new Date(ts);
+    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
   } catch (e) {
     return String(ts);
   }
@@ -82,17 +104,18 @@ function safeDestroyChartOnCanvas(canvasEl) {
 // Build table rows
 function renderTable(items) {
   if (!tbody) return;
-  if (!items.length) {
+  if (!items || items.length === 0) {
     tbody.innerHTML = `<tr><td colspan="5">No pharmacist entries yet</td></tr>`;
     dispatchPharmEntriesEvent([]);
     return;
   }
 
   const rowsHtml = items.slice(0, 50).map(doc => {
-    const species = getField(doc, ['species','bacterialSpecies','bacterial','bacteria']);
-    const prescription = getField(doc, ['prescriptionDetails','prescription_details','prescription','prescriptionDetail']);
-    const susceptibility = getField(doc, ['susceptibility','antibioticResults','antibioticSusceptibilityResults','susceptibilityResults']);
-    const clinicalNotes = getField(doc, ['clinicalNotes','clinical_notes','notes','clinical']);
+    // Check multiple possible column names (including lowercase)
+    const species = getField(doc, ['species','bacterialSpecies','bacterialspecies','bacterial','bacteria']);
+    const prescription = getField(doc, ['prescriptionDetails','prescriptiondetails','prescription','prescriptionDetail','prescription_detail']);
+    const susceptibility = getField(doc, ['susceptibility','antibioticResults','antibioticresults','antibioticSusceptibilityResults','susceptibilityResults','antibiotic_susceptibility_results']);
+    const clinicalNotes = getField(doc, ['clinicalNotes','clinicalnotes','notes','clinical','clinical_notes']);
     const createdAt = getField(doc, ['created_at','createdAt','timestamp','time']) || doc.created_at;
 
     const timeStr = formatTimestamp(createdAt);
@@ -117,28 +140,54 @@ function renderTable(items) {
 // Build species counts
 function buildSpeciesCounts(items) {
   const counts = {};
+  if (!items) return [];
+  
   for (const d of items) {
-    const val = getField(d, ['species','bacterialSpecies','bacterial','bacteria']);
+    const val = getField(d, ['species','bacterialSpecies','bacterialspecies','bacterial','bacteria']);
     if (!val) continue;
-    const parts = String(val).split(',').map(s => s.trim()).filter(Boolean);
-    for (const p of parts) {
-      counts[p] = (counts[p] || 0) + 1;
+    
+    // Clean up the species name
+    let speciesName = String(val).trim();
+    
+    // Extract first species if multiple are listed
+    if (speciesName.includes(',')) {
+      speciesName = speciesName.split(',')[0].trim();
+    }
+    
+    // Clean common prefixes/suffixes
+    speciesName = speciesName
+      .replace(/^E\.?\s*coli$/i, 'E. coli')
+      .replace(/^Klebsiella\s*pneumoniae$/i, 'Klebsiella pneumoniae')
+      .replace(/^Pseudomonas\s*aeruginosa$/i, 'Pseudomonas aeruginosa')
+      .replace(/^Staphylococcus\s*aureus$/i, 'Staphylococcus aureus');
+    
+    if (speciesName) {
+      counts[speciesName] = (counts[speciesName] || 0) + 1;
     }
   }
+  
   return Object.entries(counts).sort((a,b) => b[1] - a[1]);
 }
 
 // Build daily counts
 function buildDailyCounts(items) {
   const daily = {};
+  if (!items) return [];
+  
   for (const d of items) {
     const createdAt = getField(d, ['created_at','createdAt','timestamp','time']) || d.created_at;
     const ts = createdAt ? new Date(createdAt).getTime() : Date.now();
     const key = new Date(ts).toISOString().slice(0,10);
     daily[key] = (daily[key] || 0) + 1;
   }
+  
   const entries = Object.entries(daily).sort((a,b)=> new Date(a[0]) - new Date(b[0]));
-  return entries;
+  
+  // Limit to last 30 days for better visualization
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  
+  return entries.filter(([date]) => new Date(date) >= thirtyDaysAgo);
 }
 
 // Update summary
@@ -151,23 +200,57 @@ function updateSummary(total, extraObj = {}) {
 // Insights generator
 function generateInsights(items) {
   const insights = [];
+  if (!items || items.length === 0) {
+    insights.push('<strong>No data yet.</strong> Start by submitting your first entry.');
+    return insights;
+  }
+  
   const speciesCounts = buildSpeciesCounts(items);
   if (speciesCounts.length) {
-    const top = speciesCounts.slice(0,3).map(s => s[0]).join(', ');
+    const top = speciesCounts.slice(0,3).map(s => `${s[0]} (${s[1]})`).join(', ');
     insights.push(`<strong>Top species:</strong> ${top}`);
   } else {
     insights.push(`<strong>Top species:</strong> none recorded`);
   }
 
-  const susText = items.map(d => (getField(d, ['susceptibility','antibioticResults','antibiotic_susceptibility_results']) || '').toString().toLowerCase()).join(' || ');
-  const hasResistant = susText.includes('resistant') || susText.includes('r:') || susText.includes('resist');
-  const hasSensitive = susText.includes('sensitive') || susText.includes('s:') || susText.includes('sensit');
-  if (hasResistant && !hasSensitive) insights.push('<strong>Note:</strong> Resistance mentions found — review antibiogram.');
-  if (hasSensitive && !hasResistant) insights.push('<strong>Note:</strong> Mostly sensitive results recorded.');
+  // Check for resistance patterns
+  const susText = items.map(d => 
+    (getField(d, ['susceptibility','antibioticResults','antibioticresults','antibiotic_susceptibility_results']) || '')
+    .toString()
+    .toLowerCase()
+  ).join(' || ');
+  
+  const hasResistant = /resistant|resistance|r:|r\s*$|not\s+sensitive|no\s+response/i.test(susText);
+  const hasSensitive = /sensitive|susceptible|s:|s\s*$|effective|responds/i.test(susText);
+  
+  if (hasResistant && !hasSensitive) {
+    insights.push('<strong>Alert:</strong> Multiple resistant cases detected — review antibiogram.');
+  } else if (hasResistant && hasSensitive) {
+    insights.push('<strong>Note:</strong> Mixed susceptibility patterns observed.');
+  } else if (hasSensitive && !hasResistant) {
+    insights.push('<strong>Note:</strong> Mostly sensitive results recorded.');
+  }
 
-  const notesText = items.map(d => (getField(d, ['clinicalNotes','clinical_notes','notes']) || '').toString().toLowerCase()).join(' || ');
-  const flags = ['severe','allergic','reaction','worse','ineffective','no change','moderate'].filter(k => notesText.includes(k));
-  if (flags.length) insights.push(`<strong>Clinical flags:</strong> ${[...new Set(flags)].join(', ')}`);
+  // Check clinical notes for flags
+  const notesText = items.map(d => 
+    (getField(d, ['clinicalNotes','clinicalnotes','notes','clinical_notes']) || '')
+    .toString()
+    .toLowerCase()
+  ).join(' || ');
+  
+  const flags = ['severe','allergic','reaction','worse','ineffective','no change','moderate','critical','urgent','fever','pain'].filter(k => 
+    notesText.includes(k.toLowerCase())
+  );
+  
+  if (flags.length) {
+    const uniqueFlags = [...new Set(flags)].slice(0, 5);
+    insights.push(`<strong>Clinical flags:</strong> ${uniqueFlags.join(', ')}`);
+  }
+
+  // Add total entries insight
+  if (items.length > 20) {
+    insights.push(`<strong>Activity:</strong> ${items.length} entries logged — good tracking!`);
+  }
 
   return insights;
 }
@@ -182,14 +265,34 @@ function drawSpeciesBar(labels, values) {
       type: 'bar',
       data: {
         labels,
-        datasets: [{ label: 'Count', data: values, backgroundColor: '#22c1c3' }]
+        datasets: [{ 
+          label: 'Count', 
+          data: values, 
+          backgroundColor: '#22c1c3',
+          borderColor: '#1a9a9c',
+          borderWidth: 1
+        }]
       },
       options: {
         responsive: true,
-        plugins: { legend: { display: false } },
+        plugins: { 
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            titleColor: '#fff',
+            bodyColor: '#fff'
+          }
+        },
         scales: {
-          x: { ticks: { color: '#e5edff' }, grid: { color: 'rgba(148,163,184,0.12)' } },
-          y: { ticks: { color: '#e5edff' }, grid: { color: 'rgba(148,163,184,0.12)' }, beginAtZero: true }
+          x: { 
+            ticks: { color: '#e5edff', maxRotation: 45 },
+            grid: { color: 'rgba(148,163,184,0.12)' } 
+          },
+          y: { 
+            ticks: { color: '#e5edff' }, 
+            grid: { color: 'rgba(148,163,184,0.12)' }, 
+            beginAtZero: true 
+          }
         }
       }
     });
@@ -212,17 +315,43 @@ function drawLineDaily(labels, values) {
           data: values,
           fill: true,
           tension: 0.25,
-          backgroundColor: 'rgba(34,193,195,0.08)',
+          backgroundColor: 'rgba(34,193,195,0.15)',
           borderColor: '#22c1c3',
-          pointRadius: 3
+          pointBackgroundColor: '#22c1c3',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointRadius: 4,
+          pointHoverRadius: 6
         }]
       },
       options: {
         responsive: true,
-        plugins: { legend: { labels: { color: '#e5edff' } } },
+        plugins: { 
+          legend: { 
+            labels: { 
+              color: '#e5edff',
+              font: { size: 12 }
+            } 
+          },
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            titleColor: '#fff',
+            bodyColor: '#fff'
+          }
+        },
         scales: {
-          x: { ticks: { color: '#e5edff' }, grid: { color: 'rgba(148,163,184,0.08)' } },
-          y: { ticks: { color: '#e5edff' }, grid: { color: 'rgba(148,163,184,0.08)' }, beginAtZero: true }
+          x: { 
+            ticks: { 
+              color: '#e5edff',
+              maxTicksLimit: 10
+            }, 
+            grid: { color: 'rgba(148,163,184,0.08)' } 
+          },
+          y: { 
+            ticks: { color: '#e5edff' }, 
+            grid: { color: 'rgba(148,163,184,0.08)' }, 
+            beginAtZero: true 
+          }
         }
       }
     });
@@ -237,10 +366,16 @@ function drawLineDaily(labels, values) {
     console.log('🔄 Initializing pharma-supabase...');
     
     // Get current user
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError) {
+      console.error('Auth error:', authError);
+      if (tbody) tbody.innerHTML = `<tr><td colspan="5">Authentication error</td></tr>`;
+      return;
+    }
+    
     if (!user) {
-      console.error('No user logged in');
-      tbody.innerHTML = `<tr><td colspan="5">Please login to view data</td></tr>`;
+      console.log('No user logged in');
+      if (tbody) tbody.innerHTML = `<tr><td colspan="5">Please login to view data</td></tr>`;
       return;
     }
 
@@ -256,12 +391,18 @@ function drawLineDaily(labels, values) {
 
     if (error) {
       console.error('Error fetching data:', error);
-      // Check if table exists
+      
+      // Check specific error types
       if (error.code === '42P01') {
         console.error('Table pharmacist_entries does not exist. Please create it in Supabase.');
-        tbody.innerHTML = `<tr><td colspan="5">Database table not set up. Please contact admin.</td></tr>`;
+        if (tbody) tbody.innerHTML = `<tr><td colspan="5">Database table not set up. Please contact admin.</td></tr>`;
+      } else if (error.code === '42703') {
+        console.error('Column error - table structure mismatch:', error.message);
+        if (tbody) tbody.innerHTML = `<tr><td colspan="5">Database column mismatch. Please update table.</td></tr>`;
+      } else {
+        if (tbody) tbody.innerHTML = `<tr><td colspan="5">Error loading data: ${error.message}</td></tr>`;
       }
-      throw error;
+      return;
     }
 
     console.log('📊 Data loaded:', initialData?.length || 0, 'entries');
@@ -269,6 +410,7 @@ function drawLineDaily(labels, values) {
     // Initial render
     renderTable(initialData || []);
     
+    // Draw species chart
     const speciesPairs = buildSpeciesCounts(initialData || []);
     if (speciesPairs.length) {
       const top = speciesPairs.slice(0, 8);
@@ -277,13 +419,25 @@ function drawLineDaily(labels, values) {
       drawSpeciesBar(['No species yet'], [0]);
     }
 
+    // Draw timeline chart
     const dailyPairs = buildDailyCounts(initialData || []);
-    const lineLabels = dailyPairs.map(p => p[0]);
-    const lineValues = dailyPairs.map(p => p[1]);
-    drawLineDaily(lineLabels, lineValues);
+    if (dailyPairs.length) {
+      const lineLabels = dailyPairs.map(p => {
+        const date = new Date(p[0]);
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      });
+      const lineValues = dailyPairs.map(p => p[1]);
+      drawLineDaily(lineLabels, lineValues);
+    } else {
+      const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+      drawLineDaily([today], [0]);
+    }
 
+    // Generate insights
     const insights = generateInsights(initialData || []);
-    if (insightsEl) insightsEl.innerHTML = insights.map(x => `<div style="margin-bottom:8px">${x}</div>`).join('');
+    if (insightsEl) {
+      insightsEl.innerHTML = insights.map(x => `<div style="margin-bottom:8px">${x}</div>`).join('');
+    }
     
     updateSummary((initialData || []).length);
 
@@ -319,9 +473,14 @@ function drawLineDaily(labels, values) {
             }
             
             const dailyPairs = buildDailyCounts(updatedData);
-            const lineLabels = dailyPairs.map(p => p[0]);
-            const lineValues = dailyPairs.map(p => p[1]);
-            drawLineDaily(lineLabels, lineValues);
+            if (dailyPairs.length) {
+              const lineLabels = dailyPairs.map(p => {
+                const date = new Date(p[0]);
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+              });
+              const lineValues = dailyPairs.map(p => p[1]);
+              drawLineDaily(lineLabels, lineValues);
+            }
             
             const insights = generateInsights(updatedData);
             if (insightsEl) insightsEl.innerHTML = insights.map(x => `<div style="margin-bottom:8px">${x}</div>`).join('');
@@ -330,7 +489,9 @@ function drawLineDaily(labels, values) {
           }
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('📡 Subscription status:', status);
+      });
 
     console.log('✅ Real-time subscription active');
 
@@ -341,7 +502,10 @@ function drawLineDaily(labels, values) {
 
   } catch (e) {
     console.error('pharma-supabase init error', e);
-    if (tbody) tbody.innerHTML = `<tr><td colspan="5">Error loading data</td></tr>`;
+    if (tbody) tbody.innerHTML = `<tr><td colspan="5">Error loading data: ${e.message}</td></tr>`;
     if (insightsEl) insightsEl.innerHTML = `<div style="color:#f97373">Error: ${e.message}</div>`;
   }
 })();
+
+// Export for potential use in other modules
+export { renderTable, buildSpeciesCounts, buildDailyCounts, generateInsights };
