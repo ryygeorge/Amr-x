@@ -8,13 +8,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Leaflet -->
-  <link
-     rel="stylesheet"
-     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
-
 </head>
 <body>
 
@@ -42,10 +37,10 @@
   <!-- Greeting -->
   <section class="pharma-section greeting-section">
     <h1 id="welcomeText">Welcome, Pharmacist!</h1>
-    <p class="greeting-subtitle">Here’s a quick view of resistance and antibiotic use across your hospitals.</p>
+    <p class="greeting-subtitle">Here's a quick view of resistance and antibiotic use across your hospitals.</p>
   </section>
 
-  <!-- Hospital / AMR section (unchanged) -->
+  <!-- Hospital / AMR section -->
   <section class="pharma-section">
     <h2>AMR Dashboard</h2>
     <div class="summary-box">
@@ -84,7 +79,7 @@
     </div>
   </section>
 
-  <!-- Pharmacist Logs section (updated) -->
+  <!-- Pharmacist Logs section -->
   <section class="pharma-section" id="pharmacist-logs">
     <h2>Pharmacist Logs</h2>
 
@@ -130,18 +125,46 @@
       </table>
     </div>
   </section>
-  <section class="pharma-section">
-  <h2 style="text-align:center;">Resistance Heat Map</h2>
-  <div id="map" style="height:400px; border-radius:16px;"></div>
-  </section>
 
+  <!-- Kerala Districts AMR Map -->
+  <section class="pharma-section">
+    <h2>Kerala Districts AMR Map</h2>
+    
+    <div class="map-controls">
+      <label for="kerala-district-select">Select Kerala District:</label>
+      <select id="kerala-district-select" class="district-dropdown">
+        <option value="">-- Select a District --</option>
+        <option value="thiruvananthapuram">Thiruvananthapuram</option>
+        <option value="kollam">Kollam</option>
+        <option value="pathanamthitta">Pathanamthitta</option>
+        <option value="alappuzha">Alappuzha</option>
+        <option value="kottayam">Kottayam</option>
+        <option value="idukki">Idukki</option>
+        <option value="ernakulam">Ernakulam</option>
+        <option value="thrissur">Thrissur</option>
+        <option value="palakkad">Palakkad</option>
+        <option value="malappuram">Malappuram</option>
+        <option value="kozhikode">Kozhikode</option>
+        <option value="wayanad">Wayanad</option>
+        <option value="kannur">Kannur</option>
+        <option value="kasaragod">Kasaragod</option>
+      </select>
+    </div>
+    
+    <div id="kerala-map" style="height:500px; border-radius:16px; margin-top:15px;"></div>
+    
+    <div id="district-info" style="margin-top:20px; padding:15px; background:rgba(15,23,42,0.8); border-radius:12px; display:none;">
+      <h3 id="district-name" style="color:#22c1c3; margin-bottom:10px;"></h3>
+      <div id="district-details" style="color:#cbd5f5;"></div>
+    </div>
+  </section>
 </main>
 
 <footer>
   <p>&copy; 2025 AMR-X</p>
 </footer>
 
-<!-- Greeting script (unchanged) -->
+<!-- Greeting script -->
 <script>
 (async function () {
   let name = null;
@@ -173,7 +196,7 @@
 })();
 </script>
 
-<!-- Hospital dashboard scripts (unchanged) -->
+<!-- Hospital dashboard scripts -->
 <script>
 (async function () {
   let data;
@@ -238,24 +261,15 @@
 })();
 </script>
 
-
 <script type="module" src="scripts/supabase-init.js"></script>
 <script type="module" src="scripts/pharma-supabase.js"></script>
 
-<!-- Pharmacist UI listener: receives normalized entries and updates UI -->
+<!-- Pharmacist UI listener -->
 <script>
-/* Pharmacist UI updater
-   - listens to window 'pharmEntries' CustomEvent (detail = array of raw docs)
-   - safe chart handling: destroys old chart instances before creating new
-   - expects each doc to use fields: species, susceptibility, prescriptionDetails, clinicalNotes, createdAt
-*/
-
 (function () {
-  // keep references to created charts so we can destroy them cleanly
   let pharmBarChart = null;
   let pharmLineChart = null;
 
-  // helper: safely destroy Chart.js instance if present
   function safeDestroy(chart) {
     try { if (chart && typeof chart.destroy === 'function') chart.destroy(); } catch (e) { console.warn('destroy failed', e); }
   }
@@ -266,10 +280,8 @@
     if (existing) existing.destroy();
   }
 
-  // normalize single firestore doc into predictable object
   function normalizeDoc(raw) {
     const doc = raw || {};
-    // createdAt may be Firestore timestamp { seconds, nanoseconds } or number or ISO string
     let ts = null;
     if (doc.createdAt && typeof doc.createdAt === 'object' && doc.createdAt.seconds) {
       ts = doc.createdAt.seconds * 1000;
@@ -288,18 +300,15 @@
     };
   }
 
-  // event handler when firestore listener dispatches data
   function onEntries(e) {
     const raw = (e && e.detail) ? e.detail : [];
     const entries = Array.isArray(raw) ? raw.map(normalizeDoc) : [];
 
-    // Update summary
     const total = entries.length;
     const recent = entries.slice(0, 10).length;
     const summary = document.getElementById('pharm-summary');
     if (summary) summary.innerHTML = `<strong>Total Logs:</strong> ${total} &nbsp;|&nbsp; <strong>Recent:</strong> ${recent}`;
 
-    // Fill table: most recent first
     const tb = document.getElementById('pharmTbody');
     if (!entries.length) {
       tb.innerHTML = `<tr><td colspan="5">No pharmacist entries yet</td></tr>`;
@@ -317,7 +326,6 @@
       tb.innerHTML = rows;
     }
 
-    // Build species counts for bar chart
     const counts = {};
     for (const r of entries) {
       const k = (r.species || 'Unknown').trim() || 'Unknown';
@@ -327,7 +335,6 @@
     const barLabels = speciesPairs.map(p=>p[0]);
     const barValues = speciesPairs.map(p=>p[1]);
 
-    // Build daily totals for line chart
     const daily = {};
     for (const r of entries) {
       const d = new Date(r.ts);
@@ -338,31 +345,26 @@
     const lineLabels = dailySorted.map(p=>p[0]);
     const lineValues = dailySorted.map(p=>p[1]);
 
-    // Insights generation (simple, rule-based)
     const insights = [];
     if (barLabels.length) {
       insights.push(`<strong>Top species:</strong> ${barLabels.slice(0,3).join(', ')}`);
     } else {
       insights.push('<strong>Top species:</strong> none recorded');
     }
-    // scan susceptibility text for "resistant" tokens
+    
     const susText = entries.map(r => r.susceptibility || '').join(' || ').toLowerCase();
     const hasResistant = susText.includes('resistant') || susText.includes('r:');
     const hasSensitive = susText.includes('sensitive') || susText.includes('s:');
     if (hasResistant && !hasSensitive) insights.push('<strong>Note:</strong> Resistance mentions present — review antibiogram.');
     if (hasSensitive && !hasResistant) insights.push('<strong>Note:</strong> Mostly sensitive results recorded.');
 
-    // feedback/notes flags
     const notesText = entries.map(r=>r.notes||'').join(' || ').toLowerCase();
     const flags = ['severe','allergic','reaction','worse','ineffective','no change','moderate'].filter(k => notesText.includes(k));
     if (flags.length) insights.push(`<strong>Clinical flags:</strong> ${[...new Set(flags)].join(', ')}`);
 
     document.getElementById('pharmInsights').innerHTML = insights.map(x=>`<div style="margin-bottom:8px">${x}</div>`).join('');
 
-    // --- Charts: destroy previous instances before creating new ones ---
-    // Species bar chart
-    try { clearCanvas('pharmBar'); } catch(e){/*ignore*/}
-
+    try { clearCanvas('pharmBar'); } catch(e){}
     const barCtx = document.getElementById('pharmBar');
     if (barCtx) {
       try {
@@ -374,16 +376,14 @@
             plugins: { legend: { display: false } },
             scales: {
               x: { ticks: { color: '#e5edff' }, grid: { color: 'rgba(148,163,184,0.12)' } },
-              y: { ticks: { color: '#e5edff' }, grid: { color: 'rgba(148,163,184,0.12)' }, beginAtZero: true }
+              y: { ticks: { color: '#e5e7eb' }, grid: { color: 'rgba(148,163,184,0.12)' }, beginAtZero: true }
             }
           }
         });
       } catch (err) { console.warn('bar chart create failed', err); }
     }
 
-    // Entries line chart
-    try { clearCanvas('pharmLine'); } catch(e){/*ignore*/}
-
+    try { clearCanvas('pharmLine'); } catch(e){}
     const lineCtx = document.getElementById('pharmLine');
     if (lineCtx) {
       try {
@@ -403,10 +403,10 @@
           },
           options: {
             responsive: true,
-            plugins: { legend: { labels: { color: '#e5edff' } } },
+            plugins: { legend: { labels: { color: '#e5e7eb' } } },
             scales: {
-              x: { ticks: { color: '#e5edff' }, grid: { color: 'rgba(148,163,184,0.08)' } },
-              y: { ticks: { color: '#e5edff' }, grid: { color: 'rgba(148,163,184,0.08)' }, beginAtZero: true }
+              x: { ticks: { color: '#e5e7eb' }, grid: { color: 'rgba(148,163,184,0.08)' } },
+              y: { ticks: { color: '#e5e7eb' }, grid: { color: 'rgba(148,163,184,0.08)' }, beginAtZero: true }
             }
           }
         });
@@ -414,128 +414,310 @@
     }
   }
 
-  // listen for the custom event dispatched by pharma-firestore.js
   window.addEventListener('pharmEntries', onEntries, { passive: true });
 
-  // helper
   function escapeHtml(s) {
     return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
   }
 })();
-
 </script>
 
-<!-- load any auth UI module you already use -->
-
+<!-- Kerala Districts Map JavaScript - FIXED ZOOMING -->
+<!-- Kerala Districts Map JavaScript - FIXED ZOOMING -->
 <script>
+document.addEventListener('DOMContentLoaded', function () {
+  // Kerala districts data with optimized zoom levels
+  const keralaDistricts = {
+    'thiruvananthapuram': { 
+      lat: 8.5241, lng: 76.9366, zoom: 11,
+      cases: 145, resistant: 48, resistanceRate: '33.1%',
+      commonSpecies: ['E. coli', 'Klebsiella pneumoniae'],
+      hospitals: 8
+    },
+    'kollam': { 
+      lat: 8.8932, lng: 76.6141, zoom: 11,
+      cases: 92, resistant: 31, resistanceRate: '33.7%',
+      commonSpecies: ['Pseudomonas aeruginosa', 'E. coli'],
+      hospitals: 5
+    },
+    'pathanamthitta': { 
+      lat: 9.2648, lng: 76.7870, zoom: 12,
+      cases: 67, resistant: 22, resistanceRate: '32.8%',
+      commonSpecies: ['Acinetobacter baumannii'],
+      hospitals: 3
+    },
+    'alappuzha': { 
+      lat: 9.4981, lng: 76.3388, zoom: 11,
+      cases: 118, resistant: 41, resistanceRate: '34.7%',
+      commonSpecies: ['E. coli', 'Staphylococcus aureus'],
+      hospitals: 6
+    },
+    'kottayam': { 
+      lat: 9.5916, lng: 76.5222, zoom: 11,
+      cases: 156, resistant: 52, resistanceRate: '33.3%',
+      commonSpecies: ['Klebsiella pneumoniae', 'E. coli'],
+      hospitals: 7
+    },
+    'idukki': { 
+      lat: 9.8495, lng: 76.9391, zoom: 10,
+      cases: 58, resistant: 19, resistanceRate: '32.8%',
+      commonSpecies: ['Pseudomonas aeruginosa'],
+      hospitals: 2
+    },
+    'ernakulam': { 
+      lat: 9.9816, lng: 76.2999, zoom: 11,
+      cases: 234, resistant: 78, resistanceRate: '33.3%',
+      commonSpecies: ['E. coli', 'Klebsiella', 'Pseudomonas'],
+      hospitals: 12
+    },
+    'thrissur': { 
+      lat: 10.5276, lng: 76.2144, zoom: 11,
+      cases: 187, resistant: 62, resistanceRate: '33.2%',
+      commonSpecies: ['Staphylococcus aureus', 'E. coli'],
+      hospitals: 9
+    },
+    'palakkad': { 
+      lat: 10.7867, lng: 76.6548, zoom: 11,
+      cases: 132, resistant: 45, resistanceRate: '34.1%',
+      commonSpecies: ['Acinetobacter', 'Klebsiella'],
+      hospitals: 5
+    },
+    'malappuram': { 
+      lat: 11.0714, lng: 76.0740, zoom: 11,
+      cases: 165, resistant: 57, resistanceRate: '34.5%',
+      commonSpecies: ['E. coli', 'Pseudomonas'],
+      hospitals: 8
+    },
+    'kozhikode': { 
+      lat: 11.2588, lng: 75.7804, zoom: 11,
+      cases: 198, resistant: 69, resistanceRate: '34.8%',
+      commonSpecies: ['Klebsiella pneumoniae', 'E. coli'],
+      hospitals: 10
+    },
+    'wayanad': { 
+      lat: 11.6850, lng: 76.1320, zoom: 12,
+      cases: 76, resistant: 25, resistanceRate: '32.9%',
+      commonSpecies: ['Staphylococcus aureus'],
+      hospitals: 3
+    },
+    'kannur': { 
+      lat: 11.8745, lng: 75.3704, zoom: 11,
+      cases: 143, resistant: 47, resistanceRate: '32.9%',
+      commonSpecies: ['E. coli', 'Klebsiella'],
+      hospitals: 7
+    },
+    'kasaragod': { 
+      lat: 12.5000, lng: 74.9500, zoom: 11,
+      cases: 89, resistant: 29, resistanceRate: '32.6%',
+      commonSpecies: ['Pseudomonas aeruginosa'],
+      hospitals: 4
+    }
+  };
 
-  document.addEventListener('DOMContentLoaded', function () {
+  let map;
+  let currentDistrictMarker = null;
+  let districtMarkers = [];
 
-  let marker, circle, zoomed;
-
-  var map = L.map('map');
-  map.setView([51.505, -0.09], 13);
-
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
-
-/* ===============================
-   HEAT MAP – BACTERIAL RESISTANCE
-   Kerala (Randomized hotspots)
-================================ */
-
-// [latitude, longitude, intensity]
-// intensity: 0.2 (low resistance) → 1.0 (high resistance)
-
-const bacterialResistanceHeat = [
-
-  // Kochi (High resistance)
-  [9.9312, 76.2673, 0.9],
-  [9.9355, 76.2608, 0.85],
-  [9.9251, 76.2799, 0.8],
-
-  // Kottayam (Medium–High)
-  [9.5916, 76.5222, 0.7],
-  [9.5988, 76.5351, 0.65],
-
-  // Trivandrum (Medium)
-  [8.5241, 76.9366, 0.6],
-  [8.5302, 76.9423, 0.55],
-
-  // Thrissur (Medium–Low)
-  [10.5276, 76.2144, 0.5],
-  [10.5333, 76.2208, 0.45],
-
-  // Kozhikode
-  [11.2588, 75.7804, 0.6],
-  [11.2662, 75.7841, 0.55],
-
-  // Alappuzha
-  [9.4981, 76.3388, 0.5],
-
-  // Palakkad
-  [10.7867, 76.6548, 0.45]
-];
-
-
-/* ===============================
-   ADD HEATMAP TO EXISTING MAP
-================================ */
-
-L.heatLayer(bacterialResistanceHeat, {
-  radius: 35,
-  blur: 25,
-  maxZoom: 12,
-  gradient: {
-    0.2: 'blue',     // low resistance
-    0.4: 'cyan',
-    0.6: 'yellow',   // moderate
-    0.8: 'orange',
-    1.0: 'red'       // high resistance
+  // Initialize the map
+  function initMap() {
+    // Changed ID from 'map' to 'kerala-map' to avoid conflict
+    map = L.map('kerala-map').setView([10.8505, 76.2711], 8);
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+    
+    // Add Kerala boundary for reference
+    addKeralaBoundary();
+    
+    // Setup dropdown - NO district markers by default
+    setupDistrictDropdown();
+    
+    // Add heat map
+    addHeatMap();
   }
-}).addTo(map);
 
-
-navigator.geolocation.watchPosition(success, error);
-
-
-
-function success(pos){
-
-    const lat = pos.coords.latitude;
-    const lng = pos.coords.longitude;
-    const accuracy = pos.coords.accuracy;
-
-    if(marker){
-        map.removeLayer(marker);
-        map.removeLayer(circle);
-    }
-   marker =  L.marker([lat, lng]).addTo(map);
-   circle =  L.circle([lat, lng],{ radius: accuracy}).addTo(map);
-
-
-   if(!zoomed){
-      zoomed = map.fitBounds(circle.getBounds());
-   }
-
-   map.setView([lat, lng]);
+  // Add Kerala boundary
+  function addKeralaBoundary() {
+    // Simple Kerala polygon coordinates
+    const keralaCoords = [
+      [8.4, 76.2],
+      [8.4, 77.5],
+      [12.8, 77.5],
+      [12.8, 74.8],
+      [8.4, 76.2]
+    ];
     
-}
+    L.polygon(keralaCoords, {
+      color: '#22c1c3',
+      weight: 2,
+      opacity: 0.3,
+      fillColor: '#22c1c3',
+      fillOpacity: 0.03
+    }).addTo(map);
+  }
 
-function error(err){
+  // Add heat map for AMR resistance
+  function addHeatMap() {
+    const heatData = [];
     
-    if(err.code == 1) {
-      alert("Please allow geoloaction access");
-    }else{
-      alert("Cannot get your current location");
+    Object.entries(keralaDistricts).forEach(([district, data]) => {
+      const intensity = data.resistant / data.cases;
+      // Add heat points based on resistance
+      for (let i = 0; i < 3; i++) {
+        const latOffset = (Math.random() - 0.5) * 0.05;
+        const lngOffset = (Math.random() - 0.5) * 0.05;
+        heatData.push([data.lat + latOffset, data.lng + lngOffset, intensity]);
+      }
+    });
+    
+    L.heatLayer(heatData, {
+      radius: 35,
+      blur: 20,
+      maxZoom: 12,
+      gradient: {
+        0.2: 'blue',
+        0.4: 'cyan',
+        0.6: 'yellow',
+        0.7: 'orange',
+        0.8: 'red',
+        1.0: 'darkred'
+      }
+    }).addTo(map);
+  }
+
+  // Setup dropdown functionality
+  function setupDistrictDropdown() {
+    const dropdown = document.getElementById('kerala-district-select');
+    
+    dropdown.addEventListener('change', function() {
+      const selectedDistrict = this.value;
+      
+      if (!selectedDistrict) {
+        // Reset to full Kerala view
+        map.setView([10.8505, 76.2711], 8);
+        document.getElementById('district-info').style.display = 'none';
+        
+        // Remove all markers
+        removeAllDistrictMarkers();
+        return;
+      }
+      
+      showDistrictInfo(selectedDistrict);
+      zoomToDistrict(selectedDistrict);
+    });
+  }
+
+  // Remove all district markers
+  function removeAllDistrictMarkers() {
+    districtMarkers.forEach(marker => {
+      map.removeLayer(marker);
+    });
+    districtMarkers = [];
+    
+    if (currentDistrictMarker) {
+      map.removeLayer(currentDistrictMarker);
+      currentDistrictMarker = null;
     }
-}
+  }
+
+  // Show district information panel
+  function showDistrictInfo(districtKey) {
+    const district = keralaDistricts[districtKey];
+    if (!district) return;
+    
+    const infoPanel = document.getElementById('district-info');
+    const districtName = document.getElementById('district-name');
+    const districtDetails = document.getElementById('district-details');
+    
+    districtName.textContent = formatDistrictName(districtKey);
+    districtDetails.innerHTML = `
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 15px 0;">
+        <div style="text-align: center; padding: 12px; background: rgba(34, 193, 195, 0.1); border-radius: 8px;">
+          <div style="font-size: 24px; font-weight: bold; color: #22c1c3;">${district.cases}</div>
+          <div style="font-size: 12px; color: #94a3b8;">Total Cases</div>
+        </div>
+        <div style="text-align: center; padding: 12px; background: rgba(239, 68, 68, 0.1); border-radius: 8px;">
+          <div style="font-size: 24px; font-weight: bold; color: #ef4444;">${district.resistant}</div>
+          <div style="font-size: 12px; color: #94a3b8;">Resistant Cases</div>
+        </div>
+      </div>
+      <div style="margin-top: 10px;">
+        <p><strong>Resistance Rate:</strong> ${district.resistanceRate}</p>
+        <p><strong>Common Bacterial Species:</strong> ${district.commonSpecies.join(', ')}</p>
+        <p><strong>Number of Hospitals:</strong> ${district.hospitals}</p>
+        <p><strong>Priority Level:</strong> <span style="color: ${district.resistant > 50 ? '#ef4444' : district.resistant > 20 ? '#f59e0b' : '#10b981'}">${district.resistant > 50 ? 'High' : district.resistant > 20 ? 'Medium' : 'Low'}</span></p>
+      </div>
+    `;
+    
+    infoPanel.style.display = 'block';
+  }
+
+  // Zoom to selected district
+  function zoomToDistrict(districtKey) {
+    const district = keralaDistricts[districtKey];
+    if (!district) {
+      console.error('District not found:', districtKey);
+      return;
+    }
+    
+    console.log('Zooming to:', districtKey, 'at', district.lat, district.lng, 'zoom:', district.zoom);
+    
+    // Remove all previous markers
+    removeAllDistrictMarkers();
+    
+    // Add marker ONLY for selected district
+    currentDistrictMarker = L.marker([district.lat, district.lng], {
+      icon: L.divIcon({
+        html: `<div style="
+          width: 16px;
+          height: 16px;
+          background: #22c1c3;
+          border: 2px solid white;
+          border-radius: 50%;
+          box-shadow: 0 0 10px rgba(34, 193, 195, 0.8);
+        "></div>`,
+        iconSize: [16, 16],
+        className: 'selected-district-marker'
+      })
+    }).addTo(map);
+    
+    districtMarkers.push(currentDistrictMarker);
+    
+    currentDistrictMarker.bindPopup(`
+      <div style="padding: 10px; min-width: 220px;">
+        <strong style="color: #22c1c3; font-size: 1.1em;">${formatDistrictName(districtKey)} District</strong><br>
+        <div style="margin-top: 8px; font-size: 0.9em;">
+          <strong>Total Cases:</strong> ${district.cases}<br>
+          <strong>Resistant Cases:</strong> ${district.resistant}<br>
+          <strong>Resistance Rate:</strong> ${district.resistanceRate}<br>
+          <strong>Common Species:</strong> ${district.commonSpecies.join(', ')}<br>
+          <strong>Hospitals:</strong> ${district.hospitals}
+        </div>
+      </div>
+    `).openPopup();
+    
+    // Smooth zoom to district
+    map.flyTo([district.lat, district.lng], district.zoom, {
+      duration: 1.5,
+      easeLinearity: 0.25
+    });
+  }
+
+  // Format district name (capitalize first letters)
+  function formatDistrictName(key) {
+    return key
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+
+  // Initialize the map
+  initMap();
 });
 </script>
 
-<!-- load any auth UI module you already use -->
 <script type="module" src="scripts/auth-ui.js"></script>
 </body>
 </html>

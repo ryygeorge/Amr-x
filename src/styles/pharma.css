@@ -17,7 +17,6 @@ body {
 }
 
 /* BACKGROUND GRADIENT (no image) */
-
 body::before {
   content: "";
   position: fixed;
@@ -30,7 +29,6 @@ body::before {
 }
 
 /* HEADER / NAVBAR */
-
 header {
   position: fixed;
   top: 0;
@@ -39,14 +37,12 @@ header {
   background: linear-gradient(to bottom, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.4), transparent);
   backdrop-filter: blur(12px);
 }
-/* ====== Profile chip & header spacing (AMR-X) ====== */
 
-/* Reserve right-side header space to avoid overlap.
-   Reduced to 110px so nav doesn't look empty. */
+/* ====== Profile chip & header spacing ====== */
 .landing-nav { padding-right: 110px; }
 .navbar .nav-right { margin-right: 110px; }
 
-/* Placeholder for profile, absolutely positioned inside header (.topbar or .navbar). */
+/* Placeholder for profile */
 #profilePlaceholder,
 .amrx-profile-fallback {
   position: absolute;
@@ -56,7 +52,7 @@ header {
   display: flex;
   align-items: center;
   z-index: 60;
-  pointer-events: none; /* skeleton is non-interactive; will be enabled when real chip created */
+  pointer-events: none;
   min-width: 0;
 }
 
@@ -220,7 +216,6 @@ header {
 }
 
 /* MAIN LAYOUT */
-
 main {
   max-width: 1100px;
   margin: 90px auto 0;
@@ -228,7 +223,6 @@ main {
 }
 
 /* SECTIONS */
-
 .pharma-section {
   padding: 26px 0 28px 0;
 }
@@ -242,7 +236,6 @@ main {
 }
 
 /* GREETING */
-
 .greeting-section {
   text-align: center;
   padding-top: 12px;
@@ -263,7 +256,6 @@ main {
 }
 
 /* SUMMARY BOX */
-
 .summary-box {
   background: rgba(15, 23, 42, 0.96);
   border-radius: 18px;
@@ -277,7 +269,6 @@ main {
 }
 
 /* GRAPHS LAYOUT */
-
 .pharma-content {
   display: flex;
   flex-wrap: wrap;
@@ -306,7 +297,6 @@ main {
 }
 
 /* TABLES */
-
 .data-table {
   background: #020617;
   border-radius: 20px;
@@ -347,7 +337,6 @@ main {
 }
 
 /* FOOTER */
-
 footer {
   background: transparent;
   color: #94a3b8;
@@ -357,7 +346,6 @@ footer {
 }
 
 /* RESPONSIVE */
-
 @media (max-width: 900px) {
   .nav-left {
     position: static;
@@ -409,14 +397,61 @@ footer {
 }
 
 /* === ADDITIONAL SMALL STYLES FOR PHARMACIST LOGS INSIGHTS & LAYOUT === */
-
-/* Insights panel */
 #pharmInsights { color: #cbd5f5; line-height: 1.35; }
 #pharmInsights strong { color: #e5e7eb; }
 
-/* Ensure graph-box group wraps nicely */
 .pharma-content .graph-box { min-width: 260px; }
 @media (max-width: 900px) {
   .pharma-content { flex-direction: column; align-items: stretch; }
   .pharma-content .graph-box { max-width: 100%; }
+}
+
+/* Kerala Districts Map Controls */
+.map-controls {
+  margin: 15px auto 25px;
+  max-width: 400px;
+  text-align: center;
+}
+
+.map-controls label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #e5e7eb;
+  font-size: 0.95rem;
+}
+
+.district-dropdown {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid rgba(51, 65, 85, 0.9);
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.95);
+  color: #e5e7eb;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23e5e7eb' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 16px;
+}
+
+.district-dropdown:hover {
+  border-color: #22c1c3;
+  box-shadow: 0 0 0 3px rgba(34, 193, 195, 0.1);
+}
+
+.district-dropdown:focus {
+  outline: none;
+  border-color: #22c1c3;
+  box-shadow: 0 0 0 3px rgba(34, 193, 195, 0.2);
+}
+
+/* Custom marker for selected district */
+.selected-district-marker {
+  background: #22c1c3 !important;
+  border: 3px solid white !important;
+  box-shadow: 0 0 20px rgba(34, 193, 195, 0.8) !important;
 }
