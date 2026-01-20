@@ -266,3 +266,52 @@ footer {
     height: 34px;
   }
 }
+
+/* Add to the end of your existing signup.css */
+
+/* District select styling */
+.district-select {
+  margin-top: 4px;
+  padding: 11px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.9);
+  background: rgba(8, 17, 42, 0.97);
+  color: #e5edff;
+  font-size: 0.95rem;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #9fb5ff 50%),
+                  linear-gradient(135deg, #9fb5ff 50%, transparent 50%);
+  background-position: calc(100% - 16px) 14px, calc(100% - 11px) 14px;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+.district-select:focus {
+  border-color: #22c1c3;
+  box-shadow: 0 0 0 1px rgba(34, 193, 195, 0.6);
+  background: rgba(10, 21, 50, 1);
+}
+
+.district-select option {
+  background: #08112a;
+  color: #e5edff;
+}
+
+/* Upload success state for button */
+.upload-success {
+  background: linear-gradient(120deg, #10b981, #059669) !important;
+  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.45) !important;
+}
+
+/* Smooth transitions */
+.location-card, .pharmacy-section {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

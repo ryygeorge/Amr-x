@@ -1,4 +1,4 @@
-// scripts/pharma-supabase.js
+// scripts/pharma-supabase.js - COMPLETE FIXED VERSION
 import { supabase } from './supabase-init.js';
 
 // DOM refs
@@ -11,6 +11,62 @@ const insightsEl = document.getElementById('pharmInsights');
 // Chart.js chart instances
 let barChart = null;
 let lineChart = null;
+
+// Check authentication and get pharmacist info
+async function checkPharmacistAuth() {
+  try {
+    // Get current user
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) {
+      console.error('Authentication error:', authError);
+      window.location.href = 'login.html?role=pharma';
+      return null;
+    }
+
+    // Get pharmacist profile
+    const { data: pharmacist, error: profileError } = await supabase
+      .from('pharmacists')
+      .select('full_name, pharmacy_name, district, is_verified')
+      .eq('id', user.id)
+      .single();
+
+    if (profileError) {
+      console.warn('Could not fetch pharmacist profile:', profileError);
+      // Continue with basic user info
+      return {
+        id: user.id,
+        name: user.user_metadata?.name || user.email?.split('@')[0],
+        email: user.email
+      };
+    }
+
+    // Update welcome message on dashboard
+    const welcomeText = document.getElementById('welcomeText');
+    const greetingSubtitle = document.querySelector('.greeting-subtitle');
+    
+    if (welcomeText && pharmacist) {
+      const firstName = pharmacist.full_name?.split(' ')[0] || pharmacist.pharmacy_name || 'Pharmacist';
+      welcomeText.textContent = `Welcome, ${firstName}!`;
+    }
+    
+    if (greetingSubtitle && pharmacist) {
+      greetingSubtitle.textContent = `AMR-X Dashboard for ${pharmacist.pharmacy_name} in ${pharmacist.district} District, Kerala`;
+    }
+
+    return {
+      id: user.id,
+      name: pharmacist.full_name,
+      pharmacy_name: pharmacist.pharmacy_name,
+      district: pharmacist.district,
+      email: user.email,
+      is_verified: pharmacist.is_verified
+    };
+
+  } catch (error) {
+    console.error('Auth check error:', error);
+    return null;
+  }
+}
 
 // Dispatch event for backward compatibility with inline script
 function dispatchPharmEntriesEvent(items) {
@@ -365,27 +421,21 @@ function drawLineDaily(labels, values) {
   try {
     console.log('🔄 Initializing pharma-supabase...');
     
-    // Get current user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError) {
-      console.error('Auth error:', authError);
-      if (tbody) tbody.innerHTML = `<tr><td colspan="5">Authentication error</td></tr>`;
-      return;
-    }
-    
-    if (!user) {
-      console.log('No user logged in');
+    // Check authentication and get pharmacist info
+    const pharmacist = await checkPharmacistAuth();
+    if (!pharmacist) {
+      console.log('No authenticated pharmacist');
       if (tbody) tbody.innerHTML = `<tr><td colspan="5">Please login to view data</td></tr>`;
       return;
     }
 
-    console.log('✅ User found:', user.email);
+    console.log('✅ Pharmacist found:', pharmacist.name, 'from', pharmacist.district);
 
-    // Initial fetch
+    // Initial fetch - filter by pharmacist's user_id
     const { data: initialData, error } = await supabase
       .from('pharmacist_entries')
       .select('*')
-      .eq('user_id', user.id)
+      .eq('user_id', pharmacist.id)
       .order('created_at', { ascending: false })
       .limit(500);
 
@@ -450,7 +500,7 @@ function drawLineDaily(labels, values) {
           event: '*',
           schema: 'public',
           table: 'pharmacist_entries',
-          filter: `user_id=eq.${user.id}`
+          filter: `user_id=eq.${pharmacist.id}`
         },
         async (payload) => {
           console.log('🔄 Real-time update:', payload.eventType);
@@ -459,7 +509,7 @@ function drawLineDaily(labels, values) {
           const { data: updatedData, error: fetchError } = await supabase
             .from('pharmacist_entries')
             .select('*')
-            .eq('user_id', user.id)
+            .eq('user_id', pharmacist.id)
             .order('created_at', { ascending: false })
             .limit(500);
 

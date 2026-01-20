@@ -1,94 +1,57 @@
-// Backend/server.js - MINIMAL WORKING VERSION
+// Backend/server.js - UPDATED VERSION
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 
 const app = express();
+const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://127.0.0.1:5500', 'http://localhost:3000'],
+  credentials: true
+}));
 app.use(express.json());
 
-// Create uploads directory
-const UPLOAD_DIR = path.join(__dirname, 'uploads');
-if (!fs.existsSync(UPLOAD_DIR)) {
-  fs.mkdirSync(UPLOAD_DIR, { recursive: true });
-}
-
-// Configure multer
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, UPLOAD_DIR),
-  filename: (req, file, cb) => {
-    const safeName = file.originalname.replace(/[^\w.\-]/g, '_');
-    cb(null, Date.now() + '-' + safeName);
-  }
-});
-
-const upload = multer({
-  storage,
-  limits: { fileSize: 1024 * 1024 * 100 }, // 100MB
-  fileFilter: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    const allowed = ['.csv', '.xlsx', '.xls', '.pdf'];
-    if (!allowed.includes(ext)) {
-      return cb(new Error('Only CSV, Excel, and PDF files allowed'));
-    }
-    cb(null, true);
-  }
-});
+// Import routes
+const ingestUploadRoute = require('./routes/ingestUpload');
 
 // Routes
+app.use('/api', ingestUploadRoute);
+
+// Health check
 app.get('/api/health', (req, res) => {
   res.json({ 
     ok: true, 
-    message: 'AMR-X Backend Running',
-    timestamp: new Date().toISOString()
+    message: 'AMR-X Backend Running (Supabase Storage Mode)',
+    timestamp: new Date().toISOString(),
+    storage_mode: 'supabase_cloud',
+    routes: [
+      'POST /api/ingest-upload',
+      'GET  /api/health'
+    ]
   });
 });
 
-app.post('/api/upload', upload.array('files'), (req, res) => {
-  try {
-    if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ ok: false, msg: 'No files uploaded' });
-    }
-
-    const files = req.files.map(file => ({
-      id: Date.now() + Math.random(),
-      name: file.originalname,
-      size: file.size,
-      storedAs: file.filename,
-      path: file.path
-    }));
-
-    console.log('Files uploaded:', files);
-    
-    res.json({
-      ok: true,
-      message: `Successfully uploaded ${files.length} file(s)`,
-      files: files
-    });
-    
-  } catch (error) {
-    console.error('Upload error:', error);
-    res.status(500).json({ ok: false, msg: error.message });
-  }
+// 404 handler
+app.use((req, res, next) => {
+  res.status(404).json({ ok: false, msg: 'Route not found' });
 });
 
 // Error handling
 app.use((err, req, res, next) => {
-  if (err instanceof multer.MulterError) {
-    return res.status(400).json({ ok: false, msg: `File error: ${err.message}` });
-  }
-  res.status(500).json({ ok: false, msg: err.message });
+  console.error('Server error:', err);
+  res.status(500).json({ 
+    ok: false, 
+    msg: 'Internal server error',
+    details: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
 });
 
-// Start server
-const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`✅ AMR-X Backend running on http://localhost:${PORT}`);
-  console.log(`📤 Upload endpoint: POST http://localhost:${PORT}/api/upload`);
+  console.log(`\n✅ AMR-X Backend running on http://localhost:${PORT}`);
+  console.log(`📤 Ingest endpoint: POST http://localhost:${PORT}/api/ingest-upload`);
   console.log(`🩺 Health check: GET http://localhost:${PORT}/api/health`);
+  console.log(`🚫 Local storage: DISABLED (Using Supabase Storage)`);
+  console.log(`📁 Backend mode: API Only (No file storage)\n`);
 });

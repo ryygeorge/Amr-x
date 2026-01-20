@@ -1,29 +1,8 @@
-// scripts/login.js
+// scripts/login.js - UPDATED FOR PHARMACIST SYSTEM
 import { supabase } from "./supabase-init.js";
 
-// URL role hint: ?role=pharma | admin | clinician
-const params = new URLSearchParams(window.location.search);
-const urlRole = params.get("role");
-
-const loginTitle = document.getElementById("loginTitle");
-const loginSubtitle = document.getElementById("loginSubtitle");
-const signupLink = document.getElementById("signupLink");
 const loginForm = document.getElementById("loginForm");
 const loginError = document.getElementById("loginError");
-
-// Role-based UI text
-if (urlRole === "pharma") {
-  loginTitle.textContent = "Login to Pharmacist Portal";
-  signupLink.href = "signup.html?role=pharma";
-} else if (urlRole === "admin") {
-  loginTitle.textContent = "Login to Admin Portal";
-  signupLink.href = "signup.html?role=admin";
-} else if (urlRole === "clinician") {
-  loginTitle.textContent = "Login to Clinician Portal";
-  signupLink.href = "signup.html?role=clinician";
-} else {
-  signupLink.href = "signup.html";
-}
 
 // Handle login
 loginForm.addEventListener("submit", async (e) => {
@@ -48,75 +27,68 @@ loginForm.addEventListener("submit", async (e) => {
       throw new Error("No user returned from authentication");
     }
 
-    // 2) Check if user exists in our users table
-    let userProfile = null;
+    // 2) Check if user is a pharmacist
+    let pharmacistProfile = null;
     const { data: profileData, error: profileError } = await supabase
-      .from('users')
+      .from('pharmacists')
       .select('*')
       .eq('id', user.id)
-      .maybeSingle(); // Use maybeSingle instead of single to avoid throwing if not found
+      .maybeSingle();
 
     if (!profileError && profileData) {
-      userProfile = profileData;
+      pharmacistProfile = profileData;
     }
 
-    // 3) If user doesn't exist in users table, create it automatically
-    if (!userProfile) {
-      const displayName = user.user_metadata?.name || email.split("@")[0];
-      const userRole = user.user_metadata?.role || urlRole || "clinician";
-      
-      // Normalize role
-      let normalizedRole = String(userRole).trim().toLowerCase();
-      if (normalizedRole === "pharmacist") normalizedRole = "pharma";
-      if (normalizedRole === "clinicist") normalizedRole = "clinician";
-      if (!normalizedRole) normalizedRole = "clinician";
-      
-      // Insert user profile
-      const { error: insertError } = await supabase
+    // 3) If not a pharmacist, check users table (for backwards compatibility)
+    if (!pharmacistProfile) {
+      const { data: userProfile } = await supabase
         .from('users')
-        .insert([
-          {
-            id: user.id,
-            name: displayName,
-            email: user.email,
-            role: normalizedRole
-          }
-        ])
-        .select()
-        .single();
+        .select('*')
+        .eq('id', user.id)
+        .maybeSingle();
       
-      if (!insertError) {
-        userProfile = { name: displayName, role: normalizedRole };
-      } else if (insertError.code === '23505') {
-        // Duplicate key - user already exists, fetch it
-        const { data: existingUser } = await supabase
-          .from('users')
-          .select('*')
-          .eq('id', user.id)
-          .single();
-        if (existingUser) userProfile = existingUser;
+      // If user exists in old system, migrate to pharmacists table
+      if (userProfile) {
+        const { error: migrateError } = await supabase
+          .from('pharmacists')
+          .insert([
+            {
+              id: user.id,
+              email: user.email,
+              full_name: userProfile.name || user.user_metadata?.name,
+              pharmacy_name: "Unknown Pharmacy",
+              district: "Unknown",
+              state: "Kerala",
+              country: "India",
+              is_verified: false
+            }
+          ]);
+        
+        if (!migrateError) {
+          pharmacistProfile = { 
+            full_name: userProfile.name,
+            pharmacy_name: "Unknown Pharmacy",
+            district: "Unknown" 
+          };
+        }
       }
     }
 
-    // 4) Get final user data
-    const displayName = userProfile?.name || user.user_metadata?.name || email.split("@")[0];
-    const userRole = userProfile?.role || user.user_metadata?.role || urlRole || "clinician";
+    // 4) Get display name and store data
+    const displayName = pharmacistProfile?.full_name || 
+                       user.user_metadata?.name || 
+                       email.split("@")[0];
     
-    // Normalize role again for safety
-    let normalizedRole = String(userRole).trim().toLowerCase();
-    if (normalizedRole === "pharmacist") normalizedRole = "pharma";
-    if (normalizedRole === "clinicist") normalizedRole = "clinician";
-    if (!normalizedRole) normalizedRole = "clinician";
+    const pharmacyName = pharmacistProfile?.pharmacy_name || "Unknown Pharmacy";
+    const district = pharmacistProfile?.district || "Unknown";
 
-    // 5) Save to localStorage
-    try {
-      localStorage.setItem("pharmaName", displayName);
-      localStorage.setItem("role", normalizedRole);
-    } catch (err) {
-      console.warn("localStorage error:", err.message);
-    }
+    // Store in localStorage for greeting
+    localStorage.setItem("pharmaName", displayName);
+    localStorage.setItem("userName", displayName);
+    localStorage.setItem("pharmacyName", pharmacyName);
+    localStorage.setItem("district", district);
 
-    // 6) Redirect
+    // 5) Redirect to dashboard
     window.location.href = "pharma.html";
 
   } catch (error) {

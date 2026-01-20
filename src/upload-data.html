@@ -58,18 +58,36 @@
   <p>&copy; 2025 AMR-X</p>
 </footer>
 
-<!-- Upload logic (Storage + Firestore metadata) -->
+<!-- In upload-data.html, add this BEFORE upload-data.js -->
+<script type="module" src="scripts/supabase-init.js"></script>
 <script type="module" src="scripts/upload-data.js"></script>
 <!-- Existing auth/profile UI -->
 <script type="module" src="scripts/auth-ui.js"></script>
+<!-- Add this right before closing -->
+<script>
+  // Debug script to check if supabase loads
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Page loaded, checking Supabase...');
+    
+    // Check every second if supabase loads
+    const checkSupabase = setInterval(() => {
+      if (window.supabase) {
+        console.log('✅ Supabase is now available:', window.supabase);
+        clearInterval(checkSupabase);
+        
+        // Test storage connection
+        window.supabase.storage.from('uploads').list().then(result => {
+          console.log('Storage bucket check:', result.error ? 'Error' : 'OK');
+        });
+      } else {
+        console.log('⏳ Waiting for Supabase to load...');
+      }
+    }, 1000);
+    
+    // Stop checking after 10 seconds
+    setTimeout(() => clearInterval(checkSupabase), 10000);
+  });
+</script>
 </body>
 </html>
 
-
- apiKey: "AIzaSyDdmFP5OKVl-hRdeODEvLOzKq4_vKnr-tY",
-    authDomain: "amr-xp.firebaseapp.com",
-    projectId: "amr-xp",
-    storageBucket: "amr-xp.firebasestorage.app",
-    messagingSenderId: "656857018113",
-    appId: "1:656857018113:web:7a28925019022878597500",
-    measurementId: "G-H7P34PN5WS"
