@@ -22,6 +22,23 @@
     .verify-btn:hover { background: #0da271; }
     .verify-btn:disabled { background: #94a3b8; cursor: not-allowed; }
     .verified { color: #10b981; font-weight: 600; }
+        /* Force admin table text to solid black */
+    #pharmacistsTable th,
+    #pharmacistsTable td {
+      color: #000 !important;
+      opacity: 1 !important;
+    }
+    
+    /* Email text (in case browser styles it as a link) */
+    #pharmacistsTable td a {
+      color: #71a3e1 !important;
+    }
+    
+    /* Pending status text */
+    #pharmacistsTable td:not(.verified) {
+      color: #4f84c5 !important;
+    }
+    
   </style>
 </head>
 <body>
@@ -38,7 +55,7 @@
     <h2 style="margin-bottom: 15px;">Pharmacists by District</h2>
     <table id="pharmacistsTable">
       <thead>
-        <tr>
+        <tr id="navbar">
           <th>Pharmacy</th>
           <th>Email</th>
           <th>District</th>
@@ -139,8 +156,15 @@
           .select('district, is_verified');
         
         const { data: uploads } = await supabase
-          .from('uploads')
-          .select('district');
+        .from('uploads')
+        .select('pharmacist_id');
+
+        const uploadCount = {};
+        uploads.forEach(u => {
+          uploadCount[u.pharmacist_id] =
+            (uploadCount[u.pharmacist_id] || 0) + 1;
+        });
+
         
         // Calculate stats
         const totalPharmacists = pharmacists?.length || 0;
@@ -174,61 +198,68 @@
     
     async function loadPharmacists() {
       try {
-        const { data: pharmacists, error } = await supabase
+        // 1️⃣ Get pharmacists
+        const { data: pharmacists, error: pharmaError } = await supabase
           .from('pharmacists')
-          .select(`
-            *,
-            uploads(count)
-          `)
+          .select('*')
           .order('created_at', { ascending: false });
-        
-        if (error) {
-          console.error('Error loading pharmacists:', error);
-          document.querySelector('#pharmacistsTable tbody').innerHTML = `
-            <tr>
-              <td colspan="6" style="text-align: center; padding: 30px; color: #ef4444;">
-                Error loading pharmacists: ${error.message}
-              </td>
-            </tr>
-          `;
-          return;
-        }
-        
+      
+        if (pharmaError) throw pharmaError;
+      
+        // 2️⃣ Get uploads (only pharmacist_id needed)
+        const { data: uploads, error: uploadError } = await supabase
+          .from('uploads')
+          .select('pharmacist_id');
+      
+        if (uploadError) throw uploadError;
+      
+        // 3️⃣ Count uploads per pharmacist
+        const uploadCountMap = {};
+        uploads.forEach(u => {
+          uploadCountMap[u.pharmacist_id] =
+            (uploadCountMap[u.pharmacist_id] || 0) + 1;
+        });
+      
+        // 4️⃣ Render table
         const tbody = document.querySelector('#pharmacistsTable tbody');
+      
         if (!pharmacists || pharmacists.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px;">No pharmacists found</td></tr>';
+          tbody.innerHTML =
+            '<tr><td colspan="6" style="text-align:center; padding:30px;">No pharmacists found</td></tr>';
           return;
         }
-        
+      
         tbody.innerHTML = pharmacists.map(p => `
           <tr>
             <td><strong>${p.pharmacy_name || 'Unknown Pharmacy'}</strong></td>
             <td>${p.email}</td>
             <td><span class="district-badge">${p.district || 'Unknown'}</span></td>
-            <td>${p.uploads?.[0]?.count || 0}</td>
+            <td>${uploadCountMap[p.id] || 0}</td>
             <td class="${p.is_verified ? 'verified' : ''}">
               ${p.is_verified ? '✓ Verified' : 'Pending'}
             </td>
             <td>
-              <button class="verify-btn" 
-                      onclick="verifyPharmacist('${p.id}')"
-                      ${p.is_verified ? 'disabled' : ''}>
+              <button class="verify-btn"
+                onclick="verifyPharmacist('${p.id}')"
+                ${p.is_verified ? 'disabled' : ''}>
                 ${p.is_verified ? 'Verified' : 'Verify'}
               </button>
             </td>
           </tr>
         `).join('');
+        
       } catch (error) {
-        console.error('Error in loadPharmacists:', error);
+        console.error('Error loading pharmacists:', error);
         document.querySelector('#pharmacistsTable tbody').innerHTML = `
           <tr>
-            <td colspan="6" style="text-align: center; padding: 30px; color: #ef4444;">
-              Error: ${error.message}
+            <td colspan="6" style="text-align:center; padding:30px; color:#ef4444;">
+              ${error.message}
             </td>
           </tr>
         `;
       }
     }
+
     
     // Global function for button click
     window.verifyPharmacist = async (pharmacistId) => {
@@ -272,6 +303,8 @@
       // Make logout function available globally
       window.logout = logout;
     })();
+
+    
   </script>
 </body>
 </html>
