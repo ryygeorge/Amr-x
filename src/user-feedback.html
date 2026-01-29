@@ -72,7 +72,80 @@
           <option value="often">Often (&gt;3 per month)</option>
         </select>
       </div>
+      
+      <div class="form-group">
+        <label for="pastAntibioticUse">Antibiotic use</label>
+        <!-- <textarea
+          id="pastAntibioticUse"
+          rows="3"
+          placeholder="Which antibiotics have you used and when?"
+        ></textarea> -->
 
+        <select id="infectionFrequency" required>
+          <option value="">Select</option>
+          <option value="Amikacin">Amikacin</option>
+          <option value="Amoxicillin/Clavulanic Acid">Amoxicillin/Clavulanic Acid</option>
+          <option value="Ampicillin">Ampicillin</option>
+          <option value="Ampicillin/Sulbactam">Ampicillin/Sulbactam</option>
+          <option value="Aztreonam">Aztreonam</option>
+          <option value="Cefazolin">Cefazolin</option>
+          <option value="Cefepime">Cefepime</option>
+          <option value="Cefiderocol">Cefiderocol</option>
+          <option value="Cefotaxime">Cefotaxime</option>
+          <option value="Cefotetan">Cefotetan</option>
+          <option value="Cefoxitin">Cefoxitin</option>
+          <option value="Cefpodoxime">Cefpodoxime</option>
+          <option value="Ceftaroline">Ceftaroline</option>
+          <option value="Ceftazidime">Ceftazidime</option>
+          <option value="Ceftolozane/Tazobactam">Ceftolozane/Tazobactam</option>
+          <option value="Ceftriaxone">Ceftriaxone</option>
+          <option value="Cephalexin/Cephalothin">Cephalexin/Cephalothin</option>
+          <option value="Chloramphenicol">Chloramphenicol</option>
+          <option value="Ciprofloxacin">Ciprofloxacin</option>
+          <option value="Clarithromycin">Clarithromycin</option>
+          <option value="Clindamycin">Clindamycin</option>
+          <option value="Colistin">Colistin</option>
+          <option value="Daptomycin">Daptomycin</option>
+          <option value="Doxycycline">Doxycycline</option>
+          <option value="Ertapenem">Ertapenem</option>
+          <option value="Erythromycin">Erythromycin</option>
+          <option value="Gentamicin">Gentamicin</option>
+          <option value="Imipenem">Imipenem</option>
+          <option value="Levofloxacin">Levofloxacin</option>
+          <option value="Linezolid">Linezolid</option>
+          <option value="Meropenem">Meropenem</option>
+          <option value="Metronidazole">Metronidazole</option>
+          <option value="Minocycline">Minocycline</option>
+          <option value="Moxifloxacin">Moxifloxacin</option>
+          <option value="Nitrofurantoin">Nitrofurantoin</option>
+          <option value="Oxacillin">Oxacillin</option>
+          <option value="Penicillin">Penicillin</option>
+          <option value="Piperacillin">Piperacillin</option>
+          <option value="Piperacillin/Tazobactam">Piperacillin/Tazobactam</option>
+          <option value="Quinupristin/Dalfopristin">Quinupristin/Dalfopristin</option>
+          <option value="Streptomycin">Streptomycin</option>
+          <option value="Tetracycline">Tetracycline</option>
+          <option value="Ticacarcillin/Clavulanic Acid">Ticacarcillin/Clavulanic Acid</option>
+          <option value="Ticarcillin">Ticarcillin</option>
+          <option value="Tigecycline">Tigecycline</option>
+          <option value="Tobramycin">Tobramycin</option>
+          <option value="Trimethoprim/Sulfamethoxazole">Trimethoprim/Sulfamethoxazole</option>
+          <option value="Vancomycin">Vancomycin</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="hospitalVisits">Duration</label>
+        <input
+          type="number"
+          id="age"
+          min="0"
+          max="120"
+          required
+          placeholder="How long have you been experiencing these symptoms?"
+        >
+      </div>
+      
       <div class="form-group">
         <label for="symptoms">Symptoms</label>
         <textarea
@@ -83,32 +156,17 @@
         ></textarea>
       </div>
 
-      <div class="form-group">
-        <label for="pastAntibioticUse">Past antibiotic use</label>
-        <textarea
-          id="pastAntibioticUse"
-          rows="3"
-          placeholder="Which antibiotics have you used and when?"
-        ></textarea>
-      </div>
 
-      <div class="form-group">
-        <label for="hospitalVisits">Hospital visits</label>
-        <textarea
-          id="hospitalVisits"
-          rows="3"
-          placeholder="Recent hospital or clinic visits (reason & date)"
-        ></textarea>
-      </div>
+      
 
-      <div class="form-group">
+      <!-- <div class="form-group">
         <label for="riskFactors">Risk factors</label>
         <textarea
           id="riskFactors"
           rows="3"
           placeholder="Diabetes, surgery, catheter, etc."
         ></textarea>
-      </div>
+      </div> -->
 
       <button type="submit" class="card-btn">Submit</button>
     </form>
