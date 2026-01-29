@@ -144,7 +144,7 @@ async function uploadToSupabaseStorage(file, pharmacist) {
   const randomId = Math.random().toString(36).substring(2, 10);
   const fileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
   
-  // NEW: District-based structure
+  // District-based structure
   const filePath = `kerala/${pharmacist.district}/${pharmacist.id}/${timestamp}_${randomId}_${fileName}`;
   
   console.log(`📍 Uploading to district path: ${filePath}`);
@@ -155,7 +155,7 @@ async function uploadToSupabaseStorage(file, pharmacist) {
   
   const supabase = window.supabase;
   
-  // 1. Upload to storage
+  // 1. Upload to storage ONLY
   const { data: uploadData, error: uploadError } = await supabase.storage
     .from('uploads')
     .upload(filePath, file, {
@@ -170,37 +170,18 @@ async function uploadToSupabaseStorage(file, pharmacist) {
   
   console.log('✅ File uploaded to district folder:', uploadData);
   
-  // 2. Log to database with district
-  const { error: dbError } = await supabase
-    .from('uploads')
-    .insert([{
-      file_path: filePath,
-      file_name: file.name,
-      file_size: file.size,
-      pharmacist_id: pharmacist.id,
-      district: pharmacist.district,
-      state: pharmacist.state,
-      uploaded_at: new Date().toISOString()
-    }]);
-  
-  if (dbError) {
-    console.error('Database log error:', dbError);
-  }
-  
-  // 3. Notify backend (optional)
+  // 2. Notify backend (just tell it the file exists)
   try {
     const response = await fetch('http://localhost:3001/api/ingest-upload', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        uploadId: `${timestamp}_${randomId}`,
         filePath: filePath,
         pharmacistId: pharmacist.id,
         district: pharmacist.district,
         state: pharmacist.state,
         pharmacyName: pharmacist.pharmacy_name,
-        fileName: file.name,
-        timestamp: new Date().toISOString()
+        fileName: file.name
       })
     });
     
@@ -214,21 +195,57 @@ async function uploadToSupabaseStorage(file, pharmacist) {
   return { 
     stored: true, 
     processed: true, 
-    message: `File uploaded to ${pharmacist.district} district` 
+    message: `File stored in ${pharmacist.district} district for ML processing` 
   };
 }
 
 // Add CSS for success message
-const style = document.createElement('style');
-style.textContent = `
-  .upload-success-msg {
-    color: #065f46;
-    font-size: 14px;
-    animation: fadeIn 0.5s;
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-`;
-document.head.appendChild(style);
+// Add CSS for success message (FIXED COLORS)
+// Add CSS for success message - FIXED VERSION
+function addSuccessStyles() {
+  // Check if style already exists
+  if (document.getElementById('upload-success-styles')) return;
+  
+  const style = document.createElement('style');
+  style.id = 'upload-success-styles';
+  style.textContent = `
+    /* Success button styling */
+    .upload-success {
+      background-color: #2563eb !important; /* Blue */
+      color: white !important;
+      border-color: #1d4ed8 !important;
+    }
+    
+    /* Success message box */
+    .upload-success-msg {
+      background: #1e40af !important; /* Dark blue */
+      color: white !important;
+      font-size: 14px !important;
+      margin-top: 16px !important;
+      padding: 14px !important;
+      border-radius: 8px !important;
+      border: 1px solid #3b82f6 !important;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Success icon */
+    .success-icon {
+      color: #60a5fa !important;
+      flex-shrink: 0;
+    }
+    
+    /* Fade animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .upload-success-msg {
+      animation: fadeIn 0.5s ease-out;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+// Call this function at the start
+addSuccessStyles();
