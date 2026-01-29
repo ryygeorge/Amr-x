@@ -56,97 +56,222 @@
   <script type="module">
     import { supabase } from './scripts/supabase-init.js';
     
-    // Check admin access
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user || user.email !== 'admin@amrx.com') { // Change to your admin email
-      alert('Admin access only');
-      window.location.href = 'login.html';
+    // List of admin emails
+    const ADMIN_EMAILS = [
+      "ryy@gmail.com",
+      "admin@amrx.com"
+    ];
+    
+    // Check if email is admin
+    function isAdminEmail(email) {
+      return ADMIN_EMAILS.includes(email.toLowerCase());
+    }
+    
+    // Check admin access - FIXED VERSION WITHOUT REDIRECT LOOP
+    async function checkAdminAccess() {
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser();
+        
+        if (error || !user) {
+          console.log('No user or auth error, redirecting to login');
+          window.location.href = 'login.html';
+          return false;
+        }
+        
+        console.log('User email:', user.email);
+        
+        // Check if admin
+        if (!isAdminEmail(user.email)) {
+          console.log('Not an admin, showing access denied page');
+          // Show access denied page instead of redirecting
+          document.body.innerHTML = `
+            <div style="display: flex; justify-content: center; align-items: center; height: 100vh; background: #0f172a; color: white; text-align: center; padding: 20px;">
+              <div style="max-width: 500px;">
+                <h1 style="color: #ef4444; font-size: 36px; margin-bottom: 20px;">⚠️ Access Denied</h1>
+                <p style="font-size: 18px; margin-bottom: 30px; color: #cbd5e1;">This page is for administrators only.</p>
+                <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                  <button onclick="window.location.href='pharma.html'" style="background: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; cursor: pointer; transition: all 0.3s;">
+                    Go to Pharmacist Dashboard
+                  </button>
+                  <button onclick="window.location.href='login.html'" style="background: #64748b; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; cursor: pointer; transition: all 0.3s;">
+                    Login with Different Account
+                  </button>
+                  <button onclick="logout()" style="background: #ef4444; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; cursor: pointer; transition: all 0.3s;">
+                    Logout
+                  </button>
+                </div>
+                <p style="margin-top: 30px; color: #94a3b8; font-size: 14px;">
+                  If you believe this is an error, contact the system administrator.
+                </p>
+              </div>
+            </div>
+          `;
+          return false;
+        }
+        
+        // User is admin, allow access
+        console.log('Admin access granted for:', user.email);
+        return true;
+      } catch (err) {
+        console.error('Admin check error:', err);
+        window.location.href = 'login.html';
+        return false;
+      }
+    }
+    
+    // Logout function for access denied page
+    async function logout() {
+      try {
+        await supabase.auth.signOut();
+        localStorage.clear();
+        window.location.href = 'login.html';
+      } catch (error) {
+        console.error('Logout error:', error);
+        window.location.href = 'login.html';
+      }
     }
     
     async function loadStats() {
-      // Get total stats
-      const { data: pharmacists } = await supabase
-        .from('pharmacists')
-        .select('district, is_verified');
-      
-      const { data: uploads } = await supabase
-        .from('uploads')
-        .select('district');
-      
-      // Calculate stats
-      const totalPharmacists = pharmacists?.length || 0;
-      const verifiedPharmacists = pharmacists?.filter(p => p.is_verified).length || 0;
-      const totalUploads = uploads?.length || 0;
-      const districts = [...new Set(pharmacists?.map(p => p.district) || [])].length;
-      
-      // Update stats grid
-      document.getElementById('statsGrid').innerHTML = `
-        <div class="stat-card">
-          <h3>Total Pharmacists</h3>
-          <div class="number">${totalPharmacists}</div>
-        </div>
-        <div class="stat-card">
-          <h3>Verified</h3>
-          <div class="number">${verifiedPharmacists}</div>
-        </div>
-        <div class="stat-card">
-          <h3>Total Uploads</h3>
-          <div class="number">${totalUploads}</div>
-        </div>
-        <div class="stat-card">
-          <h3>Districts Covered</h3>
-          <div class="number">${districts}</div>
-        </div>
-      `;
+      try {
+        // Get total stats
+        const { data: pharmacists } = await supabase
+          .from('pharmacists')
+          .select('district, is_verified');
+        
+        const { data: uploads } = await supabase
+          .from('uploads')
+          .select('district');
+        
+        // Calculate stats
+        const totalPharmacists = pharmacists?.length || 0;
+        const verifiedPharmacists = pharmacists?.filter(p => p.is_verified).length || 0;
+        const totalUploads = uploads?.length || 0;
+        const districts = [...new Set(pharmacists?.map(p => p.district) || [])].length;
+        
+        // Update stats grid
+        document.getElementById('statsGrid').innerHTML = `
+          <div class="stat-card">
+            <h3>Total Pharmacists</h3>
+            <div class="number">${totalPharmacists}</div>
+          </div>
+          <div class="stat-card">
+            <h3>Verified</h3>
+            <div class="number">${verifiedPharmacists}</div>
+          </div>
+          <div class="stat-card">
+            <h3>Total Uploads</h3>
+            <div class="number">${totalUploads}</div>
+          </div>
+          <div class="stat-card">
+            <h3>Districts Covered</h3>
+            <div class="number">${districts}</div>
+          </div>
+        `;
+      } catch (error) {
+        console.error('Error loading stats:', error);
+      }
     }
     
     async function loadPharmacists() {
-      const { data: pharmacists } = await supabase
-        .from('pharmacists')
-        .select(`
-          *,
-          uploads(count)
-        `)
-        .order('created_at', { ascending: false });
-      
-      const tbody = document.querySelector('#pharmacistsTable tbody');
-      tbody.innerHTML = pharmacists.map(p => `
-        <tr>
-          <td><strong>${p.pharmacy_name}</strong></td>
-          <td>${p.email}</td>
-          <td><span class="district-badge">${p.district}</span></td>
-          <td>${p.uploads[0]?.count || 0}</td>
-          <td class="${p.is_verified ? 'verified' : ''}">
-            ${p.is_verified ? '✓ Verified' : 'Pending'}
-          </td>
-          <td>
-            <button class="verify-btn" 
-                    onclick="verifyPharmacist('${p.id}')"
-                    ${p.is_verified ? 'disabled' : ''}>
-              ${p.is_verified ? 'Verified' : 'Verify'}
-            </button>
-          </td>
-        </tr>
-      `).join('');
+      try {
+        const { data: pharmacists, error } = await supabase
+          .from('pharmacists')
+          .select(`
+            *,
+            uploads(count)
+          `)
+          .order('created_at', { ascending: false });
+        
+        if (error) {
+          console.error('Error loading pharmacists:', error);
+          document.querySelector('#pharmacistsTable tbody').innerHTML = `
+            <tr>
+              <td colspan="6" style="text-align: center; padding: 30px; color: #ef4444;">
+                Error loading pharmacists: ${error.message}
+              </td>
+            </tr>
+          `;
+          return;
+        }
+        
+        const tbody = document.querySelector('#pharmacistsTable tbody');
+        if (!pharmacists || pharmacists.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px;">No pharmacists found</td></tr>';
+          return;
+        }
+        
+        tbody.innerHTML = pharmacists.map(p => `
+          <tr>
+            <td><strong>${p.pharmacy_name || 'Unknown Pharmacy'}</strong></td>
+            <td>${p.email}</td>
+            <td><span class="district-badge">${p.district || 'Unknown'}</span></td>
+            <td>${p.uploads?.[0]?.count || 0}</td>
+            <td class="${p.is_verified ? 'verified' : ''}">
+              ${p.is_verified ? '✓ Verified' : 'Pending'}
+            </td>
+            <td>
+              <button class="verify-btn" 
+                      onclick="verifyPharmacist('${p.id}')"
+                      ${p.is_verified ? 'disabled' : ''}>
+                ${p.is_verified ? 'Verified' : 'Verify'}
+              </button>
+            </td>
+          </tr>
+        `).join('');
+      } catch (error) {
+        console.error('Error in loadPharmacists:', error);
+        document.querySelector('#pharmacistsTable tbody').innerHTML = `
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 30px; color: #ef4444;">
+              Error: ${error.message}
+            </td>
+          </tr>
+        `;
+      }
     }
     
     // Global function for button click
     window.verifyPharmacist = async (pharmacistId) => {
-      const { error } = await supabase
-        .from('pharmacists')
-        .update({ is_verified: true })
-        .eq('id', pharmacistId);
+      if (!confirm('Are you sure you want to verify this pharmacist?')) return;
       
-      if (!error) {
-        alert('Pharmacist verified!');
-        loadPharmacists();
-        loadStats();
+      try {
+        const { error } = await supabase
+          .from('pharmacists')
+          .update({ is_verified: true })
+          .eq('id', pharmacistId);
+        
+        if (!error) {
+          alert('Pharmacist verified successfully!');
+          loadPharmacists();
+          loadStats();
+        } else {
+          alert('Error verifying pharmacist: ' + error.message);
+        }
+      } catch (error) {
+        alert('Error: ' + error.message);
       }
     };
     
-    // Load data
-    loadStats();
-    loadPharmacists();
+    // Main initialization
+    (async function() {
+      // Check admin access first
+      const isAdmin = await checkAdminAccess();
+      if (!isAdmin) {
+        console.log('Not admin or not logged in, exiting admin page');
+        return;
+      }
+      
+      console.log('Admin access granted, loading data...');
+      
+      // Load data
+      await loadStats();
+      await loadPharmacists();
+      
+      console.log('Admin panel loaded successfully');
+      
+      // Make logout function available globally
+      window.logout = logout;
+    })();
   </script>
 </body>
 </html>

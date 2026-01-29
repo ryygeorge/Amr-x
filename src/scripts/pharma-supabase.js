@@ -1,4 +1,4 @@
-// scripts/pharma-supabase.js - COMPLETE FIXED VERSION
+// scripts/pharma-supabase.js - COMPLETE FIXED VERSION WITH ADMIN CHECK
 import { supabase } from './supabase-init.js';
 
 // DOM refs
@@ -11,6 +11,52 @@ const insightsEl = document.getElementById('pharmInsights');
 // Chart.js chart instances
 let barChart = null;
 let lineChart = null;
+
+// ============================================
+// ADMIN CHECK - ADD THIS AT THE BEGINNING
+// ============================================
+const ADMIN_EMAILS = [
+  "ryy@gmail.com",
+  "admin@amrx.com"
+];
+
+function isAdminEmail(email) {
+  return ADMIN_EMAILS.includes(email.toLowerCase());
+}
+
+async function checkAndRedirectAdmins() {
+  try {
+    // Check if we just came from an admin redirect attempt
+    const adminRedirectAttempted = localStorage.getItem('adminRedirectAttempted');
+    if (adminRedirectAttempted === 'true') {
+      console.log('Already attempted admin redirect, allowing access to pharmacist page');
+      localStorage.removeItem('adminRedirectAttempted');
+      return false; // Don't redirect, allow access to pharmacist page
+    }
+    
+    const { data: { user }, error } = await supabase.auth.getUser();
+    
+    if (error) {
+      console.warn('Auth check error:', error);
+      return false;
+    }
+    
+    if (user && isAdminEmail(user.email)) {
+      // Admin trying to access pharmacist page - redirect to admin
+      console.log('Admin detected, redirecting to admin panel...');
+      window.location.href = 'admin.html';
+      return true; // Redirect happened
+    }
+    
+    return false; // No redirect needed
+  } catch (error) {
+    console.warn('Admin redirect check error:', error);
+    return false;
+  }
+}
+// ============================================
+// END OF ADMIN CHECK
+// ============================================
 
 // Check authentication and get pharmacist info
 async function checkPharmacistAuth() {
@@ -420,6 +466,16 @@ function drawLineDaily(labels, values) {
 (async function initRealtime() {
   try {
     console.log('🔄 Initializing pharma-supabase...');
+    
+    // ============================================
+    // CHECK FOR ADMIN REDIRECT FIRST
+    // ============================================
+    const shouldRedirect = await checkAndRedirectAdmins();
+    if (shouldRedirect) {
+      console.log('Redirecting admin to admin panel...');
+      return; // Stop execution if redirecting
+    }
+    // ============================================
     
     // Check authentication and get pharmacist info
     const pharmacist = await checkPharmacistAuth();

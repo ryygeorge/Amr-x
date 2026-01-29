@@ -1,8 +1,19 @@
-// scripts/login.js - UPDATED FOR PHARMACIST SYSTEM
+// scripts/login.js - UPDATED WITH ADMIN CHECK
 import { supabase } from "./supabase-init.js";
 
 const loginForm = document.getElementById("loginForm");
 const loginError = document.getElementById("loginError");
+
+// List of admin emails (add more if needed)
+const ADMIN_EMAILS = [
+  "rryy@gmail.com",
+  "admin@amrx.com"
+];
+
+// Check if email is admin
+function isAdminEmail(email) {
+  return ADMIN_EMAILS.includes(email.toLowerCase());
+}
 
 // Handle login
 loginForm.addEventListener("submit", async (e) => {
@@ -27,7 +38,21 @@ loginForm.addEventListener("submit", async (e) => {
       throw new Error("No user returned from authentication");
     }
 
-    // 2) Check if user is a pharmacist
+    // 2) CHECK IF ADMIN - if yes, redirect to admin.html
+    if (isAdminEmail(email)) {
+      // Store admin flag
+      localStorage.setItem("isAdmin", "true");
+      localStorage.removeItem("adminRedirectAttempted"); // Clear any flags
+      // Redirect to admin page
+      console.log("Admin login detected, redirecting to admin panel");
+      window.location.href = "admin.html";
+      return; // Stop execution here for admin
+    }
+
+    // 3) For non-admin users, continue with pharmacist logic
+    localStorage.setItem("isAdmin", "false"); // Mark as non-admin
+    localStorage.removeItem("adminRedirectAttempted"); // Clear any flags
+
     let pharmacistProfile = null;
     const { data: profileData, error: profileError } = await supabase
       .from('pharmacists')
@@ -39,7 +64,7 @@ loginForm.addEventListener("submit", async (e) => {
       pharmacistProfile = profileData;
     }
 
-    // 3) If not a pharmacist, check users table (for backwards compatibility)
+    // 4) If not a pharmacist, check users table (for backwards compatibility)
     if (!pharmacistProfile) {
       const { data: userProfile } = await supabase
         .from('users')
@@ -74,7 +99,7 @@ loginForm.addEventListener("submit", async (e) => {
       }
     }
 
-    // 4) Get display name and store data
+    // 5) Get display name and store data
     const displayName = pharmacistProfile?.full_name || 
                        user.user_metadata?.name || 
                        email.split("@")[0];
@@ -88,7 +113,8 @@ loginForm.addEventListener("submit", async (e) => {
     localStorage.setItem("pharmacyName", pharmacyName);
     localStorage.setItem("district", district);
 
-    // 5) Redirect to dashboard
+    // 6) Redirect to pharmacist dashboard
+    console.log("Pharmacist login detected, redirecting to pharmacist dashboard");
     window.location.href = "pharma.html";
 
   } catch (error) {

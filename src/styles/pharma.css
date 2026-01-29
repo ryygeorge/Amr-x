@@ -455,3 +455,237 @@ footer {
   border: 3px solid white !important;
   box-shadow: 0 0 20px rgba(34, 193, 195, 0.8) !important;
 }
+
+/* ML Dashboard Styles */
+.risk-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.risk-badge.high {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+}
+
+.risk-badge.medium {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+}
+
+.risk-badge.low {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+
+/* ML Prediction Widget */
+.ml-prediction-result {
+  transition: all 0.3s ease;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ML Heatmap Controls */
+.ml-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+  transition: all 0.2s ease;
+}
+
+.ml-toggle:hover {
+  background: rgba(15, 23, 42, 0.8);
+  border-color: #22c1c3;
+}
+
+.ml-toggle input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #22c1c3;
+}
+
+/* District Info Panel */
+.district-info-panel {
+  background: linear-gradient(135deg, rgba(15,23,42,0.95), rgba(15,23,42,0.85));
+  border: 1px solid rgba(51, 65, 85, 0.9);
+  box-shadow: 0 20px 50px rgba(15, 23, 42, 0.8);
+}
+
+.district-metric {
+  text-align: center;
+  padding: 15px;
+  background: rgba(34, 193, 195, 0.1);
+  border-radius: 10px;
+  border: 1px solid rgba(34, 193, 195, 0.3);
+}
+
+.district-metric .value {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #22c1c3, #38bdf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ML Loading Animation */
+.ml-loading {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(34, 193, 195, 0.3);
+  border-top-color: #22c1c3;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive ML Dashboard */
+@media (max-width: 768px) {
+  .ml-prediction-inputs {
+    flex-direction: column;
+  }
+  
+  .district-metric {
+    padding: 10px;
+  }
+  
+  .district-metric .value {
+    font-size: 1.5rem;
+  }
+}
+
+/* ML Alert Box */
+.ml-alert {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.05));
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-left: 4px solid #ef4444;
+}
+
+.ml-warning {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05));
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-left: 4px solid #f59e0b;
+}
+
+.ml-success {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.05));
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-left: 4px solid #10b981;
+}
+
+/* ML Table Enhancements */
+#mlAmrTable tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+#mlAmrTable tbody tr:hover {
+  background: rgba(34, 193, 195, 0.05);
+}
+
+#mlAmrTable th {
+  background: linear-gradient(135deg, rgba(15,23,42,0.9), rgba(15,23,42,0.7));
+  border-bottom: 2px solid #22c1c3;
+}
+
+/* ML District Risk Cards */
+.district-risk-card {
+  background: rgba(15, 23, 42, 0.6);
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 12px;
+  border-left: 4px solid;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.district-risk-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.5);
+}
+
+/* ML Progress Bars */
+.ml-progress-bar {
+  height: 8px;
+  background: rgba(51, 65, 85, 0.5);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.ml-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #22c1c3, #38bdf8);
+  border-radius: 4px;
+  transition: width 1s ease;
+}
+
+/* ML Prediction Input Enhancements */
+.ml-input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.ml-input-group select {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid rgba(51, 65, 85, 0.7);
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.8);
+  color: #e5e7eb;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.ml-input-group select:focus {
+  outline: none;
+  border-color: #22c1c3;
+  box-shadow: 0 0 0 3px rgba(34, 193, 195, 0.2);
+}
+
+/* ML Button Styles */
+.ml-predict-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #22c1c3, #38bdf8);
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 25px rgba(34, 193, 195, 0.3);
+}
+
+.ml-predict-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px rgba(34, 193, 195, 0.4);
+}
+
+.ml-predict-btn:active {
+  transform: translateY(0);
+}
+
+/* ML Result Container */
+.ml-result-container {
+  padding: 20px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.5));
+  border: 1px solid rgba(51, 65, 85, 0.7);
+}
