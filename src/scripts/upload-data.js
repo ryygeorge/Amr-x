@@ -1,6 +1,7 @@
 // scripts/upload-data.js
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 const fileInput  = document.getElementById("fileInput");
 const fileList   = document.getElementById("fileList");
 const uploadBtn  = document.getElementById("uploadBtn");
@@ -22,6 +23,17 @@ const browseBtn = uploadArea.querySelector(".browse-btn");
 // Open file picker
 browseBtn.addEventListener("click", () => fileInput.click());
 
+=======
+const uploadArea = document.getElementById("uploadArea");
+const fileInput = document.getElementById("fileInput");
+const fileList = document.getElementById("fileList");
+const uploadBtn = document.getElementById("uploadBtn");
+const browseBtn = uploadArea.querySelector(".browse-btn");
+
+// Open file picker
+browseBtn.addEventListener("click", () => fileInput.click());
+
+>>>>>>> Stashed changes
 // Show file when selected
 fileInput.addEventListener("change", () => {
   if (!fileInput.files.length) return;
@@ -29,6 +41,9 @@ fileInput.addEventListener("change", () => {
   const file = fileInput.files[0];
   fileList.innerHTML = `📄 ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
   uploadBtn.style.display = "inline-block";
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 });
 
@@ -39,6 +54,7 @@ uploadBtn.addEventListener("click", async () => {
     alert("No file selected");
     return;
   }
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
   uploadBtn.style.display = files.length ? "inline-flex" : "none";
 }
@@ -60,11 +76,14 @@ uploadBtn.onclick = async () => {
     }
     formData.append("files", f);
   }
+=======
+>>>>>>> Stashed changes
 
   uploadBtn.disabled = true;
   uploadBtn.textContent = "Uploading...";
 
   try {
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     await fetch("http://127.0.0.1:5000/api/upload", {
       method: "POST",
@@ -124,6 +143,31 @@ uploadBtn.onclick = async () => {
     // 3️⃣ Upload file to Supabase Storage
     const path = `kerala/${district}/${user.id}/${Date.now()}_${file.name}`;
 
+=======
+    const supabase = window.supabase;
+    if (!supabase) throw new Error("Supabase not loaded");
+
+    // 1️⃣ Get logged-in user
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error("User not logged in");
+
+    // 2️⃣ Get pharmacist profile (district)
+    const { data: pharmacist, error } = await supabase
+      .from("pharmacists")
+      .select("district")
+      .eq("id", user.id)
+      .single();
+
+    if (error || !pharmacist?.district) {
+      throw new Error("Pharmacist district not found");
+    }
+
+    const district = pharmacist.district;
+
+    // 3️⃣ Upload file to Supabase Storage
+    const path = `kerala/${district}/${user.id}/${Date.now()}_${file.name}`;
+
+>>>>>>> Stashed changes
     const { error: uploadError } = await supabase.storage
       .from("uploads")
       .upload(path, file);
@@ -157,4 +201,7 @@ uploadBtn.onclick = async () => {
 
   uploadBtn.disabled = false;
 });
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
