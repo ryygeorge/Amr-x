@@ -1,159 +1,57 @@
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-// AMR-X Backend – FINAL (Express 5 compatible)
-
+// Backend/server.js - UPDATED VERSION
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const admin = require('firebase-admin');
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-=======
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-=======
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
 
-import ingestUploadRouter from "./routes/ingestUpload.js";
-import uploadRouter from "./routes/upload.js";
-
-dotenv.config();
->>>>>>> Stashed changes
-
-import ingestUploadRouter from "./routes/ingestUpload.js";
-import uploadRouter from "./routes/upload.js";
-
-dotenv.config();
->>>>>>> Stashed changes
-
-/* ---------------- FIREBASE ADMIN ---------------- */
-const serviceAccount = require('./serviceAccountKey.json');
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
-const db = admin.firestore();
-
-/* ---------------- EXPRESS APP ---------------- */
 const app = express();
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 app.use(express.json());
 
-/* ---------------- CORS (FIXED FOR EXPRESS 5) ---------------- */
+// Middleware
 app.use(cors({
-  origin: true,
+  origin: ['http://localhost:5173', 'http://127.0.0.1:5500', 'http://localhost:3000'],
+  credentials: true
 }));
+app.use(express.json());
 
+// Import routes
+const ingestUploadRoute = require('./routes/ingestUpload');
 
-
-/* ---------------- FILE UPLOAD SETUP ---------------- */
-const UPLOAD_DIR = path.join(__dirname, 'uploads');
-if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR);
-
-const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, UPLOAD_DIR),
-  filename: (_req, file, cb) => {
-    const safe = file.originalname.replace(/[^\w.\-]/g, '_');
-    cb(null, Date.now() + '-' + safe);
-  },
-});
-
-const upload = multer({
-  storage,
-  limits: { fileSize: 1024 * 1024 * 1024 }, // 1GB
-  fileFilter: (_req, file, cb) => {
-    const name = file.originalname.toLowerCase();
-    if (!name.endsWith('.csv') && !name.endsWith('.xlsx')) {
-      return cb(new Error('Only CSV and XLSX files allowed'));
-    }
-    cb(null, true);
-  },
-});
-
-/* ---------------- ROUTES ---------------- */
+// Routes
+app.use('/api', ingestUploadRoute);
 
 // Health check
-app.get('/api/ping', (_req, res) => {
-  res.json({ ok: true, msg: 'AMR-X API running' });
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    ok: true, 
+    message: 'AMR-X Backend Running (Supabase Storage Mode)',
+    timestamp: new Date().toISOString(),
+    storage_mode: 'supabase_cloud',
+    routes: [
+      'POST /api/ingest-upload',
+      'GET  /api/health'
+    ]
+  });
 });
 
-// Upload route
-app.post('/api/upload', upload.array('files'), async (req, res) => {
-  try {
-    if (!req.files || !req.files.length) {
-      return res.status(400).json({ ok: false, msg: 'No files uploaded' });
-    }
-
-    const saved = [];
-
-    for (const file of req.files) {
-      const doc = await db.collection('mlUploads').add({
-        originalName: file.originalname,
-        storedName: file.filename,
-        size: file.size,
-        path: file.path,
-        status: 'uploaded',
-        uploadedAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
-
-      saved.push({
-        id: doc.id,
-        name: file.originalname,
-      });
-    }
-
-    res.json({ ok: true, files: saved });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ ok: false, error: err.message });
-  }
+// 404 handler
+app.use((req, res, next) => {
+  res.status(404).json({ ok: false, msg: 'Route not found' });
 });
 
-/* ---------------- START SERVER ---------------- */
-const PORT = process.env.PORT || 5000;
+// Error handling
+app.use((err, req, res, next) => {
+  console.error('Server error:', err);
+  res.status(500).json({ 
+    ok: false, 
+    msg: 'Internal server error',
+    details: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
+});
+
 app.listen(PORT, () => {
-  console.log(`✅ AMR-X API running at http://localhost:${PORT}`);
-=======
-const PORT = process.env.PORT || 3001;
-
-/* ---------- MIDDLEWARE ---------- */
-app.use(cors());
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ extended: true }));
-
-/* ---------- ROUTES ---------- */
-app.use("/api/ingest-upload", ingestUploadRouter);
-app.use("/api/upload", uploadRouter);
-
-app.get("/api/health", (req, res) => {
-  res.json({ status: "ok" });
-});
-
-/* ---------- START SERVER ---------- */
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
->>>>>>> Stashed changes
-=======
-const PORT = process.env.PORT || 3001;
-
-/* ---------- MIDDLEWARE ---------- */
-app.use(cors());
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ extended: true }));
-
-/* ---------- ROUTES ---------- */
-app.use("/api/ingest-upload", ingestUploadRouter);
-app.use("/api/upload", uploadRouter);
-
-app.get("/api/health", (req, res) => {
-  res.json({ status: "ok" });
-});
-
-/* ---------- START SERVER ---------- */
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
->>>>>>> Stashed changes
+  console.log(`\n✅ AMR-X Backend running on http://localhost:${PORT}`);
+  console.log(`📤 Ingest endpoint: POST http://localhost:${PORT}/api/ingest-upload`);
+  console.log(`🩺 Health check: GET http://localhost:${PORT}/api/health`);
+  console.log(`🚫 Local storage: DISABLED (Using Supabase Storage)`);
+  console.log(`📁 Backend mode: API Only (No file storage)\n`);
 });

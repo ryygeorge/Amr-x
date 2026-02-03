@@ -420,8 +420,7 @@ footer {
   .pharma-content { flex-direction: column; align-items: stretch; }
   .pharma-content .graph-box { max-width: 100%; }
 }
-<<<<<<< Updated upstream
-=======
+
 
 /* Kerala Districts Map Controls */
 .map-controls {
@@ -504,11 +503,6 @@ footer {
   animation: fadeIn 0.5s ease;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 /* ML Heatmap Controls */
 .ml-toggle {
   display: flex;
@@ -557,21 +551,7 @@ footer {
   background-clip: text;
 }
 
-/* ML Loading Animation */
-.ml-loading {
-  display: inline-block;
-  width: 50px;
-  height: 50px;
-  border: 4px solid rgba(34, 193, 195, 0.3);
-  border-top-color: #22c1c3;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
+/* Consolidated ML loading styles: use .ml-loading as the container and .ml-loading-spinner for the spinner (defined later) */
 
 /* Responsive ML Dashboard */
 @media (max-width: 768px) {
@@ -869,7 +849,7 @@ footer {
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -969,9 +949,6 @@ footer {
     right: 20px;
     max-width: none;
   }
-<<<<<<< Updated upstream
+
 }
->>>>>>> Stashed changes
-=======
-}
->>>>>>> Stashed changes
+ 

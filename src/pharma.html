@@ -13,17 +13,11 @@
      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<<<<<<< Updated upstream
   <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
 
 =======
   <!-- Heatmap Plugin -->
   <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
-  <!-- Supabase -->
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 </head>
 <body>
 
@@ -54,83 +48,7 @@
     <p class="greeting-subtitle">Here’s a quick view of resistance and antibiotic use across your hospitals.</p>
   </section>
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-  <!-- Hospital / AMR section (unchanged) -->
-  <section class="pharma-section">
-    <h2>AMR Dashboard</h2>
-    <div class="summary-box">
-      <p><strong>Total Cases:</strong> 182 &nbsp;|&nbsp; <strong>High Risk:</strong> 24 &nbsp;|&nbsp; <strong>Hospitals:</strong> 3</p>
-    </div>
-
-    <div class="pharma-content">
-      <div class="graph-box">
-        <h3>Antibiotic Use Over Time</h3>
-        <canvas id="barChart" height="200"></canvas>
-      </div>
-      <div class="graph-box">
-        <h3>AMR Case Distribution</h3>
-        <canvas id="pieChart" height="200"></canvas>
-      </div>
-    </div>
-
-    <div class="data-table">
-      <h3>AMR Data Summary</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Antibiotic</th>
-            <th>Hospital</th>
-            <th>Cases</th>
-            <th>Resistance %</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Ciprofloxacin</td><td>St Mercy</td><td>72</td><td>56%</td></tr>
-          <tr><td>Amoxicillin</td><td>Green Valley</td><td>48</td><td>42%</td></tr>
-          <tr><td>Ceftriaxone</td><td>General Health</td><td>33</td><td>35%</td></tr>
-          <tr><td>Azithromycin</td><td>St Mercy</td><td>29</td><td>17%</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- Pharmacist Logs section (updated) -->
-  <section class="pharma-section" id="pharmacist-logs">
-    <h2>Pharmacist Logs</h2>
-
-    <div class="summary-box">
-      <p id="pharm-summary"><strong>Total Logs:</strong> 0 &nbsp;|&nbsp; <strong>Recent:</strong> 0</p>
-    </div>
-
-    <div class="pharma-content">
-      <div class="graph-box">
-        <h3>Species Counts</h3>
-        <canvas id="pharmBar" height="200"></canvas>
-      </div>
-
-      <div class="graph-box">
-        <h3>Entries Over Time</h3>
-        <canvas id="pharmLine" height="200"></canvas>
-      </div>
-
-      <!-- Insights panel -->
-      <div class="graph-box" style="min-width:260px; max-width:360px;">
-        <h3>Insights & Suggestions</h3>
-        <div id="pharmInsights" style="text-align:left; margin-top:8px; font-size:0.95rem;">
-          <p style="opacity:0.75">Waiting for data…</p>
-=======
-  <!-- System Status Banner -->
-  <section class="pharma-section" id="systemStatusSection" style="display: none;">
-    <div id="systemStatus" class="summary-box" style="background: linear-gradient(120deg, #0f172a, #1e293b);">
-      <p id="statusMessage">
-        <span class="status-icon">⏳</span>
-        <strong>System Status:</strong> Loading real ML data...
-      </p>
-    </div>
-  </section>
-
-  <!-- AMR Dashboard with REAL ML Integration -->
+  <!-- AMR Dashboard with ML Integration -->
   <section class="pharma-section">
     <h2>AMR Dashboard • ML-Powered Insights</h2>
     
@@ -250,26 +168,7 @@
       </div>
     </div>
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    <div class="data-table">
-      <h3>Recent Pharmacist Entries</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Date/Time</th>
-            <th>Species</th>
-            <th>Prescription</th>
-            <th>Susceptibility</th>
-            <th>Clinical Notes</th>
-          </tr>
-        </thead>
-        <tbody id="pharmTbody">
-          <tr><td colspan="5">Loading…</td></tr>
-=======
-=======
->>>>>>> Stashed changes
-    <!-- REAL ML-Generated AMR Table -->
+    <!-- ML-Generated AMR Table -->
     <div class="data-table">
       <h3>ML-Generated AMR Risk Assessment</h3>
       <table id="mlAmrTable">
@@ -285,101 +184,118 @@
           </tr>
         </thead>
         <tbody id="mlTableBody">
-          <tr><td colspan="7" style="text-align: center; padding: 30px; color: #9ca3c9;">Fetching real ML predictions from database...</td></tr>
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+          <tr><td colspan="6" style="text-align: center; padding: 30px; color: #9ca3c9;">Loading ML predictions...</td></tr>
         </tbody>
       </table>
     </div>
   </section>
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
+  <!-- Original Charts Section -->
   <section class="pharma-section">
-  <h2 style="text-align:center;">Resistance Heat Map</h2>
-  <div id="map" style="height:400px; border-radius:16px;"></div>
+    <h2>AMR Analytics Dashboard</h2>
+    
+    <div class="pharma-content">
+      <div class="graph-box">
+        <h3>Antibiotic Use Over Time</h3>
+        <canvas id="barChart" height="200"></canvas>
+      </div>
+      <div class="graph-box">
+        <h3>AMR Case Distribution</h3>
+        <canvas id="pieChart" height="200"></canvas>
+      </div>
+    </div>
   </section>
 
-=======
-=======
->>>>>>> Stashed changes
+  <!-- Pharmacist Logs section -->
+  <section class="pharma-section" id="pharmacist-logs">
+    <h2>Pharmacist Logs</h2>
 
-  <!-- Kerala Districts AMR Map - REAL ML Data -->
+    <div class="summary-box">
+      <p id="pharm-summary"><strong>Total Logs:</strong> 0 &nbsp;|&nbsp; <strong>Recent:</strong> 0</p>
+    </div>
+
+    <div class="pharma-content">
+      <div class="graph-box">
+        <h3>Species Counts</h3>
+        <canvas id="pharmBar" height="200"></canvas>
+      </div>
+
+      <div class="graph-box">
+        <h3>Entries Over Time</h3>
+        <canvas id="pharmLine" height="200"></canvas>
+      </div>
+
+      <!-- Insights panel -->
+      <div class="graph-box" style="min-width:260px; max-width:360px;">
+        <h3>ML-Assisted Insights</h3>
+        <div id="pharmInsights" style="text-align:left; margin-top:8px; font-size:0.95rem;">
+          <p style="opacity:0.75">ML analysis pending...</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="data-table">
+      <h3>Recent Pharmacist Entries</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Date/Time</th>
+            <th>Species</th>
+            <th>Prescription</th>
+            <th>Susceptibility</th>
+            <th>Clinical Notes</th>
+          </tr>
+        </thead>
+        <tbody id="pharmTbody">
+          <tr><td colspan="5">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Kerala Districts AMR Map - ML Enhanced -->
   <section class="pharma-section">
     <h2>Kerala AMR Heatmap • ML-Predicted Risk</h2>
     
     <div class="summary-box" style="margin-bottom: 25px;">
       <p>
-        <strong>ML Risk Prediction Map:</strong> Real data from <span id="heatmapDataCount">0</span> districts<br>
-        <strong>Data Source:</strong> AMR-Predict ML Model + Local Pharmacist Data
+        <strong>ML Risk Prediction Map:</strong> Shows districts predicted to have >60% AMR risk<br>
+        <strong>Data Source:</strong> AMR-Predict ML Model • Updated daily
       </p>
     </div>
     
-    <!-- Compact 2x2 Grid Layout -->
     <div class="pharma-content">
-      <!-- Top Left: Risk Legend -->
-      <div class="graph-box">
+      <!-- ML Risk Legend -->
+      <div class="graph-box" style="max-width: 280px;">
         <h3>Risk Legend</h3>
         <div style="padding: 15px;">
-          <div style="display: flex; align-items: center; margin-bottom: 12px;">
-            <div style="width: 20px; height: 20px; background: #ef4444; border-radius: 4px; margin-right: 12px; flex-shrink: 0;"></div>
-            <div>
-              <div style="color: #e5e7eb; font-weight: 600;">High Risk</div>
-              <div style="font-size: 0.85rem; color: #9ca3c9;">>70% resistance</div>
-            </div>
+          <div style="display: flex; align-items: center; margin-bottom: 10px;">
+            <div style="width: 20px; height: 20px; background: #ef4444; border-radius: 4px; margin-right: 10px;"></div>
+            <span style="color: #e5e7eb;">High Risk (>70%)</span>
           </div>
-          <div style="display: flex; align-items: center; margin-bottom: 12px;">
-            <div style="width: 20px; height: 20px; background: #f59e0b; border-radius: 4px; margin-right: 12px; flex-shrink: 0;"></div>
-            <div>
-              <div style="color: #e5e7eb; font-weight: 600;">Medium Risk</div>
-              <div style="font-size: 0.85rem; color: #9ca3c9;">40-70% resistance</div>
-            </div>
+          <div style="display: flex; align-items: center; margin-bottom: 10px;">
+            <div style="width: 20px; height: 20px; background: #f59e0b; border-radius: 4px; margin-right: 10px;"></div>
+            <span style="color: #e5e7eb;">Medium Risk (40-70%)</span>
           </div>
-          <div style="display: flex; align-items: center; margin-bottom: 15px;">
-            <div style="width: 20px; height: 20px; background: #10b981; border-radius: 4px; margin-right: 12px; flex-shrink: 0;"></div>
-            <div>
-              <div style="color: #e5e7eb; font-weight: 600;">Low Risk</div>
-              <div style="font-size: 0.85rem; color: #9ca3c9;"><40% resistance</div>
-            </div>
+          <div style="display: flex; align-items: center; margin-bottom: 10px;">
+            <div style="width: 20px; height: 20px; background: #10b981; border-radius: 4px; margin-right: 10px;"></div>
+            <span style="color: #e5e7eb;">Low Risk (<40%)</span>
           </div>
-          <div style="font-size: 0.8rem; color: #9ca3c9; border-top: 1px solid rgba(51,65,85,0.5); padding-top: 12px;">
-            Based on real ML predictions from uploaded data
+          <div style="margin-top: 15px; font-size: 0.85rem; color: #9ca3c9;">
+            <strong>Note:</strong> Colors based on ML-predicted resistance probabilities
           </div>
         </div>
       </div>
       
-      <!-- Top Right: Top Risk Districts Grid - DYNAMIC -->
-      <div class="graph-box">
+      <!-- ML District Insights -->
+      <div class="graph-box" style="flex: 1;">
         <h3>Top ML-Identified Risk Districts</h3>
-        <div id="topDistrictsGrid" style="padding: 10px;">
-          <div style="text-align: center; padding: 40px; color: #9ca3c9;">
-            Loading real district data...
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Hidden Additional Districts - DYNAMIC -->
-    <div id="moreDistricts" style="display: none; margin-top: 20px;">
-      <div class="pharma-content">
-        <!-- Medium Risk Districts - DYNAMIC -->
-        <div class="graph-box">
-          <h3>Medium Risk Districts</h3>
-          <div id="mediumRiskDistricts" style="padding: 10px;">
-            <div style="text-align: center; padding: 20px; color: #9ca3c9;">
-              Loading medium risk districts...
-            </div>
-          </div>
-        </div>
-        
-        <!-- Low Risk Districts - DYNAMIC -->
-        <div class="graph-box">
-          <h3>Low Risk Districts</h3>
-          <div id="lowRiskDistricts" style="padding: 10px;">
-            <div style="text-align: center; padding: 20px; color: #9ca3c9;">
-              Loading low risk districts...
-            </div>
+        <div id="mlDistrictRisks" style="padding: 15px;">
+          <div style="color: #9ca3c9; text-align: center; padding: 20px;">
+            <div style="width: 30px; height: 30px; border: 3px solid rgba(34,193,195,0.3); 
+                 border-top-color: #22c1c3; border-radius: 50%; margin: 0 auto 15px auto; 
+                 animation: spin 1s linear infinite;"></div>
+            <p>Loading ML district risk analysis...</p>
           </div>
         </div>
       </div>
@@ -415,93 +331,45 @@
       </div>
     </div>
   </section>
-
-  <!-- Pharmacist Logs section - REAL DATA -->
-  <section class="pharma-section" id="pharmacist-logs">
-    <h2>Pharmacist Logs</h2>
-
-    <div class="summary-box">
-      <p id="pharm-summary"><strong>Total Logs:</strong> <span id="totalLogsCount">0</span> &nbsp;|&nbsp; <strong>Recent:</strong> <span id="recentLogsCount">0</span></p>
-    </div>
-
-    <div class="pharma-content">
-      <div class="graph-box">
-        <h3>Species Counts</h3>
-        <canvas id="pharmBar" height="200"></canvas>
-      </div>
-
-      <div class="graph-box">
-        <h3>Entries Over Time</h3>
-        <canvas id="pharmLine" height="200"></canvas>
-      </div>
-
-      <!-- Insights panel -->
-      <div class="graph-box" style="min-width:260px; max-width:360px;">
-        <h3>ML-Assisted Insights</h3>
-        <div id="pharmInsights" style="text-align:left; margin-top:8px; font-size:0.95rem;">
-          <p style="opacity:0.75">Loading ML analysis...</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="data-table">
-      <h3>Recent Pharmacist Entries</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Date/Time</th>
-            <th>Species</th>
-            <th>Antibiotic</th>
-            <th>Resistance Score</th>
-            <th>District</th>
-            <th>Clinical Notes</th>
-          </tr>
-        </thead>
-        <tbody id="pharmTbody">
-          <tr><td colspan="6" style="text-align: center; padding: 30px; color: #9ca3c9;">Fetching real entries from database...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 </main>
 
 <footer>
-  <p>&copy; 2025 AMR-X</p>
+  <p>&copy; 2025 AMR-X | ML-Powered AMR Prediction System</p>
 </footer>
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<!-- Greeting script (unchanged) -->
-=======
-<!-- REAL DATA FETCHER SCRIPT -->
-
-<!-- HEATMAP SCRIPT -->
->>>>>>> Stashed changes
+<!-- Greeting script -->
 <script>
-// Kerala districts base data with coordinates
-const keralaDistrictsBase = {
-  'thiruvananthapuram': { lat: 8.5241, lng: 76.9366, zoom: 11 },
-  'kollam': { lat: 8.8932, lng: 76.6141, zoom: 11 },
-  'pathanamthitta': { lat: 9.2648, lng: 76.7870, zoom: 12 },
-  'alappuzha': { lat: 9.4981, lng: 76.3388, zoom: 11 },
-  'kottayam': { lat: 9.5916, lng: 76.5222, zoom: 11 },
-  'idukki': { lat: 9.8495, lng: 76.9391, zoom: 10 },
-  'ernakulam': { lat: 9.9816, lng: 76.2999, zoom: 11 },
-  'thrissur': { lat: 10.5276, lng: 76.2144, zoom: 11 },
-  'palakkad': { lat: 10.7867, lng: 76.6548, zoom: 11 },
-  'malappuram': { lat: 11.0714, lng: 76.0740, zoom: 11 },
-  'kozhikode': { lat: 11.2588, lng: 75.7804, zoom: 11 },
-  'wayanad': { lat: 11.6850, lng: 76.1320, zoom: 12 },
-  'kannur': { lat: 11.8745, lng: 75.3704, zoom: 11 },
-  'kasaragod': { lat: 12.5000, lng: 74.9500, zoom: 11 }
-};
+(async function () {
+  let name = null;
+  try {
+    name = localStorage.getItem('pharmaName')
+        || localStorage.getItem('userName')
+        || localStorage.getItem('name');
+  } catch (e) {
+    console.warn('localStorage not available', e.message);
+  }
+  if (!name) {
+    try {
+      const res = await fetch('http://localhost:5000/api/me', { credentials: 'include' });
+      if (res.ok) {
+        const j = await res.json();
+        if (j) {
+          name = j.name || j.fullName || j.username || null;
+        }
+      }
+    } catch (e) {
+      console.warn('Could not fetch user name from API:', e.message);
+    }
+  }
+  if (name) {
+    const firstName = String(name).split(' ')[0];
+    const welcomeEl = document.getElementById('welcomeText');
+    if (welcomeEl) welcomeEl.textContent = `Welcome, ${firstName}!`;
+  }
+})();
+</script>
 
-<<<<<<< Updated upstream
-<!-- Hospital dashboard scripts (unchanged) -->
+<!-- Hospital dashboard scripts -->
 <script>
 (async function () {
   let data;
@@ -519,19 +387,11 @@ const keralaDistrictsBase = {
           { label: "Amoxicillin",   data: [21,17,19,18,22,25], color: "#38bdf8" }
         ]
       },
-      pie: { labels: ["St Mercy","Green Valley","General Health"], data: [44,33,23], colors: ["#38bdf8","#22d3ee","#6366f1"] },
-      table: [
-        { antibiotic: "Ciprofloxacin", hospital: "St Mercy", cases: 72, resistance: "56%" },
-        { antibiotic: "Amoxicillin", hospital: "Green Valley", cases: 48, resistance: "42%" },
-        { antibiotic: "Ceftriaxone", hospital: "General Health", cases: 33, resistance: "35%" },
-        { antibiotic: "Azithromycin", hospital: "St Mercy", cases: 29, resistance: "17%" }
-      ]
+      pie: { labels: ["St Mercy","Green Valley","General Health"], data: [44,33,23], colors: ["#38bdf8","#22d3ee","#6366f1"] }
     };
   }
-  const summary = document.querySelector('.pharma-section .summary-box p');
-  if (summary) {
-    summary.innerHTML = `<strong>Total Cases:</strong> ${data.totalCases} &nbsp;|&nbsp; <strong>High Risk:</strong> ${data.highRisk} &nbsp;|&nbsp; <strong>Hospitals:</strong> ${data.hospitals}`;
-  }
+  
+  // Create charts
   new Chart(document.getElementById("barChart"), {
     type: 'bar',
     data: {
@@ -549,43 +409,819 @@ const keralaDistrictsBase = {
       }
     }
   });
+  
   new Chart(document.getElementById("pieChart"), {
     type: 'pie',
     data: { labels: data.pie.labels, datasets: [{ data: data.pie.data, backgroundColor: data.pie.colors }] },
     options: { responsive: true, plugins: { legend: { labels: { color: '#e5edff' } } } }
   });
-  const tableContainer = document.querySelector('.pharma-section .data-table tbody');
-  if (tableContainer && Array.isArray(data.table)) {
-    tableContainer.innerHTML = '';
-    for (const row of data.table) {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${row.antibiotic}</td><td>${row.hospital}</td><td>${row.cases}</td><td>${row.resistance}</td>`;
-      tableContainer.appendChild(tr);
-    }
-  }
 })();
 </script>
 
-<!-- FIRESTORE INIT: loads your firebase-init (must set window.firebaseApp or window.db) -->
-<script type="module" src="scripts/firebase-init.js"></script>
-
-<!-- FIRESTORE LISTENER (module) - this emits "pharmEntries" events on window -->
-<script type="module" src="scripts/pharma-firestore.js"></script>
-
-<!-- Pharmacist UI listener: receives normalized entries and updates UI -->
+<!-- ML Dashboard Script -->
 <script>
-/* Pharmacist UI updater
-   - listens to window 'pharmEntries' CustomEvent (detail = array of raw docs)
-   - safe chart handling: destroys old chart instances before creating new
-   - expects each doc to use fields: species, susceptibility, prescriptionDetails, clinicalNotes, createdAt
-*/
+document.addEventListener('DOMContentLoaded', function() {
+  // ML API Configuration (TEAMMATE WILL PROVIDE THIS)
+  const ML_API_URL = 'http://localhost:5000/api'; // CHANGE THIS
+  
+  // Sample ML data (will be replaced by real API)
+  const sampleMLData = {
+    accuracy: 87.3,
+    last_updated: new Date().toISOString(),
+    avg_speed: 0.42,
+    total_predictions: 1247,
+    recent_predictions: [
+      {
+        organism: 'E. coli',
+        antibiotic: 'Ciprofloxacin',
+        resistance_probability: 0.72,
+        risk_level: 'High',
+        confidence: 0.88,
+        recommendation: 'Consider alternative antibiotic'
+      },
+      {
+        organism: 'K. pneumoniae',
+        antibiotic: 'Meropenem',
+        resistance_probability: 0.35,
+        risk_level: 'Medium',
+        confidence: 0.92,
+        recommendation: 'Monitor closely'
+      },
+      {
+        organism: 'S. aureus',
+        antibiotic: 'Vancomycin',
+        resistance_probability: 0.15,
+        risk_level: 'Low',
+        confidence: 0.95,
+        recommendation: 'First-line therapy appropriate'
+      },
+      {
+        organism: 'P. aeruginosa',
+        antibiotic: 'Ceftriaxone',
+        resistance_probability: 0.68,
+        risk_level: 'High',
+        confidence: 0.85,
+        recommendation: 'Consider combination therapy'
+      }
+    ]
+  };
 
+  // Initialize dashboard with sample data
+  initializeMLDashboard(sampleMLData);
+  
+  // Setup prediction button
+  document.getElementById('mlPredictBtn').addEventListener('click', function() {
+    const organism = document.getElementById('mlOrganism').value;
+    const antibiotic = document.getElementById('mlAntibiotic').value;
+    
+    if (!organism || !antibiotic) {
+      alert('Please select both bacteria and antibiotic');
+      return;
+    }
+    
+    getMLPrediction(organism, antibiotic);
+  });
+
+  function initializeMLDashboard(mlData) {
+    // Update summary
+    document.getElementById('mlAccuracy').textContent = `${mlData.accuracy}%`;
+    document.getElementById('mlLastUpdate').textContent = formatTime(mlData.last_updated);
+    
+    // Update health panel
+    document.getElementById('modelAccuracy').textContent = `${mlData.accuracy}%`;
+    document.getElementById('accuracyBar').style.width = `${mlData.accuracy}%`;
+    document.getElementById('predictionSpeed').textContent = `${mlData.avg_speed}s`;
+    document.getElementById('totalPredictions').textContent = mlData.total_predictions.toLocaleString();
+    
+    // Update table
+    updateMLTable(mlData.recent_predictions);
+  }
+
+  function formatTime(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffMins = Math.floor(diffMs / 60000);
+    
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins} minutes ago`;
+    if (diffMins < 1440) return `${Math.floor(diffMins / 60)} hours ago`;
+    return date.toLocaleDateString();
+  }
+
+  function updateMLTable(predictions) {
+    const tbody = document.getElementById('mlTableBody');
+    
+    if (!predictions || predictions.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 30px; color: #9ca3c9;">No ML predictions available</td></tr>';
+      return;
+    }
+    
+    tbody.innerHTML = predictions.map(pred => `
+      <tr>
+        <td>${pred.organism}</td>
+        <td>${pred.antibiotic}</td>
+        <td>${(pred.resistance_probability * 100).toFixed(1)}%</td>
+        <td>
+          <span class="risk-badge" style="
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: ${getRiskColor(pred.risk_level)};
+            color: white;
+          ">
+            ${pred.risk_level}
+          </span>
+        </td>
+        <td>${(pred.confidence * 100).toFixed(0)}%</td>
+        <td>${pred.recommendation}</td>
+      </tr>
+    `).join('');
+  }
+
+  async function getMLPrediction(organism, antibiotic) {
+    // Show loading
+    showMLLoading();
+    
+    try {
+      // TEAMMATE: Replace with real API call
+      // const response = await fetch(`${ML_API_URL}/predict`, {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ organism, antibiotic })
+      // });
+      // const prediction = await response.json();
+      
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // Sample prediction (TEAMMATE WILL PROVIDE REAL DATA)
+      const prediction = {
+        resistance_probability: getRandomProbability(organism, antibiotic),
+        risk_level: getRiskLevel(organism, antibiotic),
+        confidence: 0.85 + Math.random() * 0.1,
+        model_version: 'AMR-Predict v2.1',
+        recommendation: getRecommendation(organism, antibiotic),
+        timestamp: new Date().toISOString()
+      };
+      
+      // Display result
+      displayMLResult(prediction, organism, antibiotic);
+      
+      // Add to table
+      addPredictionToTable({
+        organism,
+        antibiotic,
+        ...prediction
+      });
+      
+      // Update prediction count
+      updatePredictionCount();
+      
+    } catch (error) {
+      console.error('ML Prediction Error:', error);
+      displayMLError();
+    }
+  }
+
+  function showMLLoading() {
+    document.getElementById('mlResult').innerHTML = `
+      <div style="width: 100%; text-align: center;">
+        <div style="width: 50px; height: 50px; border: 4px solid rgba(34,193,195,0.3); 
+             border-top-color: #22c1c3; border-radius: 50%; margin: 0 auto; 
+             animation: spin 1s linear infinite;"></div>
+        <p style="margin-top: 20px; color: #9ca3c9; font-size: 0.9rem;">
+          ML model analyzing pattern...
+        </p>
+      </div>
+    `;
+  }
+
+  function displayMLResult(prediction, organism, antibiotic) {
+    const risk = prediction.risk_level;
+    const probability = prediction.resistance_probability;
+    const confidence = prediction.confidence;
+    const riskColor = getRiskColor(risk);
+    
+    document.getElementById('mlResult').innerHTML = `
+      <div style="width: 100%;">
+        <!-- Probability Circle -->
+        <div style="position: relative; width: 120px; height: 120px; margin: 0 auto 20px auto;">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <!-- Background circle -->
+            <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(51,65,85,0.5)" stroke-width="8"/>
+            <!-- Progress circle -->
+            <circle cx="60" cy="60" r="54" fill="none" stroke="${riskColor}" 
+                    stroke-width="8" stroke-linecap="round"
+                    stroke-dasharray="${probability * 339} 339"
+                    transform="rotate(-90 60 60)"/>
+          </svg>
+          <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;">
+            <div style="font-size: 1.8rem; font-weight: 700; color: ${riskColor};">
+              ${(probability * 100).toFixed(1)}%
+            </div>
+            <div style="font-size: 0.8rem; color: #9ca3c9;">Resistance</div>
+          </div>
+        </div>
+        
+        <!-- Risk Badge -->
+        <div style="text-align: center; margin-bottom: 20px;">
+          <span style="
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 999px;
+            font-weight: 600;
+            background: ${riskColor};
+            color: white;
+            font-size: 0.9rem;
+          ">
+            ${risk.toUpperCase()} RISK
+          </span>
+        </div>
+        
+        <!-- Details -->
+        <div style="background: rgba(15,23,42,0.7); padding: 15px; border-radius: 10px;">
+          <div style="margin-bottom: 10px;">
+            <div style="font-size: 0.85rem; color: #cbd5f5; margin-bottom: 5px;">
+              <strong>Combination:</strong> ${organism.split(' ')[0]} + ${antibiotic}
+            </div>
+            <div style="font-size: 0.85rem; color: #cbd5f5; margin-bottom: 5px;">
+              <strong>ML Confidence:</strong> ${(confidence * 100).toFixed(0)}%
+            </div>
+            <div style="font-size: 0.85rem; color: #cbd5f5;">
+              <strong>Recommendation:</strong> ${prediction.recommendation}
+            </div>
+          </div>
+          <div style="font-size: 0.75rem; color: #94a3b8; text-align: center; padding-top: 10px; border-top: 1px solid rgba(51,65,85,0.5);">
+            Generated by ${prediction.model_version}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function displayMLError() {
+    document.getElementById('mlResult').innerHTML = `
+      <div style="text-align: center; padding: 30px;">
+        <div style="font-size: 3rem; margin-bottom: 15px;">⚠️</div>
+        <p style="color: #ef4444; margin-bottom: 10px;">ML Service Temporarily Unavailable</p>
+        <p style="color: #9ca3c9; font-size: 0.9rem;">
+          Using historical data patterns for estimation
+        </p>
+      </div>
+    `;
+  }
+
+  function addPredictionToTable(prediction) {
+    const tbody = document.getElementById('mlTableBody');
+    
+    // Remove loading row if present
+    if (tbody.innerHTML.includes('Loading')) {
+      tbody.innerHTML = '';
+    }
+    
+    // Add new row at the top
+    const newRow = `
+      <tr>
+        <td>${prediction.organism}</td>
+        <td>${prediction.antibiotic}</td>
+        <td>${(prediction.resistance_probability * 100).toFixed(1)}%</td>
+        <td>
+          <span class="risk-badge" style="
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: ${getRiskColor(prediction.risk_level)};
+            color: white;
+          ">
+            ${prediction.risk_level}
+          </span>
+        </td>
+        <td>${(prediction.confidence * 100).toFixed(0)}%</td>
+        <td>${prediction.recommendation}</td>
+      </tr>
+    `;
+    
+    tbody.innerHTML = newRow + tbody.innerHTML;
+    
+    // Limit to 10 rows
+    const rows = tbody.querySelectorAll('tr');
+    if (rows.length > 10) {
+      rows[10].remove();
+    }
+  }
+
+  function updatePredictionCount() {
+    const countElement = document.getElementById('totalPredictions');
+    const current = parseInt(countElement.textContent.replace(/,/g, '')) || 0;
+    countElement.textContent = (current + 1).toLocaleString();
+  }
+
+  // Helper functions (TEAMMATE WILL PROVIDE REAL LOGIC)
+  function getRandomProbability(organism, antibiotic) {
+    const baseProb = {
+      'ESCHERICHIA COLI': { 'CIPROFLOXACIN': 0.72, 'AMOXICILLIN': 0.65, 'CEFTRIAXONE': 0.45 },
+      'KLEBSIELLA PNEUMONIAE': { 'MEROPENEM': 0.35, 'CIPROFLOXACIN': 0.58, 'GENTAMICIN': 0.42 },
+      'STAPHYLOCOCCUS AUREUS': { 'VANCOMYCIN': 0.15, 'AMOXICILLIN': 0.82, 'AZITHROMYCIN': 0.38 }
+    };
+    
+    return baseProb[organism]?.[antibiotic] || 0.3 + Math.random() * 0.5;
+  }
+
+  function getRiskLevel(organism, antibiotic) {
+    const prob = getRandomProbability(organism, antibiotic);
+    if (prob >= 0.7) return 'High';
+    if (prob >= 0.4) return 'Medium';
+    return 'Low';
+  }
+
+  function getRecommendation(organism, antibiotic) {
+    const risk = getRiskLevel(organism, antibiotic);
+    if (risk === 'High') return 'Consider alternative antibiotic or combination therapy';
+    if (risk === 'Medium') return 'Monitor closely, consider susceptibility testing';
+    return 'First-line therapy appropriate';
+  }
+
+  function getRiskColor(risk) {
+    switch(risk.toLowerCase()) {
+      case 'high': return '#ef4444';
+      case 'medium': return '#f59e0b';
+      case 'low': return '#10b981';
+      default: return '#6b7280';
+    }
+  }
+
+  // Add CSS animation
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  `;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- Kerala Districts Map JavaScript -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Kerala districts data with ML risk scores
+  const keralaDistrictsML = {
+    'thiruvananthapuram': { 
+      lat: 8.5241, lng: 76.9366, zoom: 11,
+      ml_risk_score: 6.8,
+      ml_risk_level: 'Medium',
+      top_organism: 'E. coli',
+      resistance_trend: 'Increasing',
+      last_ml_update: '2024-01-20'
+    },
+    'kollam': { 
+      lat: 8.8932, lng: 76.6141, zoom: 11,
+      ml_risk_score: 5.2,
+      ml_risk_level: 'Medium',
+      top_organism: 'K. pneumoniae',
+      resistance_trend: 'Stable',
+      last_ml_update: '2024-01-20'
+    },
+    'pathanamthitta': { 
+      lat: 9.2648, lng: 76.7870, zoom: 12,
+      ml_risk_score: 4.1,
+      ml_risk_level: 'Low',
+      top_organism: 'A. baumannii',
+      resistance_trend: 'Decreasing',
+      last_ml_update: '2024-01-20'
+    },
+    'alappuzha': { 
+      lat: 9.4981, lng: 76.3388, zoom: 11,
+      ml_risk_score: 7.1,
+      ml_risk_level: 'Medium',
+      top_organism: 'E. coli',
+      resistance_trend: 'Increasing',
+      last_ml_update: '2024-01-20'
+    },
+    'kottayam': { 
+      lat: 9.5916, lng: 76.5222, zoom: 11,
+      ml_risk_score: 8.3,
+      ml_risk_level: 'High',
+      top_organism: 'K. pneumoniae',
+      resistance_trend: 'Increasing',
+      last_ml_update: '2024-01-20'
+    },
+    'idukki': { 
+      lat: 9.8495, lng: 76.9391, zoom: 10,
+      ml_risk_score: 3.8,
+      ml_risk_level: 'Low',
+      top_organism: 'P. aeruginosa',
+      resistance_trend: 'Stable',
+      last_ml_update: '2024-01-20'
+    },
+    'ernakulam': { 
+      lat: 9.9816, lng: 76.2999, zoom: 11,
+      ml_risk_score: 9.2,
+      ml_risk_level: 'High',
+      top_organism: 'E. coli',
+      resistance_trend: 'Increasing',
+      last_ml_update: '2024-01-20'
+    },
+    'thrissur': { 
+      lat: 10.5276, lng: 76.2144, zoom: 11,
+      ml_risk_score: 8.7,
+      ml_risk_level: 'High',
+      top_organism: 'S. aureus',
+      resistance_trend: 'Increasing',
+      last_ml_update: '2024-01-20'
+    },
+    'palakkad': { 
+      lat: 10.7867, lng: 76.6548, zoom: 11,
+      ml_risk_score: 6.5,
+      ml_risk_level: 'Medium',
+      top_organism: 'Acinetobacter',
+      resistance_trend: 'Stable',
+      last_ml_update: '2024-01-20'
+    },
+    'malappuram': { 
+      lat: 11.0714, lng: 76.0740, zoom: 11,
+      ml_risk_score: 7.4,
+      ml_risk_level: 'Medium',
+      top_organism: 'E. coli',
+      resistance_trend: 'Increasing',
+      last_ml_update: '2024-01-20'
+    },
+    'kozhikode': { 
+      lat: 11.2588, lng: 75.7804, zoom: 11,
+      ml_risk_score: 8.9,
+      ml_risk_level: 'High',
+      top_organism: 'K. pneumoniae',
+      resistance_trend: 'Increasing',
+      last_ml_update: '2024-01-20'
+    },
+    'wayanad': { 
+      lat: 11.6850, lng: 76.1320, zoom: 12,
+      ml_risk_score: 4.5,
+      ml_risk_level: 'Low',
+      top_organism: 'S. aureus',
+      resistance_trend: 'Stable',
+      last_ml_update: '2024-01-20'
+    },
+    'kannur': { 
+      lat: 11.8745, lng: 75.3704, zoom: 11,
+      ml_risk_score: 6.1,
+      ml_risk_level: 'Medium',
+      top_organism: 'E. coli',
+      resistance_trend: 'Stable',
+      last_ml_update: '2024-01-20'
+    },
+    'kasaragod': { 
+      lat: 12.5000, lng: 74.9500, zoom: 11,
+      ml_risk_score: 5.8,
+      ml_risk_level: 'Medium',
+      top_organism: 'P. aeruginosa',
+      resistance_trend: 'Stable',
+      last_ml_update: '2024-01-20'
+    }
+  };
+
+  let map;
+  let currentDistrictMarker = null;
+  let heatLayer = null;
+
+// Initialize the map
+function initMap() {
+  console.log('🗺️ Initializing Kerala map...');
+  
+  map = L.map('kerala-map').setView([10.8505, 76.2711], 8);
+  
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+  
+  // Add initial heatmap with default data
+  addMLHeatmap();
+  
+  // Setup district dropdown
+  setupDistrictDropdown();
+  
+  console.log('✅ Map initialized');
+}
+
+// Add ML-based heatmap
+function addMLHeatmap() {
+  console.log('🔥 Generating heatmap from ML data...');
+  
+  const heatData = [];
+  
+  // Add heat points for each district with ML data
+  Object.entries(keralaDistrictsML).forEach(([district, data]) => {
+    // Convert ML risk score to intensity (0-1)
+    // Default to 0.5 if no data
+    const intensity = data.ml_risk_score ? (data.ml_risk_score / 10) : 0.5;
+    
+    // Add multiple points around the district center for better visualization
+    // More points = more intense heat
+    const pointCount = Math.max(3, Math.floor(intensity * 8));
+    
+    for (let i = 0; i < pointCount; i++) {
+      // Add some randomness to spread the heat
+      const latOffset = (Math.random() - 0.5) * 0.15;
+      const lngOffset = (Math.random() - 0.5) * 0.15;
+      heatData.push([data.lat + latOffset, data.lng + lngOffset, intensity]);
+    }
+  });
+  
+  // Remove existing heat layer
+  if (heatLayer) {
+    map.removeLayer(heatLayer);
+  }
+  
+  // Create new heat layer
+  heatLayer = L.heatLayer(heatData, {
+    radius: 40,
+    blur: 25,
+    maxZoom: 12,
+    gradient: {
+      0.2: '#10b981',   // Low risk - green
+      0.4: '#22c1c3',   // Medium-low - teal
+      0.6: '#f59e0b',   // Medium - orange
+      0.8: '#ef4444'    // High risk - red
+    },
+    opacity: 0.7,
+    max: 1.0
+  }).addTo(map);
+  
+  console.log(`✅ Heatmap generated with ${heatData.length} points`);
+}
+
+// Setup district dropdown
+function setupDistrictDropdown() {
+  const dropdown = document.getElementById('kerala-district-select');
+  
+  if (!dropdown) {
+    console.warn('District dropdown not found');
+    return;
+  }
+  
+  dropdown.addEventListener('change', function() {
+    const selectedDistrict = this.value;
+    
+    if (!selectedDistrict) {
+      // Reset view
+      map.setView([10.8505, 76.2711], 8);
+      document.getElementById('mlDistrictInfo').style.display = 'none';
+      
+      if (currentDistrictMarker) {
+        map.removeLayer(currentDistrictMarker);
+        currentDistrictMarker = null;
+      }
+      return;
+    }
+    
+    showDistrictMLInfo(selectedDistrict);
+    zoomToDistrict(selectedDistrict);
+  });
+  
+  console.log('✅ District dropdown setup complete');
+}
+
+// Show ML info for selected district
+function showDistrictMLInfo(districtKey) {
+  const district = keralaDistrictsML[districtKey];
+  if (!district) {
+    console.warn(`District not found: ${districtKey}`);
+    return;
+  }
+  
+  const infoPanel = document.getElementById('mlDistrictInfo');
+  const districtName = document.getElementById('mlDistrictName');
+  const districtDetails = document.getElementById('mlDistrictDetails');
+  
+  if (!infoPanel || !districtName || !districtDetails) {
+    console.warn('District info elements not found');
+    return;
+  }
+  
+  // Format district name
+  const displayName = formatDistrictName(districtKey);
+  districtName.textContent = `${displayName} District - ML Analysis`;
+  
+  // Get risk data
+  const riskScore = district.ml_risk_score || 5.0;
+  const riskLevel = district.ml_risk_level || 'medium';
+  const riskColor = getRiskColor(riskLevel);
+  const entries = district.total_entries || 0;
+  const lastUpdate = district.latest_upload ? 
+    new Date(district.latest_upload).toLocaleDateString() : 'Never';
+  
+  districtDetails.innerHTML = `
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
+      <div style="background: rgba(15,23,42,0.7); padding: 15px; border-radius: 10px; text-align: center;">
+        <div style="font-size: 2rem; font-weight: bold; color: ${riskColor}; margin-bottom: 5px;">
+          ${riskScore.toFixed(1)}
+        </div>
+        <div style="font-size: 0.9rem; color: #94a3b8;">ML Risk Score /10</div>
+      </div>
+      
+      <div style="background: rgba(15,23,42,0.7); padding: 15px; border-radius: 10px; text-align: center;">
+        <div style="font-size: 2rem; font-weight: bold; color: #22c1c3; margin-bottom: 5px;">
+          ${entries}
+        </div>
+        <div style="font-size: 0.9rem; color: #94a3b8;">Total Entries</div>
+      </div>
+    </div>
+    
+    <div style="background: rgba(15,23,42,0.7); padding: 20px; border-radius: 10px; margin-top: 15px;">
+      <h4 style="color: #e5e7eb; margin-bottom: 15px; font-size: 1rem;">ML Analysis Details</h4>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div>
+          <div style="font-size: 0.9rem; color: #cbd5f5; margin-bottom: 5px;">
+            <strong>Risk Level:</strong>
+          </div>
+          <div style="color: ${riskColor}; font-size: 1.1rem; font-weight: 600;">
+            ${riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1)}
+          </div>
+        </div>
+        
+        <div>
+          <div style="font-size: 0.9rem; color: #cbd5f5; margin-bottom: 5px;">
+            <strong>Latest Update:</strong>
+          </div>
+          <div style="color: #e5e7eb; font-size: 1.1rem; font-weight: 600;">
+            ${lastUpdate}
+          </div>
+        </div>
+      </div>
+      
+      <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(51,65,85,0.5);">
+        <div style="font-size: 0.85rem; color: #9ca3c9;">
+          <strong>ML Model:</strong> AMR-Predict v2.1<br>
+          <strong>Heatmap Intensity:</strong> ${(riskScore / 10).toFixed(2)}<br>
+          <strong>Coverage:</strong> ${entries > 0 ? 'Data available' : 'No data yet'}
+        </div>
+      </div>
+    </div>
+    
+    ${entries > 0 ? `
+      <div style="margin-top: 20px; background: rgba(239, 68, 68, 0.1); padding: 15px; border-radius: 10px; border-left: 4px solid ${riskColor};">
+        <div style="font-size: 0.9rem; color: #e5e7eb; font-weight: 600; margin-bottom: 8px;">
+          ${riskScore >= 7.5 ? '⚠️ High Risk Alert' : riskScore >= 5 ? '📊 Medium Risk' : '✅ Low Risk'}
+        </div>
+        <div style="font-size: 0.85rem; color: #cbd5f5;">
+          ${getDistrictAlert(riskScore, riskLevel)}
+        </div>
+      </div>
+    ` : `
+      <div style="margin-top: 20px; background: rgba(148, 163, 184, 0.1); padding: 15px; border-radius: 10px; border-left: 4px solid #94a3b8;">
+        <div style="font-size: 0.9rem; color: #e5e7eb; font-weight: 600; margin-bottom: 8px;">
+          📋 No Data Yet
+        </div>
+        <div style="font-size: 0.85rem; color: #cbd5f5;">
+          Upload Excel data from this district to see ML predictions and risk analysis.
+        </div>
+      </div>
+    `}
+  `;
+  
+  infoPanel.style.display = 'block';
+}
+
+// Zoom to selected district
+function zoomToDistrict(districtKey) {
+  const district = keralaDistrictsML[districtKey];
+  if (!district) return;
+  
+  // Remove previous marker
+  if (currentDistrictMarker) {
+    map.removeLayer(currentDistrictMarker);
+    currentDistrictMarker = null;
+  }
+  
+  // Get risk color
+  const riskLevel = district.ml_risk_level || 'medium';
+  const riskColor = getRiskColor(riskLevel);
+  const riskScore = district.ml_risk_score || 5.0;
+  
+  // Add marker for selected district
+  currentDistrictMarker = L.marker([district.lat, district.lng], {
+    icon: L.divIcon({
+      html: `<div style="
+        width: 28px;
+        height: 28px;
+        background: ${riskColor};
+        border: 3px solid white;
+        border-radius: 50%;
+        box-shadow: 0 0 15px ${riskColor};
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: white;
+        font-size: 12px;
+        cursor: pointer;
+      ">${riskScore >= 7.5 ? '!' : riskScore >= 5 ? '~' : '✓'}</div>`,
+      iconSize: [28, 28],
+      className: 'selected-district-marker'
+    })
+  }).addTo(map);
+  
+  // Add popup with district info
+  currentDistrictMarker.bindPopup(`
+    <div style="padding: 10px; min-width: 250px;">
+      <strong style="color: ${riskColor}; font-size: 1.1em;">
+        ${formatDistrictName(districtKey)}
+      </strong><br>
+      <div style="margin-top: 8px; font-size: 0.9em;">
+        <strong>ML Risk Level:</strong> ${riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1)}<br>
+        <strong>Risk Score:</strong> ${riskScore.toFixed(1)}/10<br>
+        <strong>Total Entries:</strong> ${district.total_entries || 0}<br>
+        <strong>Status:</strong> <span style="color: ${district.total_entries > 0 ? '#10b981' : '#94a3b8'}">
+          ${district.total_entries > 0 ? 'Data available' : 'No data yet'}
+        </span>
+      </div>
+    </div>
+  `).openPopup();
+  
+  // Zoom to district with smooth animation
+  map.flyTo([district.lat, district.lng], district.zoom, {
+    duration: 1.5,
+    easeLinearity: 0.25
+  });
+}
+
+// Update heatmap with real data from backend
+function updateHeatmapWithRealData(districtData) {
+  console.log('🔄 Updating heatmap with real data...');
+  
+  if (!districtData || !Array.isArray(districtData)) {
+    console.warn('No district data provided to update heatmap');
+    return;
+  }
+  
+  // Update each district with real data
+  districtData.forEach(district => {
+    const districtKey = district.district?.toLowerCase();
+    if (districtKey && keralaDistrictsML[districtKey]) {
+      // Update with real data
+      keralaDistrictsML[districtKey].ml_risk_score = district.avg_resistance_score || 5.0;
+      keralaDistrictsML[districtKey].ml_risk_level = getRiskLevelFromScore(district.avg_resistance_score);
+      keralaDistrictsML[districtKey].total_entries = district.total_entries || 0;
+      keralaDistrictsML[districtKey].latest_upload = district.latest_upload;
+      keralaDistrictsML[districtKey].resistant_cases = district.resistant_cases || 0;
+      
+      console.log(`📍 Updated ${districtKey}: ${district.avg_resistance_score}/10, ${district.total_entries} entries`);
+    }
+  });
+  
+  // Refresh the heatmap
+  addMLHeatmap();
+  
+  console.log(`✅ Heatmap updated with ${districtData.length} districts`);
+}
+
+// Helper functions
+function formatDistrictName(key) {
+  return key
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
+function getRiskColor(riskLevel) {
+  switch((riskLevel || '').toLowerCase()) {
+    case 'high': return '#ef4444';
+    case 'medium': return '#f59e0b';
+    case 'low': return '#10b981';
+    default: return '#6b7280';
+  }
+}
+
+  function getDistrictAlert(riskLevel, trend) {
+    if (riskLevel === 'High' && trend === 'Increasing') {
+      return 'High and increasing resistance risk detected. Consider enhanced surveillance and review local antibiotic guidelines.';
+    } else if (riskLevel === 'High') {
+      return 'Persistent high resistance risk. Monitor antibiogram patterns closely.';
+    } else if (riskLevel === 'Medium' && trend === 'Increasing') {
+      return 'Moderate but increasing risk. Review empirical therapy choices.';
+    }
+    return 'Standard surveillance recommended.';
+  }
+
+  // Initialize the map
+  initMap();
+});
+</script>
+
+<!-- Pharmacist UI listener -->
+<script>
 (function () {
-  // keep references to created charts so we can destroy them cleanly
   let pharmBarChart = null;
   let pharmLineChart = null;
 
-  // helper: safely destroy Chart.js instance if present
   function safeDestroy(chart) {
     try { if (chart && typeof chart.destroy === 'function') chart.destroy(); } catch (e) { console.warn('destroy failed', e); }
   }
@@ -596,10 +1232,8 @@ const keralaDistrictsBase = {
     if (existing) existing.destroy();
   }
 
-  // normalize single firestore doc into predictable object
   function normalizeDoc(raw) {
     const doc = raw || {};
-    // createdAt may be Firestore timestamp { seconds, nanoseconds } or number or ISO string
     let ts = null;
     if (doc.createdAt && typeof doc.createdAt === 'object' && doc.createdAt.seconds) {
       ts = doc.createdAt.seconds * 1000;
@@ -618,18 +1252,15 @@ const keralaDistrictsBase = {
     };
   }
 
-  // event handler when firestore listener dispatches data
   function onEntries(e) {
     const raw = (e && e.detail) ? e.detail : [];
     const entries = Array.isArray(raw) ? raw.map(normalizeDoc) : [];
 
-    // Update summary
     const total = entries.length;
     const recent = entries.slice(0, 10).length;
     const summary = document.getElementById('pharm-summary');
     if (summary) summary.innerHTML = `<strong>Total Logs:</strong> ${total} &nbsp;|&nbsp; <strong>Recent:</strong> ${recent}`;
 
-    // Fill table: most recent first
     const tb = document.getElementById('pharmTbody');
     if (!entries.length) {
       tb.innerHTML = `<tr><td colspan="5">No pharmacist entries yet</td></tr>`;
@@ -647,7 +1278,6 @@ const keralaDistrictsBase = {
       tb.innerHTML = rows;
     }
 
-    // Build species counts for bar chart
     const counts = {};
     for (const r of entries) {
       const k = (r.species || 'Unknown').trim() || 'Unknown';
@@ -657,7 +1287,6 @@ const keralaDistrictsBase = {
     const barLabels = speciesPairs.map(p=>p[0]);
     const barValues = speciesPairs.map(p=>p[1]);
 
-    // Build daily totals for line chart
     const daily = {};
     for (const r of entries) {
       const d = new Date(r.ts);
@@ -668,31 +1297,32 @@ const keralaDistrictsBase = {
     const lineLabels = dailySorted.map(p=>p[0]);
     const lineValues = dailySorted.map(p=>p[1]);
 
-    // Insights generation (simple, rule-based)
+    // Update insights with ML context
     const insights = [];
     if (barLabels.length) {
       insights.push(`<strong>Top species:</strong> ${barLabels.slice(0,3).join(', ')}`);
     } else {
       insights.push('<strong>Top species:</strong> none recorded');
     }
-    // scan susceptibility text for "resistant" tokens
+    
+    // Add ML-based insight
+    if (barLabels.length > 0) {
+      insights.push(`<strong>ML Insight:</strong> ${barLabels[0]} shows high resistance to Ciprofloxacin`);
+    }
+
     const susText = entries.map(r => r.susceptibility || '').join(' || ').toLowerCase();
     const hasResistant = susText.includes('resistant') || susText.includes('r:');
     const hasSensitive = susText.includes('sensitive') || susText.includes('s:');
-    if (hasResistant && !hasSensitive) insights.push('<strong>Note:</strong> Resistance mentions present — review antibiogram.');
-    if (hasSensitive && !hasResistant) insights.push('<strong>Note:</strong> Mostly sensitive results recorded.');
+    if (hasResistant && !hasSensitive) insights.push('<strong>ML Alert:</strong> High resistance mentions — review local antibiogram.');
+    if (hasSensitive && !hasResistant) insights.push('<strong>ML Note:</strong> Mostly sensitive results recorded.');
 
-    // feedback/notes flags
     const notesText = entries.map(r=>r.notes||'').join(' || ').toLowerCase();
     const flags = ['severe','allergic','reaction','worse','ineffective','no change','moderate'].filter(k => notesText.includes(k));
     if (flags.length) insights.push(`<strong>Clinical flags:</strong> ${[...new Set(flags)].join(', ')}`);
 
     document.getElementById('pharmInsights').innerHTML = insights.map(x=>`<div style="margin-bottom:8px">${x}</div>`).join('');
 
-    // --- Charts: destroy previous instances before creating new ones ---
-    // Species bar chart
-    try { clearCanvas('pharmBar'); } catch(e){/*ignore*/}
-
+    try { clearCanvas('pharmBar'); } catch(e){}
     const barCtx = document.getElementById('pharmBar');
     if (barCtx) {
       try {
@@ -704,16 +1334,14 @@ const keralaDistrictsBase = {
             plugins: { legend: { display: false } },
             scales: {
               x: { ticks: { color: '#e5edff' }, grid: { color: 'rgba(148,163,184,0.12)' } },
-              y: { ticks: { color: '#e5edff' }, grid: { color: 'rgba(148,163,184,0.12)' }, beginAtZero: true }
+              y: { ticks: { color: '#e5e7eb' }, grid: { color: 'rgba(148,163,184,0.12)' }, beginAtZero: true }
             }
           }
         });
       } catch (err) { console.warn('bar chart create failed', err); }
     }
 
-    // Entries line chart
-    try { clearCanvas('pharmLine'); } catch(e){/*ignore*/}
-
+    try { clearCanvas('pharmLine'); } catch(e){}
     const lineCtx = document.getElementById('pharmLine');
     if (lineCtx) {
       try {
@@ -733,10 +1361,10 @@ const keralaDistrictsBase = {
           },
           options: {
             responsive: true,
-            plugins: { legend: { labels: { color: '#e5edff' } } },
+            plugins: { legend: { labels: { color: '#e5e7eb' } } },
             scales: {
-              x: { ticks: { color: '#e5edff' }, grid: { color: 'rgba(148,163,184,0.08)' } },
-              y: { ticks: { color: '#e5edff' }, grid: { color: 'rgba(148,163,184,0.08)' }, beginAtZero: true }
+              x: { ticks: { color: '#e5e7eb' }, grid: { color: 'rgba(148,163,184,0.08)' } },
+              y: { ticks: { color: '#e5e7eb' }, grid: { color: 'rgba(148,163,184,0.08)' }, beginAtZero: true }
             }
           }
         });
@@ -744,866 +1372,16 @@ const keralaDistrictsBase = {
     }
   }
 
-  // listen for the custom event dispatched by pharma-firestore.js
   window.addEventListener('pharmEntries', onEntries, { passive: true });
 
-  // helper
   function escapeHtml(s) {
     return String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
   }
 })();
-
 </script>
+<script type="module" src="scripts/supabase-init.js"></script>
+<script type="module" src="scripts/pharma.js"></script>
 
-<!-- load any auth UI module you already use -->
-
-<script>
-
-  document.addEventListener('DOMContentLoaded', function () {
-
-  let marker, circle, zoomed;
-
-  var map = L.map('map');
-  map.setView([51.505, -0.09], 13);
-
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
-
-/* ===============================
-   HEAT MAP – BACTERIAL RESISTANCE
-   Kerala (Randomized hotspots)
-================================ */
-
-// [latitude, longitude, intensity]
-// intensity: 0.2 (low resistance) → 1.0 (high resistance)
-
-const bacterialResistanceHeat = [
-
-  // Kochi (High resistance)
-  [9.9312, 76.2673, 0.9],
-  [9.9355, 76.2608, 0.85],
-  [9.9251, 76.2799, 0.8],
-
-  // Kottayam (Medium–High)
-  [9.5916, 76.5222, 0.7],
-  [9.5988, 76.5351, 0.65],
-
-  // Trivandrum (Medium)
-  [8.5241, 76.9366, 0.6],
-  [8.5302, 76.9423, 0.55],
-
-  // Thrissur (Medium–Low)
-  [10.5276, 76.2144, 0.5],
-  [10.5333, 76.2208, 0.45],
-
-  // Kozhikode
-  [11.2588, 75.7804, 0.6],
-  [11.2662, 75.7841, 0.55],
-
-  // Alappuzha
-  [9.4981, 76.3388, 0.5],
-
-  // Palakkad
-  [10.7867, 76.6548, 0.45]
-];
-
-
-/* ===============================
-   ADD HEATMAP TO EXISTING MAP
-================================ */
-
-L.heatLayer(bacterialResistanceHeat, {
-  radius: 35,
-  blur: 25,
-  maxZoom: 12,
-  gradient: {
-    0.2: 'blue',     // low resistance
-    0.4: 'cyan',
-    0.6: 'yellow',   // moderate
-    0.8: 'orange',
-    1.0: 'red'       // high resistance
-  }
-}).addTo(map);
-
-
-navigator.geolocation.watchPosition(success, error);
-
-
-
-function success(pos){
-
-    const lat = pos.coords.latitude;
-    const lng = pos.coords.longitude;
-    const accuracy = pos.coords.accuracy;
-
-    if(marker){
-        map.removeLayer(marker);
-        map.removeLayer(circle);
-    }
-   marker =  L.marker([lat, lng]).addTo(map);
-   circle =  L.circle([lat, lng],{ radius: accuracy}).addTo(map);
-
-
-   if(!zoomed){
-      zoomed = map.fitBounds(circle.getBounds());
-   }
-
-   map.setView([lat, lng]);
-    
-}
-
-function error(err){
-    
-    if(err.code == 1) {
-      alert("Please allow geoloaction access");
-    }else{
-      alert("Cannot get your current location");
-    }
-}
-});
-</script>
-
-<!-- load any auth UI module you already use -->
 <script type="module" src="scripts/auth-ui.js"></script>
-=======
-// Global variables
-let map = null;
-let heatLayer = null;
-let currentDistrictMarker = null;
-let keralaDistrictsML = { ...keralaDistrictsBase };
-
-// Initialize the map
-function initMap() {
-  console.log('🗺️ Initializing Kerala map...');
-  
-  map = L.map('kerala-map').setView([10.8505, 76.2711], 8);
-  
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap'
-  }).addTo(map);
-  
-  // Add initial heatmap with default data
-  addMLHeatmap();
-  
-  // Setup district dropdown
-  setupDistrictDropdown();
-  
-  console.log('✅ Map initialized');
-}
-
-// Add ML-based heatmap
-function addMLHeatmap() {
-  console.log('🔥 Generating heatmap from ML data...');
-  
-  const heatData = [];
-  
-  // Add heat points for each district with ML data
-  Object.entries(keralaDistrictsML).forEach(([district, data]) => {
-    // Convert ML risk score to intensity (0-1)
-    // Default to 0.5 if no data
-    const intensity = data.ml_risk_score ? (data.ml_risk_score / 10) : 0.5;
-    
-    // Add multiple points around the district center for better visualization
-    // More points = more intense heat
-    const pointCount = Math.max(3, Math.floor(intensity * 8));
-    
-    for (let i = 0; i < pointCount; i++) {
-      // Add some randomness to spread the heat
-      const latOffset = (Math.random() - 0.5) * 0.15;
-      const lngOffset = (Math.random() - 0.5) * 0.15;
-      heatData.push([data.lat + latOffset, data.lng + lngOffset, intensity]);
-    }
-  });
-  
-  // Remove existing heat layer
-  if (heatLayer) {
-    map.removeLayer(heatLayer);
-  }
-  
-  // Create new heat layer
-  heatLayer = L.heatLayer(heatData, {
-    radius: 40,
-    blur: 25,
-    maxZoom: 12,
-    gradient: {
-      0.2: '#10b981',   // Low risk - green
-      0.4: '#22c1c3',   // Medium-low - teal
-      0.6: '#f59e0b',   // Medium - orange
-      0.8: '#ef4444'    // High risk - red
-    },
-    opacity: 0.7,
-    max: 1.0
-  }).addTo(map);
-  
-  console.log(`✅ Heatmap generated with ${heatData.length} points`);
-}
-
-// Setup district dropdown
-function setupDistrictDropdown() {
-  const dropdown = document.getElementById('kerala-district-select');
-  
-  if (!dropdown) {
-    console.warn('District dropdown not found');
-    return;
-  }
-  
-  dropdown.addEventListener('change', function() {
-    const selectedDistrict = this.value;
-    
-    if (!selectedDistrict) {
-      // Reset view
-      map.setView([10.8505, 76.2711], 8);
-      document.getElementById('mlDistrictInfo').style.display = 'none';
-      
-      if (currentDistrictMarker) {
-        map.removeLayer(currentDistrictMarker);
-        currentDistrictMarker = null;
-      }
-      return;
-    }
-    
-    showDistrictMLInfo(selectedDistrict);
-    zoomToDistrict(selectedDistrict);
-  });
-  
-  console.log('✅ District dropdown setup complete');
-}
-
-// Show ML info for selected district
-function showDistrictMLInfo(districtKey) {
-  const district = keralaDistrictsML[districtKey];
-  if (!district) {
-    console.warn(`District not found: ${districtKey}`);
-    return;
-  }
-  
-  const infoPanel = document.getElementById('mlDistrictInfo');
-  const districtName = document.getElementById('mlDistrictName');
-  const districtDetails = document.getElementById('mlDistrictDetails');
-  
-  if (!infoPanel || !districtName || !districtDetails) {
-    console.warn('District info elements not found');
-    return;
-  }
-  
-  // Format district name
-  const displayName = formatDistrictName(districtKey);
-  districtName.textContent = `${displayName} District - ML Analysis`;
-  
-  // Get risk data
-  const riskScore = district.ml_risk_score || 5.0;
-  const riskLevel = district.ml_risk_level || 'medium';
-  const riskColor = getRiskColor(riskLevel);
-  const entries = district.total_entries || 0;
-  const lastUpdate = district.latest_upload ? 
-    new Date(district.latest_upload).toLocaleDateString() : 'Never';
-  
-  districtDetails.innerHTML = `
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
-      <div style="background: rgba(15,23,42,0.7); padding: 15px; border-radius: 10px; text-align: center;">
-        <div style="font-size: 2rem; font-weight: bold; color: ${riskColor}; margin-bottom: 5px;">
-          ${riskScore.toFixed(1)}
-        </div>
-        <div style="font-size: 0.9rem; color: #94a3b8;">ML Risk Score /10</div>
-      </div>
-      
-      <div style="background: rgba(15,23,42,0.7); padding: 15px; border-radius: 10px; text-align: center;">
-        <div style="font-size: 2rem; font-weight: bold; color: #22c1c3; margin-bottom: 5px;">
-          ${entries}
-        </div>
-        <div style="font-size: 0.9rem; color: #94a3b8;">Total Entries</div>
-      </div>
-    </div>
-    
-    <div style="background: rgba(15,23,42,0.7); padding: 20px; border-radius: 10px; margin-top: 15px;">
-      <h4 style="color: #e5e7eb; margin-bottom: 15px; font-size: 1rem;">ML Analysis Details</h4>
-      
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-        <div>
-          <div style="font-size: 0.9rem; color: #cbd5f5; margin-bottom: 5px;">
-            <strong>Risk Level:</strong>
-          </div>
-          <div style="color: ${riskColor}; font-size: 1.1rem; font-weight: 600;">
-            ${riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1)}
-          </div>
-        </div>
-        
-        <div>
-          <div style="font-size: 0.9rem; color: #cbd5f5; margin-bottom: 5px;">
-            <strong>Latest Update:</strong>
-          </div>
-          <div style="color: #e5e7eb; font-size: 1.1rem; font-weight: 600;">
-            ${lastUpdate}
-          </div>
-        </div>
-      </div>
-      
-      <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(51,65,85,0.5);">
-        <div style="font-size: 0.85rem; color: #9ca3c9;">
-          <strong>ML Model:</strong> AMR-Predict v2.1<br>
-          <strong>Heatmap Intensity:</strong> ${(riskScore / 10).toFixed(2)}<br>
-          <strong>Coverage:</strong> ${entries > 0 ? 'Data available' : 'No data yet'}
-        </div>
-      </div>
-    </div>
-    
-    ${entries > 0 ? `
-      <div style="margin-top: 20px; background: rgba(239, 68, 68, 0.1); padding: 15px; border-radius: 10px; border-left: 4px solid ${riskColor};">
-        <div style="font-size: 0.9rem; color: #e5e7eb; font-weight: 600; margin-bottom: 8px;">
-          ${riskScore >= 7.5 ? '⚠️ High Risk Alert' : riskScore >= 5 ? '📊 Medium Risk' : '✅ Low Risk'}
-        </div>
-        <div style="font-size: 0.85rem; color: #cbd5f5;">
-          ${getDistrictAlert(riskScore, riskLevel)}
-        </div>
-      </div>
-    ` : `
-      <div style="margin-top: 20px; background: rgba(148, 163, 184, 0.1); padding: 15px; border-radius: 10px; border-left: 4px solid #94a3b8;">
-        <div style="font-size: 0.9rem; color: #e5e7eb; font-weight: 600; margin-bottom: 8px;">
-          📋 No Data Yet
-        </div>
-        <div style="font-size: 0.85rem; color: #cbd5f5;">
-          Upload Excel data from this district to see ML predictions and risk analysis.
-        </div>
-      </div>
-    `}
-  `;
-  
-  infoPanel.style.display = 'block';
-}
-
-// Zoom to selected district
-function zoomToDistrict(districtKey) {
-  const district = keralaDistrictsML[districtKey];
-  if (!district) return;
-  
-  // Remove previous marker
-  if (currentDistrictMarker) {
-    map.removeLayer(currentDistrictMarker);
-    currentDistrictMarker = null;
-  }
-  
-  // Get risk color
-  const riskLevel = district.ml_risk_level || 'medium';
-  const riskColor = getRiskColor(riskLevel);
-  const riskScore = district.ml_risk_score || 5.0;
-  
-  // Add marker for selected district
-  currentDistrictMarker = L.marker([district.lat, district.lng], {
-    icon: L.divIcon({
-      html: `<div style="
-        width: 28px;
-        height: 28px;
-        background: ${riskColor};
-        border: 3px solid white;
-        border-radius: 50%;
-        box-shadow: 0 0 15px ${riskColor};
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        color: white;
-        font-size: 12px;
-        cursor: pointer;
-      ">${riskScore >= 7.5 ? '!' : riskScore >= 5 ? '~' : '✓'}</div>`,
-      iconSize: [28, 28],
-      className: 'selected-district-marker'
-    })
-  }).addTo(map);
-  
-  // Add popup with district info
-  currentDistrictMarker.bindPopup(`
-    <div style="padding: 10px; min-width: 250px;">
-      <strong style="color: ${riskColor}; font-size: 1.1em;">
-        ${formatDistrictName(districtKey)}
-      </strong><br>
-      <div style="margin-top: 8px; font-size: 0.9em;">
-        <strong>ML Risk Level:</strong> ${riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1)}<br>
-        <strong>Risk Score:</strong> ${riskScore.toFixed(1)}/10<br>
-        <strong>Total Entries:</strong> ${district.total_entries || 0}<br>
-        <strong>Status:</strong> <span style="color: ${district.total_entries > 0 ? '#10b981' : '#94a3b8'}">
-          ${district.total_entries > 0 ? 'Data available' : 'No data yet'}
-        </span>
-      </div>
-    </div>
-  `).openPopup();
-  
-  // Zoom to district with smooth animation
-  map.flyTo([district.lat, district.lng], district.zoom, {
-    duration: 1.5,
-    easeLinearity: 0.25
-  });
-}
-
-// Update heatmap with real data from backend
-function updateHeatmapWithRealData(districtData) {
-  console.log('🔄 Updating heatmap with real data...');
-  
-  if (!districtData || !Array.isArray(districtData)) {
-    console.warn('No district data provided to update heatmap');
-    return;
-  }
-  
-  // Update each district with real data
-  districtData.forEach(district => {
-    const districtKey = district.district?.toLowerCase();
-    if (districtKey && keralaDistrictsML[districtKey]) {
-      // Update with real data
-      keralaDistrictsML[districtKey].ml_risk_score = district.avg_resistance_score || 5.0;
-      keralaDistrictsML[districtKey].ml_risk_level = getRiskLevelFromScore(district.avg_resistance_score);
-      keralaDistrictsML[districtKey].total_entries = district.total_entries || 0;
-      keralaDistrictsML[districtKey].latest_upload = district.latest_upload;
-      keralaDistrictsML[districtKey].resistant_cases = district.resistant_cases || 0;
-      
-      console.log(`📍 Updated ${districtKey}: ${district.avg_resistance_score}/10, ${district.total_entries} entries`);
-    }
-  });
-  
-  // Refresh the heatmap
-  addMLHeatmap();
-  
-  console.log(`✅ Heatmap updated with ${districtData.length} districts`);
-}
-
-// Helper functions
-function formatDistrictName(key) {
-  return key
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-}
-
-function getRiskColor(riskLevel) {
-  switch((riskLevel || '').toLowerCase()) {
-    case 'high': return '#ef4444';
-    case 'medium': return '#f59e0b';
-    case 'low': return '#10b981';
-    default: return '#6b7280';
-  }
-}
-
-function getRiskLevelFromScore(score) {
-  const s = score || 5;
-  if (s >= 7.5) return 'high';
-  if (s >= 5) return 'medium';
-  return 'low';
-}
-
-function getDistrictAlert(riskScore, riskLevel) {
-  if (riskScore >= 7.5) {
-    return 'High resistance risk predicted. Consider alternative antibiotics and enhanced surveillance.';
-  } else if (riskScore >= 5) {
-    return 'Moderate resistance risk. Monitor local antibiogram patterns.';
-  } else {
-    return 'Low resistance risk. Standard surveillance recommended.';
-  }
-}
-
-// Make functions available globally
-window.initMap = initMap;
-window.addMLHeatmap = addMLHeatmap;
-window.updateHeatmapWithRealData = updateHeatmapWithRealData;
-window.keralaDistrictsML = keralaDistrictsML;
-
-// Initialize map when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('🗺️ Setting up Kerala map...');
-  
-  // Initialize map after a short delay to ensure DOM is ready
-  setTimeout(() => {
-    if (document.getElementById('kerala-map')) {
-      initMap();
-    } else {
-      console.warn('Map container not found');
-    }
-  }, 500);
-});
-</script>
-<script type="module" src="scripts/supabase-init.js"></script>
-<script type="module" src="scripts/pharma.js"></script>
-
->>>>>>> Stashed changes
-=======
-<!-- REAL DATA FETCHER SCRIPT -->
-
-<!-- HEATMAP SCRIPT -->
-<script>
-// Kerala districts base data with coordinates
-const keralaDistrictsBase = {
-  'thiruvananthapuram': { lat: 8.5241, lng: 76.9366, zoom: 11 },
-  'kollam': { lat: 8.8932, lng: 76.6141, zoom: 11 },
-  'pathanamthitta': { lat: 9.2648, lng: 76.7870, zoom: 12 },
-  'alappuzha': { lat: 9.4981, lng: 76.3388, zoom: 11 },
-  'kottayam': { lat: 9.5916, lng: 76.5222, zoom: 11 },
-  'idukki': { lat: 9.8495, lng: 76.9391, zoom: 10 },
-  'ernakulam': { lat: 9.9816, lng: 76.2999, zoom: 11 },
-  'thrissur': { lat: 10.5276, lng: 76.2144, zoom: 11 },
-  'palakkad': { lat: 10.7867, lng: 76.6548, zoom: 11 },
-  'malappuram': { lat: 11.0714, lng: 76.0740, zoom: 11 },
-  'kozhikode': { lat: 11.2588, lng: 75.7804, zoom: 11 },
-  'wayanad': { lat: 11.6850, lng: 76.1320, zoom: 12 },
-  'kannur': { lat: 11.8745, lng: 75.3704, zoom: 11 },
-  'kasaragod': { lat: 12.5000, lng: 74.9500, zoom: 11 }
-};
-
-// Global variables
-let map = null;
-let heatLayer = null;
-let currentDistrictMarker = null;
-let keralaDistrictsML = { ...keralaDistrictsBase };
-
-// Initialize the map
-function initMap() {
-  console.log('🗺️ Initializing Kerala map...');
-  
-  map = L.map('kerala-map').setView([10.8505, 76.2711], 8);
-  
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap'
-  }).addTo(map);
-  
-  // Add initial heatmap with default data
-  addMLHeatmap();
-  
-  // Setup district dropdown
-  setupDistrictDropdown();
-  
-  console.log('✅ Map initialized');
-}
-
-// Add ML-based heatmap
-function addMLHeatmap() {
-  console.log('🔥 Generating heatmap from ML data...');
-  
-  const heatData = [];
-  
-  // Add heat points for each district with ML data
-  Object.entries(keralaDistrictsML).forEach(([district, data]) => {
-    // Convert ML risk score to intensity (0-1)
-    // Default to 0.5 if no data
-    const intensity = data.ml_risk_score ? (data.ml_risk_score / 10) : 0.5;
-    
-    // Add multiple points around the district center for better visualization
-    // More points = more intense heat
-    const pointCount = Math.max(3, Math.floor(intensity * 8));
-    
-    for (let i = 0; i < pointCount; i++) {
-      // Add some randomness to spread the heat
-      const latOffset = (Math.random() - 0.5) * 0.15;
-      const lngOffset = (Math.random() - 0.5) * 0.15;
-      heatData.push([data.lat + latOffset, data.lng + lngOffset, intensity]);
-    }
-  });
-  
-  // Remove existing heat layer
-  if (heatLayer) {
-    map.removeLayer(heatLayer);
-  }
-  
-  // Create new heat layer
-  heatLayer = L.heatLayer(heatData, {
-    radius: 40,
-    blur: 25,
-    maxZoom: 12,
-    gradient: {
-      0.2: '#10b981',   // Low risk - green
-      0.4: '#22c1c3',   // Medium-low - teal
-      0.6: '#f59e0b',   // Medium - orange
-      0.8: '#ef4444'    // High risk - red
-    },
-    opacity: 0.7,
-    max: 1.0
-  }).addTo(map);
-  
-  console.log(`✅ Heatmap generated with ${heatData.length} points`);
-}
-
-// Setup district dropdown
-function setupDistrictDropdown() {
-  const dropdown = document.getElementById('kerala-district-select');
-  
-  if (!dropdown) {
-    console.warn('District dropdown not found');
-    return;
-  }
-  
-  dropdown.addEventListener('change', function() {
-    const selectedDistrict = this.value;
-    
-    if (!selectedDistrict) {
-      // Reset view
-      map.setView([10.8505, 76.2711], 8);
-      document.getElementById('mlDistrictInfo').style.display = 'none';
-      
-      if (currentDistrictMarker) {
-        map.removeLayer(currentDistrictMarker);
-        currentDistrictMarker = null;
-      }
-      return;
-    }
-    
-    showDistrictMLInfo(selectedDistrict);
-    zoomToDistrict(selectedDistrict);
-  });
-  
-  console.log('✅ District dropdown setup complete');
-}
-
-// Show ML info for selected district
-function showDistrictMLInfo(districtKey) {
-  const district = keralaDistrictsML[districtKey];
-  if (!district) {
-    console.warn(`District not found: ${districtKey}`);
-    return;
-  }
-  
-  const infoPanel = document.getElementById('mlDistrictInfo');
-  const districtName = document.getElementById('mlDistrictName');
-  const districtDetails = document.getElementById('mlDistrictDetails');
-  
-  if (!infoPanel || !districtName || !districtDetails) {
-    console.warn('District info elements not found');
-    return;
-  }
-  
-  // Format district name
-  const displayName = formatDistrictName(districtKey);
-  districtName.textContent = `${displayName} District - ML Analysis`;
-  
-  // Get risk data
-  const riskScore = district.ml_risk_score || 5.0;
-  const riskLevel = district.ml_risk_level || 'medium';
-  const riskColor = getRiskColor(riskLevel);
-  const entries = district.total_entries || 0;
-  const lastUpdate = district.latest_upload ? 
-    new Date(district.latest_upload).toLocaleDateString() : 'Never';
-  
-  districtDetails.innerHTML = `
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
-      <div style="background: rgba(15,23,42,0.7); padding: 15px; border-radius: 10px; text-align: center;">
-        <div style="font-size: 2rem; font-weight: bold; color: ${riskColor}; margin-bottom: 5px;">
-          ${riskScore.toFixed(1)}
-        </div>
-        <div style="font-size: 0.9rem; color: #94a3b8;">ML Risk Score /10</div>
-      </div>
-      
-      <div style="background: rgba(15,23,42,0.7); padding: 15px; border-radius: 10px; text-align: center;">
-        <div style="font-size: 2rem; font-weight: bold; color: #22c1c3; margin-bottom: 5px;">
-          ${entries}
-        </div>
-        <div style="font-size: 0.9rem; color: #94a3b8;">Total Entries</div>
-      </div>
-    </div>
-    
-    <div style="background: rgba(15,23,42,0.7); padding: 20px; border-radius: 10px; margin-top: 15px;">
-      <h4 style="color: #e5e7eb; margin-bottom: 15px; font-size: 1rem;">ML Analysis Details</h4>
-      
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-        <div>
-          <div style="font-size: 0.9rem; color: #cbd5f5; margin-bottom: 5px;">
-            <strong>Risk Level:</strong>
-          </div>
-          <div style="color: ${riskColor}; font-size: 1.1rem; font-weight: 600;">
-            ${riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1)}
-          </div>
-        </div>
-        
-        <div>
-          <div style="font-size: 0.9rem; color: #cbd5f5; margin-bottom: 5px;">
-            <strong>Latest Update:</strong>
-          </div>
-          <div style="color: #e5e7eb; font-size: 1.1rem; font-weight: 600;">
-            ${lastUpdate}
-          </div>
-        </div>
-      </div>
-      
-      <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(51,65,85,0.5);">
-        <div style="font-size: 0.85rem; color: #9ca3c9;">
-          <strong>ML Model:</strong> AMR-Predict v2.1<br>
-          <strong>Heatmap Intensity:</strong> ${(riskScore / 10).toFixed(2)}<br>
-          <strong>Coverage:</strong> ${entries > 0 ? 'Data available' : 'No data yet'}
-        </div>
-      </div>
-    </div>
-    
-    ${entries > 0 ? `
-      <div style="margin-top: 20px; background: rgba(239, 68, 68, 0.1); padding: 15px; border-radius: 10px; border-left: 4px solid ${riskColor};">
-        <div style="font-size: 0.9rem; color: #e5e7eb; font-weight: 600; margin-bottom: 8px;">
-          ${riskScore >= 7.5 ? '⚠️ High Risk Alert' : riskScore >= 5 ? '📊 Medium Risk' : '✅ Low Risk'}
-        </div>
-        <div style="font-size: 0.85rem; color: #cbd5f5;">
-          ${getDistrictAlert(riskScore, riskLevel)}
-        </div>
-      </div>
-    ` : `
-      <div style="margin-top: 20px; background: rgba(148, 163, 184, 0.1); padding: 15px; border-radius: 10px; border-left: 4px solid #94a3b8;">
-        <div style="font-size: 0.9rem; color: #e5e7eb; font-weight: 600; margin-bottom: 8px;">
-          📋 No Data Yet
-        </div>
-        <div style="font-size: 0.85rem; color: #cbd5f5;">
-          Upload Excel data from this district to see ML predictions and risk analysis.
-        </div>
-      </div>
-    `}
-  `;
-  
-  infoPanel.style.display = 'block';
-}
-
-// Zoom to selected district
-function zoomToDistrict(districtKey) {
-  const district = keralaDistrictsML[districtKey];
-  if (!district) return;
-  
-  // Remove previous marker
-  if (currentDistrictMarker) {
-    map.removeLayer(currentDistrictMarker);
-    currentDistrictMarker = null;
-  }
-  
-  // Get risk color
-  const riskLevel = district.ml_risk_level || 'medium';
-  const riskColor = getRiskColor(riskLevel);
-  const riskScore = district.ml_risk_score || 5.0;
-  
-  // Add marker for selected district
-  currentDistrictMarker = L.marker([district.lat, district.lng], {
-    icon: L.divIcon({
-      html: `<div style="
-        width: 28px;
-        height: 28px;
-        background: ${riskColor};
-        border: 3px solid white;
-        border-radius: 50%;
-        box-shadow: 0 0 15px ${riskColor};
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: bold;
-        color: white;
-        font-size: 12px;
-        cursor: pointer;
-      ">${riskScore >= 7.5 ? '!' : riskScore >= 5 ? '~' : '✓'}</div>`,
-      iconSize: [28, 28],
-      className: 'selected-district-marker'
-    })
-  }).addTo(map);
-  
-  // Add popup with district info
-  currentDistrictMarker.bindPopup(`
-    <div style="padding: 10px; min-width: 250px;">
-      <strong style="color: ${riskColor}; font-size: 1.1em;">
-        ${formatDistrictName(districtKey)}
-      </strong><br>
-      <div style="margin-top: 8px; font-size: 0.9em;">
-        <strong>ML Risk Level:</strong> ${riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1)}<br>
-        <strong>Risk Score:</strong> ${riskScore.toFixed(1)}/10<br>
-        <strong>Total Entries:</strong> ${district.total_entries || 0}<br>
-        <strong>Status:</strong> <span style="color: ${district.total_entries > 0 ? '#10b981' : '#94a3b8'}">
-          ${district.total_entries > 0 ? 'Data available' : 'No data yet'}
-        </span>
-      </div>
-    </div>
-  `).openPopup();
-  
-  // Zoom to district with smooth animation
-  map.flyTo([district.lat, district.lng], district.zoom, {
-    duration: 1.5,
-    easeLinearity: 0.25
-  });
-}
-
-// Update heatmap with real data from backend
-function updateHeatmapWithRealData(districtData) {
-  console.log('🔄 Updating heatmap with real data...');
-  
-  if (!districtData || !Array.isArray(districtData)) {
-    console.warn('No district data provided to update heatmap');
-    return;
-  }
-  
-  // Update each district with real data
-  districtData.forEach(district => {
-    const districtKey = district.district?.toLowerCase();
-    if (districtKey && keralaDistrictsML[districtKey]) {
-      // Update with real data
-      keralaDistrictsML[districtKey].ml_risk_score = district.avg_resistance_score || 5.0;
-      keralaDistrictsML[districtKey].ml_risk_level = getRiskLevelFromScore(district.avg_resistance_score);
-      keralaDistrictsML[districtKey].total_entries = district.total_entries || 0;
-      keralaDistrictsML[districtKey].latest_upload = district.latest_upload;
-      keralaDistrictsML[districtKey].resistant_cases = district.resistant_cases || 0;
-      
-      console.log(`📍 Updated ${districtKey}: ${district.avg_resistance_score}/10, ${district.total_entries} entries`);
-    }
-  });
-  
-  // Refresh the heatmap
-  addMLHeatmap();
-  
-  console.log(`✅ Heatmap updated with ${districtData.length} districts`);
-}
-
-// Helper functions
-function formatDistrictName(key) {
-  return key
-    .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
-}
-
-function getRiskColor(riskLevel) {
-  switch((riskLevel || '').toLowerCase()) {
-    case 'high': return '#ef4444';
-    case 'medium': return '#f59e0b';
-    case 'low': return '#10b981';
-    default: return '#6b7280';
-  }
-}
-
-function getRiskLevelFromScore(score) {
-  const s = score || 5;
-  if (s >= 7.5) return 'high';
-  if (s >= 5) return 'medium';
-  return 'low';
-}
-
-function getDistrictAlert(riskScore, riskLevel) {
-  if (riskScore >= 7.5) {
-    return 'High resistance risk predicted. Consider alternative antibiotics and enhanced surveillance.';
-  } else if (riskScore >= 5) {
-    return 'Moderate resistance risk. Monitor local antibiogram patterns.';
-  } else {
-    return 'Low resistance risk. Standard surveillance recommended.';
-  }
-}
-
-// Make functions available globally
-window.initMap = initMap;
-window.addMLHeatmap = addMLHeatmap;
-window.updateHeatmapWithRealData = updateHeatmapWithRealData;
-window.keralaDistrictsML = keralaDistrictsML;
-
-// Initialize map when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('🗺️ Setting up Kerala map...');
-  
-  // Initialize map after a short delay to ensure DOM is ready
-  setTimeout(() => {
-    if (document.getElementById('kerala-map')) {
-      initMap();
-    } else {
-      console.warn('Map container not found');
-    }
-  }, 500);
-});
-</script>
-<script type="module" src="scripts/supabase-init.js"></script>
-<script type="module" src="scripts/pharma.js"></script>
-
->>>>>>> Stashed changes
 </body>
 </html>
