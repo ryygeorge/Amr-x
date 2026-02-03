@@ -350,14 +350,19 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   const ANTIBIOTIC_MAP = {
-    "CIPROFLOXACIN": "CIPROFLOXACIN",
-    "AMOXICILLIN": "AMOXICILLIN",
-    "CEFTRIAXONE": "CEFTRIAXONE",
-    "AZITHROMYCIN": "AZITHROMYCIN",
-    "VANCOMYCIN": "VANCOMYCIN",
-    "MEROPENEM": "MEROPENEM",
-    "GENTAMICIN": "GENTAMICIN",
-    "AMPICILLIN": "AMPICILLIN"
+    "CIPROFLOXACIN": "Ciprofloxacin",
+    "AMOXICILLIN": "Amoxicillin/Clavulanic Acid",
+    "AMPICILLIN": "Ampicillin",
+    "CEFTRIAXONE": "Ceftriaxone",
+    "AZITHROMYCIN": "Azithromycin", // ⚠️ only works if in CSV (yours has Clarithromycin, not Azithro)
+    "VANCOMYCIN": "Vancomycin",
+    "MEROPENEM": "Meropenem",
+    "GENTAMICIN": "Gentamicin",
+    "AMPICILLIN_SULBACTAM": "Ampicillin/Sulbactam",
+    "PIPERACILLIN_TAZOBACTAM": "Piperacillin/Tazobactam",
+    "COLISTIN": "Colistin",
+    "LINEZOLID": "Linezolid",
+    "IMIPENEM": "Imipenem"
   };
 
   // Initialize empty dashboard
@@ -474,76 +479,54 @@ document.addEventListener('DOMContentLoaded', function() {
 
     try {
       const mlPayload = {
-        organism: ORGANISM_MAP[organism],
+        organism: organism,
         antibiotic: ANTIBIOTIC_MAP[antibiotic]
       };
 
-      if (!mlPayload.organism || !mlPayload.antibiotic) {
-        throw new Error('Invalid ML input mapping');
-      }
-
-      console.log('ML payload:', mlPayload);
+      console.log("ML payload:", mlPayload);
 
       const response = await fetch(`${ML_API_URL}/predict`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(mlPayload)
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        // Retry once (Render cold start protection)
-        const retry = await fetch(`${ML_API_URL}/predict`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(mlPayload)
-        });
-
-        if (!retry.ok) {
-          throw new Error(`ML API error: ${retry.status}`);
-        }
-
-        const prediction = await retry.json();
-        console.log('🧠 ML response received:', prediction);
-        handlePrediction(prediction);
-        return;
+        console.error("ML API error:", data);
+        throw new Error(data.error || "ML API failed");
       }
 
-
-      const prediction = await response.json();
-      handlePrediction(prediction);
-
+      handlePrediction(data); // ✅ ALWAYS reached now
 
     } catch (err) {
-      console.error('ML Prediction Error:', err);
+      console.error("ML Prediction Error:", err);
       displayMLError();
     }
   }
-  async function handlePrediction(prediction) {
-    console.log('🚀 handlePrediction reached', prediction);
+
+  function handlePrediction(prediction) {
     const normalized = {
       organism: prediction.organism,
       antibiotic: prediction.antibiotic,
-      resistance_probability: prediction.probability,
-      risk_level: prediction.risk_level,
+      resistance_probability: prediction.probability, // number
       confidence: prediction.probability,
+      risk_level: prediction.risk_level,
       recommendation: getRecommendation(prediction.risk_level),
       model_version: prediction.model_version
     };
 
-    // ✅ STEP 1: SAVE TO SUPABASE
-    try {
-      await saveMLPrediction(normalized);
-      console.log('✅ ML prediction saved');
-    } catch (e) {
-      console.error('❌ ML save failed:', e);
-    }
+    console.log("Normalized prediction:", normalized);
 
-
-    // ✅ STEP 2: UPDATE UI (safe even if DB fails)
     displayMLResult(normalized, prediction.organism, prediction.antibiotic);
     addPredictionToTable(normalized);
     updatePredictionCount();
+
+    // Optional (later): save to Supabase
+    // saveMLPrediction(normalized);
   }
+
 
 
 
