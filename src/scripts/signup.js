@@ -11,7 +11,7 @@ import {
 
 // Get elements
 const params = new URLSearchParams(window.location.search);
-const urlRole = params.get("role"); // "pharma" | "admin" | "clinician" | nu=-----------------------------------------------------------------------------------------]1 
+const urlRole = params.get("role"); // "pharma" | "admin" | "clinician" | null
 
 
 const roleSelect = document.getElementById("role");
