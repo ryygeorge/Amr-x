@@ -5,6 +5,7 @@ import express from "express";
 import cors from "cors";
 
 import ingestUploadRouter from "./routes/ingestUpload.js";
+import chatbotRouter from "./routes/chatbot.js";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -13,6 +14,7 @@ app.use(cors());
 app.use(express.json({ limit: "50mb" }));
 
 app.use("/api/ingest-upload", ingestUploadRouter);
+app.use("/api/chatbot", chatbotRouter);
 
 app.get("/api/health", (req, res) => {
   res.json({ ok: true, status: "AMR-X backend running" });
