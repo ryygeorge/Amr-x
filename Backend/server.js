@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 // AMR-X Backend – FINAL (Express 5 compatible)
 
 const express = require('express');
@@ -6,6 +7,16 @@ const admin = require('firebase-admin');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+=======
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+
+import ingestUploadRouter from "./routes/ingestUpload.js";
+import uploadRouter from "./routes/upload.js";
+
+dotenv.config();
+>>>>>>> Stashed changes
 
 /* ---------------- FIREBASE ADMIN ---------------- */
 const serviceAccount = require('./serviceAccountKey.json');
@@ -16,6 +27,7 @@ const db = admin.firestore();
 
 /* ---------------- EXPRESS APP ---------------- */
 const app = express();
+<<<<<<< Updated upstream
 app.use(express.json());
 
 /* ---------------- CORS (FIXED FOR EXPRESS 5) ---------------- */
@@ -92,4 +104,24 @@ app.post('/api/upload', upload.array('files'), async (req, res) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`✅ AMR-X API running at http://localhost:${PORT}`);
+=======
+const PORT = process.env.PORT || 3001;
+
+/* ---------- MIDDLEWARE ---------- */
+app.use(cors());
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true }));
+
+/* ---------- ROUTES ---------- */
+app.use("/api/ingest-upload", ingestUploadRouter);
+app.use("/api/upload", uploadRouter);
+
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok" });
+});
+
+/* ---------- START SERVER ---------- */
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+>>>>>>> Stashed changes
 });

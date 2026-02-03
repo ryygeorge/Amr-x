@@ -10,8 +10,13 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
+<<<<<<< Updated upstream
+=======
+    "@supabase/supabase-js": "^2.93.3",
+    "axios": "^1.13.4",
+>>>>>>> Stashed changes
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "firebase-admin": "^13.5.0",

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMR-X | ML Predictor</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/ml-predictor.css">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">AMR-X</div>
+        <div class="nav-links">
+            <a href="pharma.html">Dashboard</a>
+            <a href="upload-data.html">Upload Data</a>
+            <a href="ml-predictor.html" class="active">ML Predictor</a>
+            <a href="index.html">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>AMR-X ML Resistance Predictor</h1>
+        <p class="subtitle">Predict antibiotic resistance probability for any organism</p>
+        
+        <div class="predictor-card">
+            <div class="form-section">
+                <h2>Select Parameters</h2>
+                
+                <form id="predictionForm">
+                    <div class="form-group">
+                        <label for="organism">Organism:</label>
+                        <select id="organism" required>
+                            <option value="">-- Select organism --</option>
+                            <option value="ESCHERICHIA COLI">ESCHERICHIA COLI</option>
+                            <option value="STAPHYLOCOCCUS AUREUS">STAPHYLOCOCCUS AUREUS</option>
+                            <option value="PSEUDOMONAS AERUGINOSA">PSEUDOMONAS AERUGINOSA</option>
+                            <option value="KLEBSIELLA PNEUMONIAE">KLEBSIELLA PNEUMONIAE</option>
+                            <option value="ACINETOBACTER BAUMANNII">ACINETOBACTER BAUMANNII</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="antibiotic">Antibiotic:</label>
+                        <select id="antibiotic" required>
+                            <option value="">-- Select antibiotic --</option>
+                            <option value="Ciprofloxacin">Ciprofloxacin</option>
+                            <option value="Amikacin">Amikacin</option>
+                            <option value="Vancomycin">Vancomycin</option>
+                            <option value="Meropenem">Meropenem</option>
+                            <option value="Cefepime">Cefepime</option>
+                            <option value="Gentamicin">Gentamicin</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" id="predictBtn" class="btn-primary">
+                        Predict Resistance Probability
+                    </button>
+                </form>
+
+                <!-- Loading Indicator -->
+                <div id="loading" class="loading-container" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Analyzing with ML model...</p>
+                </div>
+
+                <!-- Error Display -->
+                <div id="error" class="error-container" style="display: none;">
+                    <p id="errorMessage"></p>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section">
+                <h2>Prediction Results</h2>
+                <div id="result" style="display: none;">
+                    <div class="result-content">
+                        <div class="probability-display">
+                            <div class="probability-value" id="probabilityValue">0%</div>
+                            <div class="probability-label">Resistance Probability</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                        </div>
+
+                        <div class="result-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Organism:</span>
+                                <span class="detail-value" id="resultOrganism"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Antibiotic:</span>
+                                <span class="detail-value" id="resultAntibiotic"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Risk Level:</span>
+                                <span class="detail-value" id="resultRiskLevel"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Model Version:</span>
+                                <span class="detail-value" id="resultModel"></span>
+                            </div>
+                        </div>
+
+                        <div class="risk-box" id="riskBox">
+                            <div class="risk-emoji">⚠️</div>
+                            <div class="risk-message" id="riskMessage"></div>
+                            <div class="risk-suggestion" id="riskSuggestion"></div>
+                        </div>
+
+                        <div class="prediction-info">
+                            <small>Prediction time: <span id="predictionTime"></span></small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState">
+                    <div class="empty-icon">🤖</div>
+                    <h3>No Prediction Yet</h3>
+                    <p>Select an organism and antibiotic, then click "Predict" to see ML results.</p>
+                    <div class="example-tip">
+                        <strong>Example:</strong> ESCHERICHIA COLI + Ciprofloxacin
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Predictions Section -->
+        <div class="history-section" style="margin-top: 40px;">
+            <h2>Recent Predictions</h2>
+            <div id="predictionsHistory">
+                <p>Your prediction history will appear here...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/ml-predictor.js"></script>
+    <script src="scripts/supabase-init.js"></script>
+</body>
+</html>
