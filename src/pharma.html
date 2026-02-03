@@ -50,8 +50,8 @@
     <div class="summary-box" style="background: linear-gradient(120deg, rgba(15,23,42,0.98), rgba(15,23,42,0.8));">
       <p>
         <strong>ML Model Active:</strong> AMR-Predict v2.1 &nbsp;|&nbsp; 
-        <strong>Accuracy:</strong> <span id="mlAccuracy">87.3%</span> &nbsp;|&nbsp;
-        <strong>Last Updated:</strong> <span id="mlLastUpdate">Just now</span>
+        <strong>Accuracy:</strong> <span id="mlAccuracy">Loading...</span> &nbsp;|&nbsp;
+        <strong>Last Updated:</strong> <span id="mlLastUpdate">-</span>
       </p>
     </div>
 
@@ -112,32 +112,32 @@
           <div style="margin-bottom: 15px;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
               <span style="color: #cbd5f5;">Model Accuracy</span>
-              <span id="modelAccuracy" style="color: #22c1c3; font-weight: 600;">87.3%</span>
+              <span id="modelAccuracy" style="color: #22c1c3; font-weight: 600;">-</span>
             </div>
             <div style="height: 8px; background: rgba(51,65,85,0.5); border-radius: 4px; overflow: hidden;">
-              <div id="accuracyBar" style="height: 100%; width: 87.3%; background: linear-gradient(90deg, #22c1c3, #38bdf8); border-radius: 4px;"></div>
+              <div id="accuracyBar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #22c1c3, #38bdf8); border-radius: 4px;"></div>
             </div>
           </div>
           
           <div style="margin-bottom: 15px;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
               <span style="color: #cbd5f5;">Prediction Speed</span>
-              <span id="predictionSpeed" style="color: #10b981; font-weight: 600;">0.42s</span>
+              <span id="predictionSpeed" style="color: #10b981; font-weight: 600;">-</span>
             </div>
           </div>
           
           <div style="margin-bottom: 15px;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
               <span style="color: #cbd5f5;">Total Predictions</span>
-              <span id="totalPredictions" style="color: #38bdf8; font-weight: 600;">1,247</span>
+              <span id="totalPredictions" style="color: #38bdf8; font-weight: 600;">0</span>
             </div>
           </div>
           
           <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(51,65,85,0.5);">
             <div style="font-size: 0.85rem; color: #9ca3c9;">
               <strong>Model Version:</strong> AMR-Predict v2.1<br>
-              <strong>Last Trained:</strong> 2024-01-15<br>
-              <strong>Data Points:</strong> 45,234 samples
+              <strong>Last Trained:</strong> -<br>
+              <strong>Data Points:</strong> Loading...
             </div>
           </div>
         </div>
@@ -159,7 +159,7 @@
           </tr>
         </thead>
         <tbody id="mlTableBody">
-          <tr><td colspan="6" style="text-align: center; padding: 30px; color: #9ca3c9;">Loading ML predictions...</td></tr>
+          <tr><td colspan="6" style="text-align: center; padding: 30px; color: #9ca3c9;">No ML predictions available yet</td></tr>
         </tbody>
       </table>
     </div>
@@ -204,7 +204,7 @@
       <div class="graph-box" style="min-width:260px; max-width:360px;">
         <h3>ML-Assisted Insights</h3>
         <div id="pharmInsights" style="text-align:left; margin-top:8px; font-size:0.95rem;">
-          <p style="opacity:0.75">ML analysis pending...</p>
+          <p style="opacity:0.75">No data available for analysis...</p>
         </div>
       </div>
     </div>
@@ -222,7 +222,7 @@
           </tr>
         </thead>
         <tbody id="pharmTbody">
-          <tr><td colspan="5">Loading…</td></tr>
+          <tr><td colspan="5">No entries found...</td></tr>
         </tbody>
       </table>
     </div>
@@ -267,10 +267,7 @@
         <h3>Top ML-Identified Risk Districts</h3>
         <div id="mlDistrictRisks" style="padding: 15px;">
           <div style="color: #9ca3c9; text-align: center; padding: 20px;">
-            <div style="width: 30px; height: 30px; border: 3px solid rgba(34,193,195,0.3); 
-                 border-top-color: #22c1c3; border-radius: 50%; margin: 0 auto 15px auto; 
-                 animation: spin 1s linear infinite;"></div>
-            <p>Loading ML district risk analysis...</p>
+            <p>Loading district risk analysis...</p>
           </div>
         </div>
       </div>
@@ -324,17 +321,7 @@
     console.warn('localStorage not available', e.message);
   }
   if (!name) {
-    try {
-      const res = await fetch('http://localhost:5000/api/me', { credentials: 'include' });
-      if (res.ok) {
-        const j = await res.json();
-        if (j) {
-          name = j.name || j.fullName || j.username || null;
-        }
-      }
-    } catch (e) {
-      console.warn('Could not fetch user name from API:', e.message);
-    }
+
   }
   if (name) {
     const firstName = String(name).split(' ')[0];
@@ -344,105 +331,37 @@
 })();
 </script>
 
-<!-- Hospital dashboard scripts -->
-<script>
-(async function () {
-  let data;
-  try {
-    const r = await fetch('http://localhost:5000/api/pharma-summary');
-    data = await r.json();
-  } catch (e) {
-    console.warn('Falling back to static data:', e.message);
-    data = {
-      totalCases: 182, highRisk: 24, hospitals: 3,
-      bar: {
-        labels: ["Jan","Feb","Mar","Apr","May","Jun"],
-        datasets: [
-          { label: "Ciprofloxacin", data: [15,23,28,32,25,19], color: "#22c1c3" },
-          { label: "Amoxicillin",   data: [21,17,19,18,22,25], color: "#38bdf8" }
-        ]
-      },
-      pie: { labels: ["St Mercy","Green Valley","General Health"], data: [44,33,23], colors: ["#38bdf8","#22d3ee","#6366f1"] }
-    };
-  }
-  
-  // Create charts
-  new Chart(document.getElementById("barChart"), {
-    type: 'bar',
-    data: {
-      labels: data.bar.labels,
-      datasets: data.bar.datasets.map(d => ({
-        label: d.label, data: d.data, backgroundColor: d.color
-      }))
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { position: 'bottom', labels: { color: '#e5edff' } } },
-      scales: {
-        x: { ticks: { color: '#e5edff' }, grid: { color: 'rgba(148,163,184,0.25)' } },
-        y: { ticks: { color: '#e5edff' }, grid: { color: 'rgba(148,163,184,0.25)' }, beginAtZero: true }
-      }
-    }
-  });
-  
-  new Chart(document.getElementById("pieChart"), {
-    type: 'pie',
-    data: { labels: data.pie.labels, datasets: [{ data: data.pie.data, backgroundColor: data.pie.colors }] },
-    options: { responsive: true, plugins: { legend: { labels: { color: '#e5edff' } } } }
-  });
-})();
-</script>
+
 
 <!-- ML Dashboard Script -->
-<script>
+<script type="module">
+import { saveMLPrediction } from './scripts/pharma-supabase.js';
 document.addEventListener('DOMContentLoaded', function() {
-  // ML API Configuration (TEAMMATE WILL PROVIDE THIS)
-  const ML_API_URL = 'http://localhost:5000/api'; // CHANGE THIS
-  
-  // Sample ML data (will be replaced by real API)
-  const sampleMLData = {
-    accuracy: 87.3,
-    last_updated: new Date().toISOString(),
-    avg_speed: 0.42,
-    total_predictions: 1247,
-    recent_predictions: [
-      {
-        organism: 'E. coli',
-        antibiotic: 'Ciprofloxacin',
-        resistance_probability: 0.72,
-        risk_level: 'High',
-        confidence: 0.88,
-        recommendation: 'Consider alternative antibiotic'
-      },
-      {
-        organism: 'K. pneumoniae',
-        antibiotic: 'Meropenem',
-        resistance_probability: 0.35,
-        risk_level: 'Medium',
-        confidence: 0.92,
-        recommendation: 'Monitor closely'
-      },
-      {
-        organism: 'S. aureus',
-        antibiotic: 'Vancomycin',
-        resistance_probability: 0.15,
-        risk_level: 'Low',
-        confidence: 0.95,
-        recommendation: 'First-line therapy appropriate'
-      },
-      {
-        organism: 'P. aeruginosa',
-        antibiotic: 'Ceftriaxone',
-        resistance_probability: 0.68,
-        risk_level: 'High',
-        confidence: 0.85,
-        recommendation: 'Consider combination therapy'
-      }
-    ]
+  // ML API Configuration
+  const ML_API_URL = 'https://amrx-ml-api.onrender.com/api/v1';
+  const ORGANISM_MAP = {
+    "ESCHERICHIA COLI": "ESCHERICHIA COLI",
+    "KLEBSIELLA PNEUMONIAE": "KLEBSIELLA PNEUMONIAE",
+    "STAPHYLOCOCCUS AUREUS": "STAPHYLOCOCCUS AUREUS",
+    "PSEUDOMONAS AERUGINOSA": "PSEUDOMONAS AERUGINOSA",
+    "ACINETOBACTER BAUMANNII": "ACINETOBACTER BAUMANNII",
+    "ENTEROBACTER CLOACAE": "ENTEROBACTER CLOACAE",
+    "STREPTOCOCCUS PNEUMONIAE": "STREPTOCOCCUS PNEUMONIAE"
   };
 
-  // Initialize dashboard with sample data
-  initializeMLDashboard(sampleMLData);
+  const ANTIBIOTIC_MAP = {
+    "CIPROFLOXACIN": "CIPROFLOXACIN",
+    "AMOXICILLIN": "AMOXICILLIN",
+    "CEFTRIAXONE": "CEFTRIAXONE",
+    "AZITHROMYCIN": "AZITHROMYCIN",
+    "VANCOMYCIN": "VANCOMYCIN",
+    "MEROPENEM": "MEROPENEM",
+    "GENTAMICIN": "GENTAMICIN",
+    "AMPICILLIN": "AMPICILLIN"
+  };
+
+  // Initialize empty dashboard
+  initializeMLDashboard();
   
   // Setup prediction button
   document.getElementById('mlPredictBtn').addEventListener('click', function() {
@@ -457,31 +376,65 @@ document.addEventListener('DOMContentLoaded', function() {
     getMLPrediction(organism, antibiotic);
   });
 
-  function initializeMLDashboard(mlData) {
-    // Update summary
-    document.getElementById('mlAccuracy').textContent = `${mlData.accuracy}%`;
-    document.getElementById('mlLastUpdate').textContent = formatTime(mlData.last_updated);
+  function initializeMLDashboard() {
+    // Initialize with empty/loading state
+    document.getElementById('mlAccuracy').textContent = 'Loading...';
+    document.getElementById('mlLastUpdate').textContent = '-';
     
-    // Update health panel
-    document.getElementById('modelAccuracy').textContent = `${mlData.accuracy}%`;
-    document.getElementById('accuracyBar').style.width = `${mlData.accuracy}%`;
-    document.getElementById('predictionSpeed').textContent = `${mlData.avg_speed}s`;
-    document.getElementById('totalPredictions').textContent = mlData.total_predictions.toLocaleString();
+    // Update health panel with empty state
+    document.getElementById('modelAccuracy').textContent = '-';
+    document.getElementById('accuracyBar').style.width = '0%';
+    document.getElementById('predictionSpeed').textContent = '-';
+    document.getElementById('totalPredictions').textContent = '0';
     
-    // Update table
-    updateMLTable(mlData.recent_predictions);
+    // Try to fetch real ML model stats
+    /*fetchMLModelStats();*/
+  }
+
+  function fetchMLModelStats() {
+    fetch(`${ML_API_URL}/ml-stats`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.accuracy) {
+          document.getElementById('mlAccuracy').textContent = `${data.accuracy}%`;
+          document.getElementById('modelAccuracy').textContent = `${data.accuracy}%`;
+          document.getElementById('accuracyBar').style.width = `${data.accuracy}%`;
+        }
+        if (data.last_updated) {
+          document.getElementById('mlLastUpdate').textContent = formatTime(data.last_updated);
+        }
+        if (data.avg_speed) {
+          document.getElementById('predictionSpeed').textContent = `${data.avg_speed}s`;
+        }
+        if (data.total_predictions !== undefined) {
+          document.getElementById('totalPredictions').textContent = data.total_predictions.toLocaleString();
+        }
+        
+        // Try to load recent predictions
+        if (data.recent_predictions && data.recent_predictions.length > 0) {
+          updateMLTable(data.recent_predictions);
+        }
+      })
+      .catch(error => {
+        console.warn('Failed to fetch ML model stats:', error);
+      });
   }
 
   function formatTime(dateString) {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now - date;
-    const diffMins = Math.floor(diffMs / 60000);
-    
-    if (diffMins < 1) return 'Just now';
-    if (diffMins < 60) return `${diffMins} minutes ago`;
-    if (diffMins < 1440) return `${Math.floor(diffMins / 60)} hours ago`;
-    return date.toLocaleDateString();
+    if (!dateString) return '-';
+    try {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      
+      if (diffMins < 1) return 'Just now';
+      if (diffMins < 60) return `${diffMins} minutes ago`;
+      if (diffMins < 1440) return `${Math.floor(diffMins / 60)} hours ago`;
+      return date.toLocaleDateString();
+    } catch {
+      return dateString;
+    }
   }
 
   function updateMLTable(predictions) {
@@ -494,9 +447,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     tbody.innerHTML = predictions.map(pred => `
       <tr>
-        <td>${pred.organism}</td>
-        <td>${pred.antibiotic}</td>
-        <td>${(pred.resistance_probability * 100).toFixed(1)}%</td>
+        <td>${pred.organism || '-'}</td>
+        <td>${pred.antibiotic || '-'}</td>
+        <td>${pred.resistance_probability ? (pred.resistance_probability * 100).toFixed(1) + '%' : '-'}</td>
         <td>
           <span class="risk-badge" style="
             display: inline-block;
@@ -507,59 +460,92 @@ document.addEventListener('DOMContentLoaded', function() {
             background: ${getRiskColor(pred.risk_level)};
             color: white;
           ">
-            ${pred.risk_level}
+            ${pred.risk_level || 'Unknown'}
           </span>
         </td>
-        <td>${(pred.confidence * 100).toFixed(0)}%</td>
-        <td>${pred.recommendation}</td>
+        <td>${pred.confidence ? (pred.confidence * 100).toFixed(0) + '%' : '-'}</td>
+        <td>${pred.recommendation || '-'}</td>
       </tr>
     `).join('');
   }
 
   async function getMLPrediction(organism, antibiotic) {
-    // Show loading
     showMLLoading();
-    
+
     try {
-      // TEAMMATE: Replace with real API call
-      // const response = await fetch(`${ML_API_URL}/predict`, {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ organism, antibiotic })
-      // });
-      // const prediction = await response.json();
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      // Sample prediction (TEAMMATE WILL PROVIDE REAL DATA)
-      const prediction = {
-        resistance_probability: getRandomProbability(organism, antibiotic),
-        risk_level: getRiskLevel(organism, antibiotic),
-        confidence: 0.85 + Math.random() * 0.1,
-        model_version: 'AMR-Predict v2.1',
-        recommendation: getRecommendation(organism, antibiotic),
-        timestamp: new Date().toISOString()
+      const mlPayload = {
+        organism: ORGANISM_MAP[organism],
+        antibiotic: ANTIBIOTIC_MAP[antibiotic]
       };
-      
-      // Display result
-      displayMLResult(prediction, organism, antibiotic);
-      
-      // Add to table
-      addPredictionToTable({
-        organism,
-        antibiotic,
-        ...prediction
+
+      if (!mlPayload.organism || !mlPayload.antibiotic) {
+        throw new Error('Invalid ML input mapping');
+      }
+
+      console.log('ML payload:', mlPayload);
+
+      const response = await fetch(`${ML_API_URL}/predict`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(mlPayload)
       });
-      
-      // Update prediction count
-      updatePredictionCount();
-      
-    } catch (error) {
-      console.error('ML Prediction Error:', error);
+
+      if (!response.ok) {
+        // Retry once (Render cold start protection)
+        const retry = await fetch(`${ML_API_URL}/predict`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(mlPayload)
+        });
+
+        if (!retry.ok) {
+          throw new Error(`ML API error: ${retry.status}`);
+        }
+
+        const prediction = await retry.json();
+        console.log('🧠 ML response received:', prediction);
+        handlePrediction(prediction);
+        return;
+      }
+
+
+      const prediction = await response.json();
+      handlePrediction(prediction);
+
+
+    } catch (err) {
+      console.error('ML Prediction Error:', err);
       displayMLError();
     }
   }
+  async function handlePrediction(prediction) {
+    console.log('🚀 handlePrediction reached', prediction);
+    const normalized = {
+      organism: prediction.organism,
+      antibiotic: prediction.antibiotic,
+      resistance_probability: prediction.probability,
+      risk_level: prediction.risk_level,
+      confidence: prediction.probability,
+      recommendation: getRecommendation(prediction.risk_level),
+      model_version: prediction.model_version
+    };
+
+    // ✅ STEP 1: SAVE TO SUPABASE
+    try {
+      await saveMLPrediction(normalized);
+      console.log('✅ ML prediction saved');
+    } catch (e) {
+      console.error('❌ ML save failed:', e);
+    }
+
+
+    // ✅ STEP 2: UPDATE UI (safe even if DB fails)
+    displayMLResult(normalized, prediction.organism, prediction.antibiotic);
+    addPredictionToTable(normalized);
+    updatePredictionCount();
+  }
+
+
 
   function showMLLoading() {
     document.getElementById('mlResult').innerHTML = `
@@ -575,9 +561,9 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function displayMLResult(prediction, organism, antibiotic) {
-    const risk = prediction.risk_level;
-    const probability = prediction.resistance_probability;
-    const confidence = prediction.confidence;
+    const risk = prediction.risk_level || 'Unknown';
+    const probability = prediction.resistance_probability || 0;
+    const confidence = prediction.confidence || 0;
     const riskColor = getRiskColor(risk);
     
     document.getElementById('mlResult').innerHTML = `
@@ -626,11 +612,12 @@ document.addEventListener('DOMContentLoaded', function() {
               <strong>ML Confidence:</strong> ${(confidence * 100).toFixed(0)}%
             </div>
             <div style="font-size: 0.85rem; color: #cbd5f5;">
-              <strong>Recommendation:</strong> ${prediction.recommendation}
+              <strong>Recommendation:</strong> ${prediction.recommendation || getRecommendation(prediction.risk_level)}
+
             </div>
           </div>
           <div style="font-size: 0.75rem; color: #94a3b8; text-align: center; padding-top: 10px; border-top: 1px solid rgba(51,65,85,0.5);">
-            Generated by ${prediction.model_version}
+            Generated by ${prediction.model_version || 'AMR-Predict v2.1'}
           </div>
         </div>
       </div>
@@ -643,7 +630,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div style="font-size: 3rem; margin-bottom: 15px;">⚠️</div>
         <p style="color: #ef4444; margin-bottom: 10px;">ML Service Temporarily Unavailable</p>
         <p style="color: #9ca3c9; font-size: 0.9rem;">
-          Using historical data patterns for estimation
+          Please try again later
         </p>
       </div>
     `;
@@ -652,8 +639,8 @@ document.addEventListener('DOMContentLoaded', function() {
   function addPredictionToTable(prediction) {
     const tbody = document.getElementById('mlTableBody');
     
-    // Remove loading row if present
-    if (tbody.innerHTML.includes('Loading')) {
+    // Remove "no predictions" row if present
+    if (tbody.innerHTML.includes('No ML predictions')) {
       tbody.innerHTML = '';
     }
     
@@ -662,7 +649,7 @@ document.addEventListener('DOMContentLoaded', function() {
       <tr>
         <td>${prediction.organism}</td>
         <td>${prediction.antibiotic}</td>
-        <td>${(prediction.resistance_probability * 100).toFixed(1)}%</td>
+        <td>${prediction.resistance_probability ? (prediction.resistance_probability * 100).toFixed(1) + '%' : '-'}</td>
         <td>
           <span class="risk-badge" style="
             display: inline-block;
@@ -673,11 +660,11 @@ document.addEventListener('DOMContentLoaded', function() {
             background: ${getRiskColor(prediction.risk_level)};
             color: white;
           ">
-            ${prediction.risk_level}
+            ${prediction.risk_level || 'Unknown'}
           </span>
         </td>
-        <td>${(prediction.confidence * 100).toFixed(0)}%</td>
-        <td>${prediction.recommendation}</td>
+        <td>${prediction.confidence ? (prediction.confidence * 100).toFixed(0) + '%' : '-'}</td>
+        <td>${prediction.recommendation || '-'}</td>
       </tr>
     `;
     
@@ -692,43 +679,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function updatePredictionCount() {
     const countElement = document.getElementById('totalPredictions');
-    const current = parseInt(countElement.textContent.replace(/,/g, '')) || 0;
+    if (!countElement) return;
+
+    // SAFE: no regex
+    const raw = countElement.textContent || '0';
+    const current = parseInt(raw.split(',').join(''), 10) || 0;
+
     countElement.textContent = (current + 1).toLocaleString();
   }
 
-  // Helper functions (TEAMMATE WILL PROVIDE REAL LOGIC)
-  function getRandomProbability(organism, antibiotic) {
-    const baseProb = {
-      'ESCHERICHIA COLI': { 'CIPROFLOXACIN': 0.72, 'AMOXICILLIN': 0.65, 'CEFTRIAXONE': 0.45 },
-      'KLEBSIELLA PNEUMONIAE': { 'MEROPENEM': 0.35, 'CIPROFLOXACIN': 0.58, 'GENTAMICIN': 0.42 },
-      'STAPHYLOCOCCUS AUREUS': { 'VANCOMYCIN': 0.15, 'AMOXICILLIN': 0.82, 'AZITHROMYCIN': 0.38 }
-    };
-    
-    return baseProb[organism]?.[antibiotic] || 0.3 + Math.random() * 0.5;
-  }
-
-  function getRiskLevel(organism, antibiotic) {
-    const prob = getRandomProbability(organism, antibiotic);
-    if (prob >= 0.7) return 'High';
-    if (prob >= 0.4) return 'Medium';
-    return 'Low';
-  }
-
-  function getRecommendation(organism, antibiotic) {
-    const risk = getRiskLevel(organism, antibiotic);
-    if (risk === 'High') return 'Consider alternative antibiotic or combination therapy';
-    if (risk === 'Medium') return 'Monitor closely, consider susceptibility testing';
-    return 'First-line therapy appropriate';
-  }
-
-  function getRiskColor(risk) {
-    switch(risk.toLowerCase()) {
-      case 'high': return '#ef4444';
-      case 'medium': return '#f59e0b';
-      case 'low': return '#10b981';
-      default: return '#6b7280';
-    }
-  }
 
   // Add CSS animation
   const style = document.createElement('style');
@@ -745,122 +704,6 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- Kerala Districts Map JavaScript -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Kerala districts data with ML risk scores
-  const keralaDistrictsML = {
-    'thiruvananthapuram': { 
-      lat: 8.5241, lng: 76.9366, zoom: 11,
-      ml_risk_score: 6.8,
-      ml_risk_level: 'Medium',
-      top_organism: 'E. coli',
-      resistance_trend: 'Increasing',
-      last_ml_update: '2024-01-20'
-    },
-    'kollam': { 
-      lat: 8.8932, lng: 76.6141, zoom: 11,
-      ml_risk_score: 5.2,
-      ml_risk_level: 'Medium',
-      top_organism: 'K. pneumoniae',
-      resistance_trend: 'Stable',
-      last_ml_update: '2024-01-20'
-    },
-    'pathanamthitta': { 
-      lat: 9.2648, lng: 76.7870, zoom: 12,
-      ml_risk_score: 4.1,
-      ml_risk_level: 'Low',
-      top_organism: 'A. baumannii',
-      resistance_trend: 'Decreasing',
-      last_ml_update: '2024-01-20'
-    },
-    'alappuzha': { 
-      lat: 9.4981, lng: 76.3388, zoom: 11,
-      ml_risk_score: 7.1,
-      ml_risk_level: 'Medium',
-      top_organism: 'E. coli',
-      resistance_trend: 'Increasing',
-      last_ml_update: '2024-01-20'
-    },
-    'kottayam': { 
-      lat: 9.5916, lng: 76.5222, zoom: 11,
-      ml_risk_score: 8.3,
-      ml_risk_level: 'High',
-      top_organism: 'K. pneumoniae',
-      resistance_trend: 'Increasing',
-      last_ml_update: '2024-01-20'
-    },
-    'idukki': { 
-      lat: 9.8495, lng: 76.9391, zoom: 10,
-      ml_risk_score: 3.8,
-      ml_risk_level: 'Low',
-      top_organism: 'P. aeruginosa',
-      resistance_trend: 'Stable',
-      last_ml_update: '2024-01-20'
-    },
-    'ernakulam': { 
-      lat: 9.9816, lng: 76.2999, zoom: 11,
-      ml_risk_score: 9.2,
-      ml_risk_level: 'High',
-      top_organism: 'E. coli',
-      resistance_trend: 'Increasing',
-      last_ml_update: '2024-01-20'
-    },
-    'thrissur': { 
-      lat: 10.5276, lng: 76.2144, zoom: 11,
-      ml_risk_score: 8.7,
-      ml_risk_level: 'High',
-      top_organism: 'S. aureus',
-      resistance_trend: 'Increasing',
-      last_ml_update: '2024-01-20'
-    },
-    'palakkad': { 
-      lat: 10.7867, lng: 76.6548, zoom: 11,
-      ml_risk_score: 6.5,
-      ml_risk_level: 'Medium',
-      top_organism: 'Acinetobacter',
-      resistance_trend: 'Stable',
-      last_ml_update: '2024-01-20'
-    },
-    'malappuram': { 
-      lat: 11.0714, lng: 76.0740, zoom: 11,
-      ml_risk_score: 7.4,
-      ml_risk_level: 'Medium',
-      top_organism: 'E. coli',
-      resistance_trend: 'Increasing',
-      last_ml_update: '2024-01-20'
-    },
-    'kozhikode': { 
-      lat: 11.2588, lng: 75.7804, zoom: 11,
-      ml_risk_score: 8.9,
-      ml_risk_level: 'High',
-      top_organism: 'K. pneumoniae',
-      resistance_trend: 'Increasing',
-      last_ml_update: '2024-01-20'
-    },
-    'wayanad': { 
-      lat: 11.6850, lng: 76.1320, zoom: 12,
-      ml_risk_score: 4.5,
-      ml_risk_level: 'Low',
-      top_organism: 'S. aureus',
-      resistance_trend: 'Stable',
-      last_ml_update: '2024-01-20'
-    },
-    'kannur': { 
-      lat: 11.8745, lng: 75.3704, zoom: 11,
-      ml_risk_score: 6.1,
-      ml_risk_level: 'Medium',
-      top_organism: 'E. coli',
-      resistance_trend: 'Stable',
-      last_ml_update: '2024-01-20'
-    },
-    'kasaragod': { 
-      lat: 12.5000, lng: 74.9500, zoom: 11,
-      ml_risk_score: 5.8,
-      ml_risk_level: 'Medium',
-      top_organism: 'P. aeruginosa',
-      resistance_trend: 'Stable',
-      last_ml_update: '2024-01-20'
-    }
-  };
-
   let map;
   let currentDistrictMarker = null;
   let heatLayer = null;
@@ -874,29 +717,34 @@ document.addEventListener('DOMContentLoaded', function() {
       attribution: '© OpenStreetMap'
     }).addTo(map);
     
-    // Add heatmap based on ML risk scores
-    addMLHeatmap();
+    // Try to fetch real heatmap data
+    
     
     // Setup district dropdown
     setupDistrictDropdown();
     
-    // Load ML district insights
-    loadMLDistrictInsights();
+    // Load district insights
+    
   }
 
+  // Fetch real heatmap data
+
+
   // Add ML-based heatmap
-  function addMLHeatmap() {
+  function addMLHeatmap(districtData) {
     const heatData = [];
     
-    Object.entries(keralaDistrictsML).forEach(([district, data]) => {
-      // Convert ML risk score to intensity (0-1)
-      const intensity = data.ml_risk_score / 10;
-      
-      // Add multiple points for better heatmap visualization
-      for (let i = 0; i < 5; i++) {
-        const latOffset = (Math.random() - 0.5) * 0.1;
-        const lngOffset = (Math.random() - 0.5) * 0.1;
-        heatData.push([data.lat + latOffset, data.lng + lngOffset, intensity]);
+    Object.entries(districtData).forEach(([district, data]) => {
+      if (data.lat && data.lng && data.ml_risk_score !== undefined) {
+        // Convert ML risk score to intensity (0-1)
+        const intensity = data.ml_risk_score / 10;
+        
+        // Add multiple points for better heatmap visualization
+        for (let i = 0; i < 3; i++) {
+          const latOffset = (Math.random() - 0.5) * 0.05;
+          const lngOffset = (Math.random() - 0.5) * 0.05;
+          heatData.push([data.lat + latOffset, data.lng + lngOffset, intensity]);
+        }
       }
     });
     
@@ -904,50 +752,67 @@ document.addEventListener('DOMContentLoaded', function() {
       map.removeLayer(heatLayer);
     }
     
-    heatLayer = L.heatLayer(heatData, {
-      radius: 35,
-      blur: 25,
-      maxZoom: 12,
-      gradient: {
-        0.3: '#10b981',   // Low risk
-        0.5: '#f59e0b',   // Medium risk
-        0.7: '#ef4444'    // High risk
-      },
-      opacity: 0.7
-    }).addTo(map);
+    if (heatData.length > 0) {
+      heatLayer = L.heatLayer(heatData, {
+        radius: 35,
+        blur: 25,
+        maxZoom: 12,
+        gradient: {
+          0.3: '#10b981',   // Low risk
+          0.5: '#f59e0b',   // Medium risk
+          0.7: '#ef4444'    // High risk
+        },
+        opacity: 0.7
+      }).addTo(map);
+    }
   }
 
-  // Load ML district insights
-  function loadMLDistrictInsights() {
+  // Load district insights
+
+
+  function updateDistrictInsightsDisplay(districts) {
     const insightsContainer = document.getElementById('mlDistrictRisks');
     
-    // Sort districts by ML risk score
-    const sortedDistricts = Object.entries(keralaDistrictsML)
-      .sort((a, b) => b[1].ml_risk_score - a[1].ml_risk_score)
-      .slice(0, 5);
-    
-    insightsContainer.innerHTML = sortedDistricts.map(([key, data]) => `
+    insightsContainer.innerHTML = districts.slice(0, 5).map(data => `
       <div style="margin-bottom: 12px; padding: 12px; background: rgba(15,23,42,0.6); border-radius: 8px; border-left: 4px solid ${getRiskColor(data.ml_risk_level)};">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-          <strong style="color: #e5e7eb;">${formatDistrictName(key)}</strong>
+          <strong style="color: #e5e7eb;">${data.district_name || formatDistrictName(data.district_key)}</strong>
           <span style="padding: 4px 12px; background: ${getRiskColor(data.ml_risk_level)}; 
                 border-radius: 999px; font-size: 0.8rem; font-weight: 600; color: white;">
-            ${data.ml_risk_level}
+            ${data.ml_risk_level || 'Unknown'}
           </span>
         </div>
         <div style="font-size: 0.85rem; color: #cbd5f5; margin-top: 8px;">
           <div style="display: flex; justify-content: space-between;">
-            <span>Risk Score: ${data.ml_risk_score.toFixed(1)}/10</span>
+            <span>Risk Score: ${data.ml_risk_score ? data.ml_risk_score.toFixed(1) + '/10' : 'N/A'}</span>
             <span style="color: ${data.resistance_trend === 'Increasing' ? '#ef4444' : data.resistance_trend === 'Decreasing' ? '#10b981' : '#f59e0b'}">
-              ${data.resistance_trend}
+              ${data.resistance_trend || 'Unknown'}
             </span>
           </div>
           <div style="margin-top: 5px; color: #94a3b8;">
-            Top Bug: ${data.top_organism}
+            ${data.top_organism ? 'Top Bug: ' + data.top_organism : ''}
           </div>
         </div>
       </div>
     `).join('');
+  }
+
+  function showMapEmptyState() {
+    const mapContainer = document.getElementById('kerala-map');
+    mapContainer.innerHTML += `
+      <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: #9ca3c9; z-index: 1000; background: rgba(15,23,42,0.8); padding: 20px; border-radius: 10px;">
+        <p>No heatmap data available</p>
+        <p style="font-size: 0.9rem;">Upload district AMR data to enable heatmap</p>
+      </div>
+    `;
+  }
+
+  function showInsightsEmptyState() {
+    document.getElementById('mlDistrictRisks').innerHTML = `
+      <div style="color: #9ca3c9; text-align: center; padding: 20px;">
+        <p>No district insights available</p>
+      </div>
+    `;
   }
 
   // Setup district dropdown
@@ -969,16 +834,15 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
       }
       
-      showDistrictMLInfo(selectedDistrict);
-      zoomToDistrict(selectedDistrict);
+      
     });
   }
 
+  // Fetch ML info for selected district
+
+
   // Show ML info for selected district
-  function showDistrictMLInfo(districtKey) {
-    const district = keralaDistrictsML[districtKey];
-    if (!district) return;
-    
+  function showDistrictMLInfo(districtKey, district) {
     const infoPanel = document.getElementById('mlDistrictInfo');
     const districtName = document.getElementById('mlDistrictName');
     const districtDetails = document.getElementById('mlDistrictDetails');
@@ -989,14 +853,14 @@ document.addEventListener('DOMContentLoaded', function() {
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
         <div style="background: rgba(15,23,42,0.7); padding: 15px; border-radius: 10px; text-align: center;">
           <div style="font-size: 2rem; font-weight: bold; color: ${getRiskColor(district.ml_risk_level)}; margin-bottom: 5px;">
-            ${district.ml_risk_score.toFixed(1)}
+            ${district.ml_risk_score ? district.ml_risk_score.toFixed(1) : 'N/A'}
           </div>
           <div style="font-size: 0.9rem; color: #94a3b8;">ML Risk Score</div>
         </div>
         
         <div style="background: rgba(15,23,42,0.7); padding: 15px; border-radius: 10px; text-align: center;">
           <div style="font-size: 2rem; font-weight: bold; color: #22c1c3; margin-bottom: 5px;">
-            ${district.ml_risk_level}
+            ${district.ml_risk_level || 'Unknown'}
           </div>
           <div style="font-size: 0.9rem; color: #94a3b8;">Risk Level</div>
         </div>
@@ -1011,7 +875,7 @@ document.addEventListener('DOMContentLoaded', function() {
               <strong>Predominant Organism:</strong>
             </div>
             <div style="color: #e5e7eb; font-size: 1.1rem; font-weight: 600;">
-              ${district.top_organism}
+              ${district.top_organism || 'Unknown'}
             </div>
           </div>
           
@@ -1020,7 +884,7 @@ document.addEventListener('DOMContentLoaded', function() {
               <strong>Resistance Trend:</strong>
             </div>
             <div style="color: ${district.resistance_trend === 'Increasing' ? '#ef4444' : district.resistance_trend === 'Decreasing' ? '#10b981' : '#f59e0b'}; font-size: 1.1rem; font-weight: 600;">
-              ${district.resistance_trend}
+              ${district.resistance_trend || 'Unknown'}
             </div>
           </div>
         </div>
@@ -1028,18 +892,9 @@ document.addEventListener('DOMContentLoaded', function() {
         <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(51,65,85,0.5);">
           <div style="font-size: 0.85rem; color: #9ca3c9;">
             <strong>ML Model:</strong> AMR-Predict v2.1<br>
-            <strong>Last Updated:</strong> ${district.last_ml_update}<br>
-            <strong>Data Points:</strong> Based on 1,200+ local isolates
+            <strong>Last Updated:</strong> ${district.last_ml_update || '-'}<br>
+            <strong>Data Points:</strong> ${district.data_points || 'N/A'}
           </div>
-        </div>
-      </div>
-      
-      <div style="margin-top: 20px; background: rgba(239, 68, 68, 0.1); padding: 15px; border-radius: 10px; border-left: 4px solid #ef4444;">
-        <div style="font-size: 0.9rem; color: #e5e7eb; font-weight: 600; margin-bottom: 8px;">
-          ⚠️ ML-Based Alert
-        </div>
-        <div style="font-size: 0.85rem; color: #cbd5f5;">
-          ${getDistrictAlert(district.ml_risk_level, district.resistance_trend)}
         </div>
       </div>
     `;
@@ -1048,59 +903,58 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Zoom to selected district
-  function zoomToDistrict(districtKey) {
-    const district = keralaDistrictsML[districtKey];
-    if (!district) return;
-    
+  function zoomToDistrict(districtKey, district) {
     // Remove previous marker
     if (currentDistrictMarker) {
       map.removeLayer(currentDistrictMarker);
     }
     
-    // Add marker for selected district
-    currentDistrictMarker = L.marker([district.lat, district.lng], {
-      icon: L.divIcon({
-        html: `<div style="
-          width: 24px;
-          height: 24px;
-          background: ${getRiskColor(district.ml_risk_level)};
-          border: 3px solid white;
-          border-radius: 50%;
-          box-shadow: 0 0 15px ${getRiskColor(district.ml_risk_level)};
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: bold;
-          color: white;
-          font-size: 12px;
-        ">!</div>`,
-        iconSize: [24, 24],
-        className: 'selected-district-marker'
-      })
-    }).addTo(map);
-    
-    // Add popup
-    currentDistrictMarker.bindPopup(`
-      <div style="padding: 10px; min-width: 250px;">
-        <strong style="color: ${getRiskColor(district.ml_risk_level)}; font-size: 1.1em;">
-          ${formatDistrictName(districtKey)}
-        </strong><br>
-        <div style="margin-top: 8px; font-size: 0.9em;">
-          <strong>ML Risk Level:</strong> ${district.ml_risk_level}<br>
-          <strong>Risk Score:</strong> ${district.ml_risk_score.toFixed(1)}/10<br>
-          <strong>Top Organism:</strong> ${district.top_organism}<br>
-          <strong>Trend:</strong> <span style="color: ${district.resistance_trend === 'Increasing' ? '#ef4444' : '#10b981'}">
-            ${district.resistance_trend}
-          </span>
+    // Add marker for selected district if coordinates exist
+    if (district.lat && district.lng) {
+      currentDistrictMarker = L.marker([district.lat, district.lng], {
+        icon: L.divIcon({
+          html: `<div style="
+            width: 24px;
+            height: 24px;
+            background: ${getRiskColor(district.ml_risk_level)};
+            border: 3px solid white;
+            border-radius: 50%;
+            box-shadow: 0 0 15px ${getRiskColor(district.ml_risk_level)};
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 12px;
+          ">!</div>`,
+          iconSize: [24, 24],
+          className: 'selected-district-marker'
+        })
+      }).addTo(map);
+      
+      // Add popup
+      currentDistrictMarker.bindPopup(`
+        <div style="padding: 10px; min-width: 250px;">
+          <strong style="color: ${getRiskColor(district.ml_risk_level)}; font-size: 1.1em;">
+            ${formatDistrictName(districtKey)}
+          </strong><br>
+          <div style="margin-top: 8px; font-size: 0.9em;">
+            <strong>ML Risk Level:</strong> ${district.ml_risk_level || 'Unknown'}<br>
+            <strong>Risk Score:</strong> ${district.ml_risk_score ? district.ml_risk_score.toFixed(1) + '/10' : 'N/A'}<br>
+            <strong>Top Organism:</strong> ${district.top_organism || 'Unknown'}<br>
+            <strong>Trend:</strong> <span style="color: ${district.resistance_trend === 'Increasing' ? '#ef4444' : '#10b981'}">
+              ${district.resistance_trend || 'Unknown'}
+            </span>
+          </div>
         </div>
-      </div>
-    `).openPopup();
-    
-    // Zoom to district
-    map.flyTo([district.lat, district.lng], district.zoom, {
-      duration: 1.5,
-      easeLinearity: 0.25
-    });
+      `).openPopup();
+      
+      // Zoom to district
+      map.flyTo([district.lat, district.lng], district.zoom || 11, {
+        duration: 1.5,
+        easeLinearity: 0.25
+      });
+    }
   }
 
   // Helper functions
@@ -1109,26 +963,6 @@ document.addEventListener('DOMContentLoaded', function() {
       .split('-')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1))
       .join(' ');
-  }
-
-  function getRiskColor(risk) {
-    switch(risk.toLowerCase()) {
-      case 'high': return '#ef4444';
-      case 'medium': return '#f59e0b';
-      case 'low': return '#10b981';
-      default: return '#6b7280';
-    }
-  }
-
-  function getDistrictAlert(riskLevel, trend) {
-    if (riskLevel === 'High' && trend === 'Increasing') {
-      return 'High and increasing resistance risk detected. Consider enhanced surveillance and review local antibiotic guidelines.';
-    } else if (riskLevel === 'High') {
-      return 'Persistent high resistance risk. Monitor antibiogram patterns closely.';
-    } else if (riskLevel === 'Medium' && trend === 'Increasing') {
-      return 'Moderate but increasing risk. Review empirical therapy choices.';
-    }
-    return 'Standard surveillance recommended.';
   }
 
   // Initialize the map
@@ -1145,6 +979,7 @@ document.addEventListener('DOMContentLoaded', function() {
   function safeDestroy(chart) {
     try { if (chart && typeof chart.destroy === 'function') chart.destroy(); } catch (e) { console.warn('destroy failed', e); }
   }
+  
   function clearCanvas(id) {
     const el = document.getElementById(id);
     if (!el) return;
@@ -1217,24 +1052,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const lineLabels = dailySorted.map(p=>p[0]);
     const lineValues = dailySorted.map(p=>p[1]);
 
-    // Update insights with ML context
+    // Update insights
     const insights = [];
     if (barLabels.length) {
       insights.push(`<strong>Top species:</strong> ${barLabels.slice(0,3).join(', ')}`);
     } else {
       insights.push('<strong>Top species:</strong> none recorded');
     }
-    
-    // Add ML-based insight
-    if (barLabels.length > 0) {
-      insights.push(`<strong>ML Insight:</strong> ${barLabels[0]} shows high resistance to Ciprofloxacin`);
-    }
 
     const susText = entries.map(r => r.susceptibility || '').join(' || ').toLowerCase();
     const hasResistant = susText.includes('resistant') || susText.includes('r:');
     const hasSensitive = susText.includes('sensitive') || susText.includes('s:');
-    if (hasResistant && !hasSensitive) insights.push('<strong>ML Alert:</strong> High resistance mentions — review local antibiogram.');
-    if (hasSensitive && !hasResistant) insights.push('<strong>ML Note:</strong> Mostly sensitive results recorded.');
+    if (hasResistant && !hasSensitive) insights.push('<strong>Note:</strong> High resistance mentions detected');
+    if (hasSensitive && !hasResistant) insights.push('<strong>Note:</strong> Mostly sensitive results recorded');
 
     const notesText = entries.map(r=>r.notes||'').join(' || ').toLowerCase();
     const flags = ['severe','allergic','reaction','worse','ineffective','no change','moderate'].filter(k => notesText.includes(k));
@@ -1248,7 +1078,14 @@ document.addEventListener('DOMContentLoaded', function() {
       try {
         pharmBarChart = new Chart(barCtx, {
           type: 'bar',
-          data: { labels: barLabels, datasets: [{ label: 'Count', data: barValues, backgroundColor: '#22c1c3' }] },
+          data: { 
+            labels: barLabels, 
+            datasets: [{ 
+              label: 'Count', 
+              data: barValues, 
+              backgroundColor: '#22c1c3' 
+            }] 
+          },
           options: {
             responsive: true,
             plugins: { legend: { display: false } },
@@ -1299,10 +1136,43 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 })();
 </script>
+<script>
+/* ============================
+   SHARED ML UTILITIES
+   ============================ */
+
+function getRiskColor(risk) {
+  if (!risk) return '#6b7280';
+  switch (risk.toLowerCase()) {
+    case 'high': return '#ef4444';
+    case 'medium': return '#f59e0b';
+    case 'low': return '#10b981';
+    case 'moderate-low': return '#10b981';
+    case 'moderate-high': return '#f59e0b';
+    default: return '#6b7280';
+  }
+}
+
+function getRecommendation(risk) {
+  if (!risk) return 'No recommendation available';
+
+  switch (risk.toLowerCase()) {
+    case 'low':
+    case 'moderate-low':
+      return 'Antibiotic likely effective. Monitor patient response.';
+    case 'medium':
+    case 'moderate-high':
+      return 'Use with caution. Consider sensitivity testing.';
+    case 'high':
+      return 'High resistance risk. Consider alternative therapy.';
+    default:
+      return 'Clinical judgment required.';
+  }
+}
+</script>
 
 <script type="module" src="scripts/supabase-init.js"></script>
 <script type="module" src="scripts/pharma-supabase.js"></script>
-
 <script type="module" src="scripts/auth-ui.js"></script>
 </body>
 </html>

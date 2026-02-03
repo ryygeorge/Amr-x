@@ -1,35 +1,18 @@
-// scripts/ml-display.js
-export class MLDisplay {
-  constructor() {
-    this.apiUrl = ''; // Will get from teammate
-  }
+export function renderMLResult(container, data) {
+  const percent = (data.probability * 100).toFixed(1);
+  const color =
+    data.risk_level === "high" ? "#ef4444" :
+    data.risk_level === "moderate-high" ? "#f59e0b" :
+    "#10b981";
 
-  // Just format and display whatever ML gives us
-  formatPrediction(mlData) {
-    return {
-      probability: mlData.probability || mlData.resistance_probability,
-      riskLevel: mlData.risk_level || this.calculateRisk(mlData.probability),
-      confidence: mlData.confidence || 0.8,
-      recommendation: mlData.recommendation || 'Consult antibiogram',
-      modelVersion: mlData.model_version || 'v1.0',
-      thresholds: mlData.thresholds || { high: 0.7, medium: 0.4, low: 0.2 }
-    };
-  }
-
-  calculateRisk(probability) {
-    if (probability >= 0.7) return 'High';
-    if (probability >= 0.4) return 'Medium';
-    return 'Low';
-  }
-
-  getRiskColor(risk) {
-    const colors = {
-      'High': '#ef4444',
-      'Medium': '#f59e0b', 
-      'Low': '#10b981',
-      'Critical': '#dc2626',
-      'Warning': '#d97706'
-    };
-    return colors[risk] || '#6b7280';
-  }
+  container.innerHTML = `
+    <div style="text-align:center">
+      <h2 style="color:${color}">${percent}%</h2>
+      <p><strong>Risk:</strong> ${data.risk_level}</p>
+      <p><strong>Model:</strong> ${data.model_version}</p>
+      <p style="opacity:.7;font-size:.85rem">
+        Generated at ${data.timestamp ? new Date(data.timestamp).toLocaleString() : "Just now"}
+      </p>
+    </div>
+  `;
 }

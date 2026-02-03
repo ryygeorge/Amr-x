@@ -615,3 +615,30 @@ function drawLineDaily(labels, values) {
 
 // Export for potential use in other modules
 export { renderTable, buildSpeciesCounts, buildDailyCounts, generateInsights };
+
+// ===============================
+// ML PREDICTION → SUPABASE SAVE
+// ===============================
+export async function saveMLPrediction(prediction) {
+  try {
+    const { data, error } = await supabase
+      .from('ml_predictions')
+      .insert([{
+        organism: prediction.organism,
+        antibiotic: prediction.antibiotic,
+        resistance_probability: prediction.resistance_probability,
+        risk_level: prediction.risk_level,
+        confidence: prediction.confidence,
+        recommendation: prediction.recommendation,
+        model_version: prediction.model_version || 'AMR-Predict v2.1'
+      }]);
+
+    if (error) {
+      console.error('Supabase insert error:', error);
+    } else {
+      console.log('ML prediction saved');
+    }
+  } catch (err) {
+    console.error('Unexpected save error:', err);
+  }
+}
