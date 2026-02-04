@@ -26,6 +26,7 @@
     </div>
     <div class="nav-right">
       <a href="pharma.html" class="nav-link active">Dashboard</a>
+      <a href="analytics.html" class="nav-link">Analytics</a>
       <a href="pharmacist-entry.html" class="nav-link">Pharmacist Entry</a>
       <a href="upload-data.html" class="nav-link">Upload Data</a>
       <a href="index.html" class="nav-link">Home</a>
@@ -40,12 +41,41 @@
   <!-- Greeting -->
   <section class="pharma-section greeting-section">
     <h1 id="welcomeText">Welcome, Pharmacist!</h1>
-    <p class="greeting-subtitle">AMR Dashboard with ML-Powered Predictions & Insights</p>
+    <p class="greeting-subtitle">Your AMR Dashboard</p>
+  </section>
+
+  <section class="pharma-section">
+    <div class="summary-box" style="display:flex; align-items:center; justify-content:space-between; gap:16px; background: linear-gradient(135deg, rgba(14,165,233,0.1), rgba(59,130,246,0.05)); border-left: 4px solid #0ea5e9; padding: 20px;">
+      <div style="flex: 1;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+          <span style="font-size: 24px;">📊</span>
+          <strong style="font-size: 16px; color: #cbd5e1;">District AMR Analytics (RWUI)</strong>
+        </div>
+        <p style="margin: 0; color: #94a3b8; font-size: 14px; line-height: 1.5;">
+          View resistance pressure trends, risk levels, and district-wide analytics based on ML-enhanced pharmacist usage data.
+        </p>
+      </div>
+      <a href="analytics.html" 
+         style="background: linear-gradient(135deg, #0ea5e9, #3b82f6); 
+                color: white; 
+                padding: 12px 24px; 
+                border-radius: 12px; 
+                text-decoration: none; 
+                font-weight: 700;
+                font-size: 15px;
+                box-shadow: 0 4px 12px rgba(14,165,233,0.3);
+                transition: all 0.3s ease;
+                white-space: nowrap;"
+         onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(14,165,233,0.4)'"
+         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(14,165,233,0.3)'">
+        📈 Open Analytics
+      </a>
+    </div>
   </section>
 
   <!-- AMR Dashboard with ML Integration -->
   <section class="pharma-section">
-    <h2>AMR Dashboard • ML-Powered Insights</h2>
+    <h2>Experimental ML Predictor (Individual Use)</h2>
     
     <!-- ML Summary Box -->
     <div class="summary-box" style="background: linear-gradient(120deg, rgba(15,23,42,0.98), rgba(15,23,42,0.8));">
@@ -54,13 +84,19 @@
         <strong>Accuracy:</strong> <span id="mlAccuracy">Loading...</span> &nbsp;|&nbsp;
         <strong>Last Updated:</strong> <span id="mlLastUpdate">-</span> &nbsp;|&nbsp;
         <strong>Total Predictions:</strong> <span id="totalPredictions">0</span>
+    <!-- ML Clarification Box -->
+    <div class="summary-box" style="background: linear-gradient(120deg, rgba(99,102,241,0.15), rgba(59,130,246,0.1)); border-left: 4px solid #6366f1;">
+      <p style="margin: 0; font-size: 14px; color: #cbd5e1;">
+        <strong>⚠️ Note:</strong> This ML predictor is <strong>experimental and session-based only</strong>. 
+        Predictions are <strong>not saved permanently</strong> and <strong>do NOT contribute to district RWUI analytics</strong>. 
+        Use this for individual decision support, not population trends.
       </p>
     </div>
 
     <div class="pharma-content">
       <!-- ML Prediction Input -->
       <div class="graph-box" style="min-width: 320px;">
-        <h3>🦠 Quick Resistance Predictor</h3>
+        <h3>🧪 Experimental ML Predictor (Individual Use)</h3>
         <div style="padding: 15px;">
           <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-direction: column;">
             <select id="mlOrganism" class="district-dropdown" style="padding: 12px;">
@@ -376,54 +412,14 @@
             
             <select id="mlAntibiotic" class="district-dropdown" style="padding: 12px;">
               <option value="">Select Antibiotic...</option>
-              <option value="Amikacin">Amikacin</option>
-              <option value="Amoxicillin/Clavulanic Acid">Amoxicillin/Clavulanic Acid</option>
-              <option value="Ampicillin">Ampicillin</option>
-              <option value="Ampicillin/Sulbactam">Ampicillin/Sulbactam</option>
-              <option value="Aztreonam">Aztreonam</option>
-              <option value="Cefazolin">Cefazolin</option>
-              <option value="Cefepime">Cefepime</option>
-              <option value="Cefiderocol">Cefiderocol</option>
-              <option value="Cefotaxime">Cefotaxime</option>
-              <option value="Cefotetan">Cefotetan</option>
-              <option value="Cefoxitin">Cefoxitin</option>
-              <option value="Cefpodoxime">Cefpodoxime</option>
-              <option value="Ceftaroline">Ceftaroline</option>
-              <option value="Ceftazidime">Ceftazidime</option>
-              <option value="Ceftolozane/Tazobactam">Ceftolozane/Tazobactam</option>
-              <option value="Ceftriaxone">Ceftriaxone</option>
-              <option value="Cephalexin/Cephalothin">Cephalexin/Cephalothin</option>
-              <option value="Chloramphenicol">Chloramphenicol</option>
-              <option value="Ciprofloxacin">Ciprofloxacin</option>
-              <option value="Clarithromycin">Clarithromycin</option>
-              <option value="Clindamycin">Clindamycin</option>
-              <option value="Colistin">Colistin</option>
-              <option value="Daptomycin">Daptomycin</option>
-              <option value="Doxycycline">Doxycycline</option>
-              <option value="Ertapenem">Ertapenem</option>
-              <option value="Erythromycin">Erythromycin</option>
-              <option value="Gentamicin">Gentamicin</option>
-              <option value="Imipenem">Imipenem</option>
-              <option value="Levofloxacin">Levofloxacin</option>
-              <option value="Linezolid">Linezolid</option>
-              <option value="Meropenem">Meropenem</option>
-              <option value="Metronidazole">Metronidazole</option>
-              <option value="Minocycline">Minocycline</option>
-              <option value="Moxifloxacin">Moxifloxacin</option>
-              <option value="Nitrofurantoin">Nitrofurantoin</option>
-              <option value="Oxacillin">Oxacillin</option>
-              <option value="Penicillin">Penicillin</option>
-              <option value="Piperacillin">Piperacillin</option>
-              <option value="Piperacillin/Tazobactam">Piperacillin/Tazobactam</option>
-              <option value="Quinupristin/Dalfopristin">Quinupristin/Dalfopristin</option>
-              <option value="Streptomycin">Streptomycin</option>
-              <option value="Tetracycline">Tetracycline</option>
-              <option value="Ticarcillin">Ticarcillin</option>
-              <option value="Ticarcillin/Clavulanic Acid">Ticarcillin/Clavulanic Acid</option>
-              <option value="Tigecycline">Tigecycline</option>
-              <option value="Tobramycin">Tobramycin</option>
-              <option value="Trimethoprim/Sulfamethoxazole">Trimethoprim/Sulfamethoxazole</option>
-              <option value="Vancomycin">Vancomycin</option>
+              <option value="CIPROFLOXACIN">Ciprofloxacin</option>
+              <option value="AMOXICILLIN">Amoxicillin</option>
+              <option value="CEFTRIAXONE">Ceftriaxone</option>
+              <option value="CLARITHROMYCIN">Clarithromycin</option>
+              <option value="VANCOMYCIN">Vancomycin</option>
+              <option value="MEROPENEM">Meropenem</option>
+              <option value="GENTAMICIN">Gentamicin</option>
+              <option value="AMPICILLIN">Ampicillin</option>
             </select>
 
           </div>
@@ -432,7 +428,7 @@
             Get ML Prediction
           </button>
           <p style="font-size: 0.8rem; color: #9ca3c9; text-align: center;">
-            Using AMR-Predict ML model for real-time resistance estimation
+            Session-based prediction only (not saved)
           </p>
         </div>
       </div>
@@ -481,26 +477,41 @@
 
   <!-- Original Charts Section -->
   <section class="pharma-section">
-    <h2>AMR Analytics Dashboard</h2>
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+      <span style="font-size: 28px;">📊</span>
+      <h2 style="margin: 0;">AMR Analytics Dashboard</h2>
+    </div>
     
     <div class="pharma-content">
       <div class="graph-box">
-        <h3>Antibiotic Use Over Time</h3>
+        <h3>Antibiotic Resistance Patterns</h3>
         <canvas id="barChart" height="200"></canvas>
       </div>
       <div class="graph-box">
-        <h3>AMR Case Distribution</h3>
+        <h3>Organism Distribution</h3>
         <canvas id="pieChart" height="200"></canvas>
+      </div>
+      <div class="graph-box" style="min-width:300px;">
+        <h3>🔥 Top Resistance Concerns</h3>
+        <div id="resistanceAlerts" style="padding: 15px;">
+          <div style="text-align: center; color: #64748b; padding: 20px;">
+            <div style="font-size: 36px; margin-bottom: 10px; opacity: 0.5;">🧬</div>
+            <div style="font-size: 14px;">Loading resistance analysis...</div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- Pharmacist Logs section -->
   <section class="pharma-section" id="pharmacist-logs">
-    <h2>Pharmacist Logs</h2>
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+      <span style="font-size: 28px;">📊</span>
+      <h2 style="margin: 0;">Pharmacist Logs</h2>
+    </div>
 
-    <div class="summary-box">
-      <p id="pharm-summary"><strong>Total Logs:</strong> 0 &nbsp;|&nbsp; <strong>Recent:</strong> 0</p>
+    <div class="summary-box" style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(5,150,105,0.05)); border-left: 4px solid #10b981;">
+      <p id="pharm-summary" style="margin: 0; font-size: 15px;"><strong>Total Logs:</strong> 0 &nbsp;|&nbsp; <strong>Recent:</strong> 0</p>
     </div>
 
     <div class="pharma-content">
@@ -524,7 +535,22 @@
     </div>
 
     <div class="data-table">
-      <h3>Recent Pharmacist Entries</h3>
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
+        <h3 style="margin: 0;">Recent Pharmacist Entries</h3>
+        <a href="pharmacist-entry.html" 
+           style="background: linear-gradient(135deg, #10b981, #059669); 
+                  color: white; 
+                  padding: 8px 16px; 
+                  border-radius: 8px; 
+                  text-decoration: none; 
+                  font-weight: 600;
+                  font-size: 13px;
+                  box-shadow: 0 2px 8px rgba(16,185,129,0.3);"
+           onmouseover="this.style.transform='scale(1.05)'"
+           onmouseout="this.style.transform='scale(1)'">
+          ➕ New Entry
+        </a>
+      </div>
       <table>
         <thead>
           <tr>
@@ -536,7 +562,13 @@
           </tr>
         </thead>
         <tbody id="pharmTbody">
-          <tr><td colspan="5">No entries found...</td></tr>
+          <tr>
+            <td colspan="5" style="text-align: center; padding: 40px; color: #64748b;">
+              <div style="font-size: 48px; margin-bottom: 10px; opacity: 0.5;">📋</div>
+              <div style="font-size: 16px; font-weight: 600; margin-bottom: 5px;">No entries yet</div>
+              <div style="font-size: 14px; opacity: 0.8;">Submit your first pharmacist entry to start tracking AMR data</div>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -568,7 +600,7 @@
           </div>
           <div style="display: flex; align-items: center; margin-bottom: 10px;">
             <div style="width: 20px; height: 20px; background: #10b981; border-radius: 4px; margin-right: 10px;"></div>
-            <span style="color: #e5e7eb;">Low Risk (<40%)</span>
+            <span style="color: #e5e7eb;">Low Risk (<40%)></span>
           </div>
           <div style="margin-top: 15px; font-size: 0.85rem; color: #9ca3c9;">
             <strong>Note:</strong> Colors based on ML-predicted resistance probabilities
@@ -576,12 +608,13 @@
         </div>
       </div>
       
-      <!-- ML District Insights -->
+      <!-- District Analytics from Real Data -->
       <div class="graph-box" style="flex: 1;">
-        <h3>Top ML-Identified Risk Districts</h3>
+        <h3>📍 District Resistance Analysis</h3>
         <div id="mlDistrictRisks" style="padding: 15px;">
           <div style="color: #9ca3c9; text-align: center; padding: 20px;">
-            <p>Loading district risk analysis...</p>
+            <div style="font-size: 36px; margin-bottom: 10px; opacity: 0.5;">🗺️</div>
+            <p>Submit entries from different districts to see comparative analysis</p>
           </div>
         </div>
       </div>
@@ -667,7 +700,7 @@ document.addEventListener('DOMContentLoaded', function() {
     "AMOXICILLIN": "Amoxicillin/Clavulanic Acid",
     "AMPICILLIN": "Ampicillin",
     "CEFTRIAXONE": "Ceftriaxone",
-    "AZITHROMYCIN": "Azithromycin",
+    "CLARITHROMYCIN": "Clarithromycin",
     "VANCOMYCIN": "Vancomycin",
     "MEROPENEM": "Meropenem",
     "GENTAMICIN": "Gentamicin",
@@ -686,19 +719,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const organism = document.getElementById('mlOrganism').value;
     const antibiotic = document.getElementById('mlAntibiotic').value;
     
+    console.log('🔍 ML Predict clicked:', { organism, antibiotic });
+    
     if (!organism || !antibiotic) {
       alert('Please select both bacteria and antibiotic');
       return;
     }
     
+    console.log('✅ Calling getMLPrediction...');
     getMLPrediction(organism, antibiotic);
   });
 
   function initializeMLDashboard() {
-    // Initialize with empty/loading state
-    document.getElementById('mlAccuracy').textContent = 'Loading...';
-    document.getElementById('mlLastUpdate').textContent = '-';
-    document.getElementById('totalPredictions').textContent = '0';
+    // Update health panel with empty state (only elements that exist)
+    const modelAccuracy = document.getElementById('modelAccuracy');
+    const accuracyBar = document.getElementById('accuracyBar');
+    const predictionSpeed = document.getElementById('predictionSpeed');
+    const totalPredictions = document.getElementById('totalPredictions');
+    
+    if (modelAccuracy) modelAccuracy.textContent = '-';
+    if (accuracyBar) accuracyBar.style.width = '0%';
+    if (predictionSpeed) predictionSpeed.textContent = '-';
+    if (totalPredictions) totalPredictions.textContent = '0';
     
     // Try to fetch real ML model stats
     fetchMLModelStats();
@@ -708,16 +750,25 @@ document.addEventListener('DOMContentLoaded', function() {
     fetch(`${ML_API_URL}/info`)
       .then(res => res.json())
       .then(data => {
-        // Model status
-        document.getElementById('mlAccuracy').textContent =
-          data.status ? data.status.toUpperCase() : 'READY';
-
-        // Last updated
-        if (data.last_updated) {
-          document.getElementById('mlLastUpdate').textContent =
-            formatTime(data.last_updated);
-        } else {
-          document.getElementById('mlLastUpdate').textContent = '-';
+        const modelAccuracy = document.getElementById('modelAccuracy');
+        const accuracyBar = document.getElementById('accuracyBar');
+        const predictionSpeed = document.getElementById('predictionSpeed');
+        const totalPredictions = document.getElementById('totalPredictions');
+        
+        if (data.accuracy) {
+          if (modelAccuracy) modelAccuracy.textContent = `${data.accuracy}%`;
+          if (accuracyBar) accuracyBar.style.width = `${data.accuracy}%`;
+        }
+        if (data.avg_speed && predictionSpeed) {
+          predictionSpeed.textContent = `${data.avg_speed}s`;
+        }
+        if (data.total_predictions !== undefined && totalPredictions) {
+          totalPredictions.textContent = data.total_predictions.toLocaleString();
+        }
+        
+        // Try to load recent predictions
+        if (data.recent_predictions && data.recent_predictions.length > 0) {
+          updateMLTable(data.recent_predictions);
         }
 
         // Total predictions = frontend only
@@ -782,35 +833,81 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   async function getMLPrediction(organism, antibiotic) {
+    console.log('🚀 getMLPrediction called with:', { organism, antibiotic });
     showMLLoading();
 
     try {
+      // Normalize antibiotic name: lookup in map, or format intelligently
+      let finalAntibiotic = antibiotic;
+      
+      // Try to map using the ANTIBIOTIC_MAP
+      if (ANTIBIOTIC_MAP && ANTIBIOTIC_MAP[antibiotic]) {
+        finalAntibiotic = ANTIBIOTIC_MAP[antibiotic];
+      } else {
+        // If not in map, convert to title case (first letter uppercase, rest lowercase)
+        finalAntibiotic = antibiotic
+          .split(' ')
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+          .join(' ');
+      }
+      
+      // Normalize organism name similarly
+      let finalOrganism = organism;
+      if (ORGANISM_MAP && ORGANISM_MAP[organism]) {
+        finalOrganism = ORGANISM_MAP[organism];
+      }
+      
       const mlPayload = {
-        organism: organism,
-        antibiotic: antibiotic
+        organism: finalOrganism,
+        antibiotic: finalAntibiotic
       };
 
-      console.log("ML payload:", mlPayload);
+      console.log("📦 ML payload:", mlPayload);
+      console.log("🌐 API URL:", `${ML_API_URL}/predict`);
 
       const response = await fetch(`${ML_API_URL}/predict`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(mlPayload)
+        body: JSON.stringify(mlPayload),
+        timeout: 10000
       });
 
-      const data = await response.json();
-
+      console.log("📡 Response status:", response.status);
+      
       if (!response.ok) {
-        console.error("ML API error:", data);
-        throw new Error(data.error || "ML API failed");
+        const errorData = await response.json().catch(() => ({}));
+        console.error("❌ ML API error:", response.status, errorData);
+        throw new Error(errorData.error || `ML API failed with status ${response.status}`);
       }
 
-      handlePrediction(data);
+      const data = await response.json();
+      console.log("📥 Response data:", data);
+
+      if (!data.probability && data.probability !== 0) {
+        console.warn("⚠️ No probability in response:", data);
+        throw new Error("Invalid response format from ML API");
+      }
+
+      console.log("✅ Calling handlePrediction...");
+      handlePrediction({
+        organism: data.organism || mlPayload.organism,
+        antibiotic: data.antibiotic || mlPayload.antibiotic,
+        probability: data.probability,
+        risk_level: getRiskLevel(data.probability),
+        model_version: data.model_version || 'unknown'
+      });
 
     } catch (err) {
-      console.error("ML Prediction Error:", err);
-      displayMLError();
+      console.error("💥 ML Prediction Error:", err);
+      displayMLError(err.message);
     }
+  }
+
+  function getRiskLevel(probability) {
+    if (probability >= 0.7) return 'HIGH';
+    if (probability >= 0.4) return 'MEDIUM';
+    if (probability >= 0.2) return 'LOW';
+    return 'MINIMAL';
   }
 
   function handlePrediction(prediction) {
@@ -925,16 +1022,22 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
   }
 
-  function displayMLError() {
+  function displayMLError(message = 'ML Service Temporarily Unavailable') {
     document.getElementById('mlResult').innerHTML = `
       <div style="text-align: center; padding: 30px;">
         <div style="font-size: 3rem; margin-bottom: 15px;">⚠️</div>
-        <p style="color: #ef4444; margin-bottom: 10px;">ML Service Temporarily Unavailable</p>
+        <p style="color: #ef4444; margin-bottom: 10px;">${escapeHtml(message)}</p>
         <p style="color: #9ca3c9; font-size: 0.9rem;">
-          Please try again later
+          Check console (F12) for details. ML API: ${ML_API_URL}/predict
         </p>
       </div>
     `;
+  }
+  
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
   }
 
   function addPredictionToTable(prediction) {
@@ -1261,6 +1364,8 @@ document.addEventListener('DOMContentLoaded', function() {
 (function () {
   let pharmBarChart = null;
   let pharmLineChart = null;
+  let resistanceChart = null;
+  let organismChart = null;
 
   function safeDestroy(chart) {
     try { if (chart && typeof chart.destroy === 'function') chart.destroy(); } catch (e) { console.warn('destroy failed', e); }
@@ -1285,12 +1390,63 @@ document.addEventListener('DOMContentLoaded', function() {
       ts = isNaN(d) ? null : d;
     }
     return {
-      species: (doc.species || doc.bacterialSpecies || '').toString(),
-      susceptibility: (doc.susceptibility || doc.antibioticResults || '').toString(),
-      prescription: (doc.prescriptionDetails || doc.prescription || '').toString(),
-      notes: (doc.clinicalNotes || doc.notes || doc.feedback || '').toString(),
+      species: (doc.species || doc.bacterialSpecies || doc.bacterial_species || '').toString(),
+      susceptibility: (doc.susceptibility || doc.antibioticResults || doc.antibiotic_results || '').toString(),
+      prescription: (doc.prescriptionDetails || doc.prescription || doc.prescription_details || '').toString(),
+      notes: (doc.clinicalNotes || doc.notes || doc.clinical_notes || doc.feedback || '').toString(),
       ts: ts || Date.now()
     };
+  }
+
+  function extractResistanceData(entries) {
+    const resistanceByAntibiotic = {};
+    const resistanceByOrganism = {};
+    
+    for (const entry of entries) {
+      const sus = entry.susceptibility.toLowerCase();
+      const species = entry.species || 'Unknown';
+      
+      // Extract resistance mentions
+      const resistantMatch = sus.match(/([a-z\-]+)\s*:\s*r(?:esistant)?/gi);
+      const sensitiveMatch = sus.match(/([a-z\-]+)\s*:\s*s(?:ensitive)?/gi);
+      
+      if (resistantMatch) {
+        resistantMatch.forEach(match => {
+          const antibiotic = match.split(':')[0].trim();
+          if (!resistanceByAntibiotic[antibiotic]) {
+            resistanceByAntibiotic[antibiotic] = { resistant: 0, total: 0 };
+          }
+          resistanceByAntibiotic[antibiotic].resistant++;
+          resistanceByAntibiotic[antibiotic].total++;
+        });
+        
+        // Track organism resistance
+        if (!resistanceByOrganism[species]) {
+          resistanceByOrganism[species] = { resistant: 0, total: 0 };
+        }
+        resistanceByOrganism[species].resistant++;
+      }
+      
+      if (sensitiveMatch) {
+        sensitiveMatch.forEach(match => {
+          const antibiotic = match.split(':')[0].trim();
+          if (!resistanceByAntibiotic[antibiotic]) {
+            resistanceByAntibiotic[antibiotic] = { resistant: 0, total: 0 };
+          }
+          resistanceByAntibiotic[antibiotic].total++;
+        });
+      }
+      
+      // Count organism totals
+      if (species) {
+        if (!resistanceByOrganism[species]) {
+          resistanceByOrganism[species] = { resistant: 0, total: 0 };
+        }
+        resistanceByOrganism[species].total++;
+      }
+    }
+    
+    return { resistanceByAntibiotic, resistanceByOrganism };
   }
 
   function onEntries(e) {
@@ -1304,7 +1460,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const tb = document.getElementById('pharmTbody');
     if (!entries.length) {
-      tb.innerHTML = `<tr><td colspan="5">No pharmacist entries yet</td></tr>`;
+      tb.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 40px; color: #64748b;">
+        <div style="font-size: 48px; margin-bottom: 10px; opacity: 0.5;">📋</div>
+        <div style="font-size: 16px; font-weight: 600; margin-bottom: 5px;">No entries yet</div>
+        <div style="font-size: 14px; opacity: 0.8;">Submit your first pharmacist entry to start tracking AMR data</div>
+      </td></tr>`;
     } else {
       const rows = entries.slice().sort((a,b)=> b.ts - a.ts).slice(0, 30).map(e => {
         const d = new Date(e.ts);
@@ -1358,11 +1518,174 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('pharmInsights').innerHTML = insights.map(x=>`<div style="margin-bottom:8px">${x}</div>`).join('');
 
-    try { clearCanvas('pharmBar'); } catch(e){}
-    const barCtx = document.getElementById('pharmBar');
-    if (barCtx) {
+    // Extract resistance data
+    const { resistanceByAntibiotic, resistanceByOrganism } = extractResistanceData(entries);
+
+    // Render Antibiotic Resistance Chart (barChart)
+    try { clearCanvas('barChart'); } catch(e){}
+    const barCtx = document.getElementById('barChart');
+    if (barCtx && Object.keys(resistanceByAntibiotic).length > 0) {
       try {
-        pharmBarChart = new Chart(barCtx, {
+        const antibiotics = Object.entries(resistanceByAntibiotic)
+          .sort((a,b) => b[1].resistant - a[1].resistant)
+          .slice(0, 8);
+        
+        const abxLabels = antibiotics.map(([name]) => name.charAt(0).toUpperCase() + name.slice(1));
+        const resistanceRates = antibiotics.map(([_, data]) => 
+          ((data.resistant / data.total) * 100).toFixed(1)
+        );
+        
+        resistanceChart = new Chart(barCtx, {
+          type: 'bar',
+          data: { 
+            labels: abxLabels, 
+            datasets: [{ 
+              label: 'Resistance Rate (%)', 
+              data: resistanceRates, 
+              backgroundColor: resistanceRates.map(rate => 
+                rate >= 60 ? '#ef4444' : rate >= 40 ? '#f59e0b' : '#10b981'
+              ),
+              borderColor: '#1e293b',
+              borderWidth: 1
+            }] 
+          },
+          options: {
+            responsive: true,
+            plugins: { 
+              legend: { labels: { color: '#e5e7eb' } },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    const data = antibiotics[context.dataIndex][1];
+                    return `Resistance: ${context.parsed.y}% (${data.resistant}/${data.total})`;
+                  }
+                }
+              }
+            },
+            scales: {
+              x: { ticks: { color: '#e5edff' }, grid: { color: 'rgba(148,163,184,0.12)' } },
+              y: { 
+                ticks: { color: '#e5e7eb', callback: v => v + '%' }, 
+                grid: { color: 'rgba(148,163,184,0.12)' }, 
+                beginAtZero: true,
+                max: 100
+              }
+            }
+          }
+        });
+      } catch (err) { console.warn('resistance chart create failed', err); }
+    } else if (barCtx) {
+      // Show empty state
+      barCtx.getContext('2d').fillStyle = '#64748b';
+      barCtx.getContext('2d').font = '14px Inter';
+      barCtx.getContext('2d').textAlign = 'center';
+      barCtx.getContext('2d').fillText('No R/S/I data available yet', barCtx.width / 2, barCtx.height / 2);
+    }
+
+    // Render Organism Distribution Pie Chart
+    try { clearCanvas('pieChart'); } catch(e){}
+    const pieCtx = document.getElementById('pieChart');
+    if (pieCtx && speciesPairs.length > 0) {
+      try {
+        const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
+        organismChart = new Chart(pieCtx, {
+          type: 'doughnut',
+          data: {
+            labels: barLabels,
+            datasets: [{
+              data: barValues,
+              backgroundColor: colors.slice(0, barLabels.length),
+              borderColor: '#1e293b',
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { 
+                position: 'right',
+                labels: { color: '#e5e7eb', padding: 10, font: { size: 11 } }
+              },
+              tooltip: {
+                callbacks: {
+                  label: function(context) {
+                    const total = context.dataset.data.reduce((a,b) => a + b, 0);
+                    const percentage = ((context.parsed / total) * 100).toFixed(1);
+                    return `${context.label}: ${context.parsed} (${percentage}%)`;
+                  }
+                }
+              }
+            }
+          }
+        });
+      } catch (err) { console.warn('pie chart create failed', err); }
+    } else if (pieCtx) {
+      // Show empty state
+      pieCtx.getContext('2d').fillStyle = '#64748b';
+      pieCtx.getContext('2d').font = '14px Inter';
+      pieCtx.getContext('2d').textAlign = 'center';
+      pieCtx.getContext('2d').fillText('No organism data yet', pieCtx.width / 2, pieCtx.height / 2);
+    }
+
+    // Render resistance alerts (ML PRESSURE MODEL)
+    const alertsDiv = document.getElementById('resistanceAlerts');
+    
+    // Calculate ML pressure by organism
+    const pressureByOrganism = {};
+    for (const item of allItems) {
+      const organism = item.bacterial_species || item.species || 'Unknown';
+      const mlProb = parseFloat(item.ml_resistance_probability);
+      
+      if (typeof mlProb !== 'number' || isNaN(mlProb) || mlProb <= 0) continue;
+      
+      if (!pressureByOrganism[organism]) {
+        pressureByOrganism[organism] = { totalPressure: 0, count: 0 };
+      }
+      pressureByOrganism[organism].totalPressure += mlProb;
+      pressureByOrganism[organism].count += 1;
+    }
+    
+    if (alertsDiv && Object.keys(pressureByOrganism).length > 0) {
+      const topResistant = Object.entries(pressureByOrganism)
+        .filter(([_, data]) => data.count >= 2) // At least 2 ML-tracked samples
+        .map(([organism, data]) => ({
+          organism,
+          rate: (data.totalPressure / data.count) * 100,
+          count: data.count,
+          total: data.count
+        }))
+        .sort((a, b) => b.rate - a.rate)
+        .slice(0, 5);
+
+      if (topResistant.length > 0) {
+        alertsDiv.innerHTML = topResistant.map(item => {
+          const riskColor = item.rate >= 60 ? '#ef4444' : item.rate >= 40 ? '#f59e0b' : item.rate >= 20 ? '#fbbf24' : '#10b981';
+          const riskLabel = item.rate >= 60 ? 'CRITICAL' : item.rate >= 40 ? 'HIGH' : item.rate >= 20 ? 'MEDIUM' : 'LOW';
+          
+          return `
+            <div style="padding: 12px; margin-bottom: 10px; background: rgba(30,41,59,0.5); border-radius: 8px; border-left: 4px solid ${riskColor};">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                <span style="font-weight: 600; color: #cbd5e1; font-size: 13px;">${escapeHtml(item.organism)}</span>
+                <span style="background: ${riskColor}; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700;">${riskLabel}</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8;">
+                <span>Pressure: ${item.rate.toFixed(1)}%</span>
+                <span>${item.count} ML-tracked</span>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } else {
+        alertsDiv.innerHTML = '<div style="text-align: center; color: #10b981; padding: 20px;"><div style="font-size: 36px; margin-bottom: 10px;">✅</div><div>No high resistance concerns detected</div></div>';
+      }
+    }
+
+    // Update pharmBar and pharmLine charts (existing code)
+    try { clearCanvas('pharmBar'); } catch(e){}
+    const barCtx2 = document.getElementById('pharmBar');
+    if (barCtx2) {
+      try {
+        pharmBarChart = new Chart(barCtx2, {
           type: 'bar',
           data: { 
             labels: barLabels, 

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pharmacist Entry | AMR-X</title>
+  <link rel="stylesheet" href="styles/pharmacist-entry.css">
+  <link rel="stylesheet" href="styles/chatbot.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Resistance Alert Styling */
+    .resistance-alert {
+      border-radius: 8px;
+      margin: 15px 0;
+      padding: 15px;
+      border-left: 4px solid;
+      display: none;
+    }
+    .resistance-alert strong {
+      font-weight: 600;
+    }
+    .resistance-alert div {
+      margin: 5px 0;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="navbar">
+    <div class="nav-left">
+      <a href="index.html" class="site-title-link">
+        <div class="logo-img"></div>
+        <span class="site-title">AMR-X</span>
+      </a>
+    </div>
+    <div class="nav-right">
+      <a href="pharma.html" class="nav-link">Dashboard</a>
+      <a href="pharmacist-entry.html" class="nav-link active">Pharmacist Entry</a>
+      <a href="upload-data.html" class="nav-link">Upload Data</a>
+      <a href="index.html" class="nav-link">Home</a>
+    </div>
+
+    <!-- PROFILE PLACEHOLDER -->
+    <div id="profilePlaceholder" aria-hidden="true" style="min-width:84px; display:flex; align-items:center; justify-content:flex-end;"></div>
+  </div>
+</header>
+
+
+<main>
+  <section class="form-section">
+    <h2>Pharmacist Data Entry</h2>
+    <p class="form-subtitle">
+      Record culture results and prescriptions to keep AMR trends up to date.
+    </p>
+
+    <!-- Single form with the working id -->
+    <form id="pharmacist-form" class="medicine-form">
+      <div class="form-group">
+        <label for="species">Bacterial species</label>
+        <input
+          type="text"
+          id="species"
+          name="species"
+          required
+          placeholder="E. coli, Klebsiella, Pseudomonas, etc."
+        >
+      </div>
+
+      <!-- 🆕 RESISTANCE ALERT - Real-time resistance data from analytics -->
+      <div id="resistanceAlert" class="resistance-alert">
+        <div id="resistanceTitle"></div>
+        <div id="resistanceText"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="susceptibility">Antibiotic susceptibility results (optional)</label>
+        <textarea
+          id="susceptibility"
+          name="susceptibility"
+          rows="3"
+          placeholder="E.g. Sensitive to: piperacillin-tazobactam; Resistant to: ceftriaxone, ciprofloxacin"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="prescriptionDetails">Prescription details</label>
+        <textarea
+          id="prescriptionDetails"
+          name="prescriptionDetails"
+          rows="3"
+          required
+          placeholder="Drug name, dose, route, frequency, duration"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="clinicalNotes">Clinical notes</label>
+        <textarea
+          id="clinicalNotes"
+          name="clinicalNotes"
+          rows="3"
+          placeholder="Diagnosis, severity, comorbidities, other relevant notes"
+        ></textarea>
+      </div>
+
+      <button type="submit" class="card-btn">Submit Data</button>
+    </form>
+
+    <div id="successMsg" class="success-message"></div>
+  </section>
+</main>
+
+<footer>
+  <p>&copy; 2025 AMR-X</p>
+</footer>
+
+<script type="module">
+  import { supabase } from "./scripts/supabase-init.js";
+  import { checkResistanceData } from "./scripts/pharmacist-resistance-check.js";
+
+  const form = document.getElementById('pharmacist-form');
+  const successMsg = document.getElementById('successMsg');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Get form values
+    const species = document.getElementById('species').value.trim();
+    const susceptibility = document.getElementById('susceptibility').value.trim();
+    const prescriptionDetails = document.getElementById('prescriptionDetails').value.trim();
+    const clinicalNotes = document.getElementById('clinicalNotes').value.trim();
+    
+    // Get current user
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    
+    if (userError || !user) {
+      showMessage('Please login first!', 'error');
+      return;
+    }
+    
+    // Disable submit button
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+    
+    try {
+      // Insert into Supabase - USE LOWERCASE COLUMN NAMES!
+      const { data, error } = await supabase
+        .from('pharmacist_entries')
+        .insert([
+          {
+            user_id: user.id,
+            bacterialspecies: species,
+            antibioticresults: susceptibility,
+            prescriptiondetails: prescriptionDetails,
+            clinicalnotes: clinicalNotes
+          }
+        ]);
+      
+      if (error) throw error;
+      
+      showMessage('✅ Entry submitted successfully! Redirecting to dashboard...', 'success');
+      form.reset();
+      
+      // Redirect to dashboard after 1.5 seconds
+      setTimeout(() => {
+        window.location.href = 'pharma.html';
+      }, 1500);
+      
+    } catch (error) {
+      console.error('Submission error:', error);
+      showMessage('❌ Error: ' + error.message, 'error');
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+    }
+  });
+
+  function showMessage(msg, type) {
+    successMsg.textContent = msg;
+    successMsg.style.color = type === 'success' ? '#10b981' : '#ef4444';
+    successMsg.style.display = 'block';
+    
+    if (type === 'success') {
+      successMsg.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+    } else {
+      successMsg.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+    }
+  }
+</script>
+
+<!-- Chatbot -->
+<script type="module" src="./scripts/chatbot-ui.js"></script>
+
+</body>
+</html>
