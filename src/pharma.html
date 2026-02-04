@@ -26,6 +26,7 @@
     </div>
     <div class="nav-right">
       <a href="pharma.html" class="nav-link active">Dashboard</a>
+      <a href="analytics.html" class="nav-link">Analytics</a>
       <a href="pharmacist-entry.html" class="nav-link">Pharmacist Entry</a>
       <a href="upload-data.html" class="nav-link">Upload Data</a>
       <a href="index.html" class="nav-link">Home</a>
@@ -40,26 +41,35 @@
   <!-- Greeting -->
   <section class="pharma-section greeting-section">
     <h1 id="welcomeText">Welcome, Pharmacist!</h1>
-    <p class="greeting-subtitle">AMR Dashboard with ML-Powered Predictions & Insights</p>
+    <p class="greeting-subtitle">Your AMR Dashboard</p>
+  </section>
+
+  <section class="pharma-section">
+    <div class="summary-box" style="display:flex; align-items:center; justify-content:space-between; gap:12px;">
+      <div>
+        <strong>District AMR Analytics (RWUI):</strong> View district resistance rates and risk levels based on confirmed pharmacist entries.
+      </div>
+      <a href="analytics.html" class="nav-link" style="background:#0ea5e9; color:white; padding:8px 14px; border-radius:8px; text-decoration:none; font-weight:600;">Open Analytics</a>
+    </div>
   </section>
 
   <!-- AMR Dashboard with ML Integration -->
   <section class="pharma-section">
-    <h2>AMR Dashboard • ML-Powered Insights</h2>
+    <h2>Experimental ML Predictor (Individual Use)</h2>
     
-    <!-- ML Summary Box -->
-    <div class="summary-box" style="background: linear-gradient(120deg, rgba(15,23,42,0.98), rgba(15,23,42,0.8));">
-      <p>
-        <strong>ML Model Active:</strong> AMR-Predict v2.1 &nbsp;|&nbsp; 
-        <strong>Accuracy:</strong> <span id="mlAccuracy">Loading...</span> &nbsp;|&nbsp;
-        <strong>Last Updated:</strong> <span id="mlLastUpdate">-</span>
+    <!-- ML Clarification Box -->
+    <div class="summary-box" style="background: linear-gradient(120deg, rgba(99,102,241,0.15), rgba(59,130,246,0.1)); border-left: 4px solid #6366f1;">
+      <p style="margin: 0; font-size: 14px; color: #cbd5e1;">
+        <strong>⚠️ Note:</strong> This ML predictor is <strong>experimental and session-based only</strong>. 
+        Predictions are <strong>not saved permanently</strong> and <strong>do NOT contribute to district RWUI analytics</strong>. 
+        Use this for individual decision support, not population trends.
       </p>
     </div>
 
     <div class="pharma-content">
       <!-- ML Prediction Input -->
       <div class="graph-box" style="min-width: 320px;">
-        <h3>🦠 Quick Resistance Predictor</h3>
+        <h3>🧪 Experimental ML Predictor (Individual Use)</h3>
         <div style="padding: 15px;">
           <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-direction: column;">
             <select id="mlOrganism" class="district-dropdown" style="padding: 12px;">
@@ -78,7 +88,7 @@
               <option value="CIPROFLOXACIN">Ciprofloxacin</option>
               <option value="AMOXICILLIN">Amoxicillin</option>
               <option value="CEFTRIAXONE">Ceftriaxone</option>
-              <option value="AZITHROMYCIN">Azithromycin</option>
+              <option value="CLARITHROMYCIN">Clarithromycin</option>
               <option value="VANCOMYCIN">Vancomycin</option>
               <option value="MEROPENEM">Meropenem</option>
               <option value="GENTAMICIN">Gentamicin</option>
@@ -90,7 +100,7 @@
             Get ML Prediction
           </button>
           <p style="font-size: 0.8rem; color: #9ca3c9; text-align: center;">
-            Using AMR-Predict ML model for real-time resistance estimation
+            Session-based prediction only (not saved)
           </p>
         </div>
       </div>
@@ -355,7 +365,7 @@ document.addEventListener('DOMContentLoaded', function() {
     "AMOXICILLIN": "Amoxicillin/Clavulanic Acid",
     "AMPICILLIN": "Ampicillin",
     "CEFTRIAXONE": "Ceftriaxone",
-    "AZITHROMYCIN": "Azithromycin", // ⚠️ only works if in CSV (yours has Clarithromycin, not Azithro)
+    "CLARITHROMYCIN": "Clarithromycin",
     "VANCOMYCIN": "Vancomycin",
     "MEROPENEM": "Meropenem",
     "GENTAMICIN": "Gentamicin",
@@ -374,24 +384,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const organism = document.getElementById('mlOrganism').value;
     const antibiotic = document.getElementById('mlAntibiotic').value;
     
+    console.log('🔍 ML Predict clicked:', { organism, antibiotic });
+    
     if (!organism || !antibiotic) {
       alert('Please select both bacteria and antibiotic');
       return;
     }
     
+    console.log('✅ Calling getMLPrediction...');
     getMLPrediction(organism, antibiotic);
   });
 
   function initializeMLDashboard() {
-    // Initialize with empty/loading state
-    document.getElementById('mlAccuracy').textContent = 'Loading...';
-    document.getElementById('mlLastUpdate').textContent = '-';
+    // Update health panel with empty state (only elements that exist)
+    const modelAccuracy = document.getElementById('modelAccuracy');
+    const accuracyBar = document.getElementById('accuracyBar');
+    const predictionSpeed = document.getElementById('predictionSpeed');
+    const totalPredictions = document.getElementById('totalPredictions');
     
-    // Update health panel with empty state
-    document.getElementById('modelAccuracy').textContent = '-';
-    document.getElementById('accuracyBar').style.width = '0%';
-    document.getElementById('predictionSpeed').textContent = '-';
-    document.getElementById('totalPredictions').textContent = '0';
+    if (modelAccuracy) modelAccuracy.textContent = '-';
+    if (accuracyBar) accuracyBar.style.width = '0%';
+    if (predictionSpeed) predictionSpeed.textContent = '-';
+    if (totalPredictions) totalPredictions.textContent = '0';
     
     // Try to fetch real ML model stats
     /*fetchMLModelStats();*/
@@ -401,19 +415,20 @@ document.addEventListener('DOMContentLoaded', function() {
     fetch(`${ML_API_URL}/ml-stats`)
       .then(response => response.json())
       .then(data => {
+        const modelAccuracy = document.getElementById('modelAccuracy');
+        const accuracyBar = document.getElementById('accuracyBar');
+        const predictionSpeed = document.getElementById('predictionSpeed');
+        const totalPredictions = document.getElementById('totalPredictions');
+        
         if (data.accuracy) {
-          document.getElementById('mlAccuracy').textContent = `${data.accuracy}%`;
-          document.getElementById('modelAccuracy').textContent = `${data.accuracy}%`;
-          document.getElementById('accuracyBar').style.width = `${data.accuracy}%`;
+          if (modelAccuracy) modelAccuracy.textContent = `${data.accuracy}%`;
+          if (accuracyBar) accuracyBar.style.width = `${data.accuracy}%`;
         }
-        if (data.last_updated) {
-          document.getElementById('mlLastUpdate').textContent = formatTime(data.last_updated);
+        if (data.avg_speed && predictionSpeed) {
+          predictionSpeed.textContent = `${data.avg_speed}s`;
         }
-        if (data.avg_speed) {
-          document.getElementById('predictionSpeed').textContent = `${data.avg_speed}s`;
-        }
-        if (data.total_predictions !== undefined) {
-          document.getElementById('totalPredictions').textContent = data.total_predictions.toLocaleString();
+        if (data.total_predictions !== undefined && totalPredictions) {
+          totalPredictions.textContent = data.total_predictions.toLocaleString();
         }
         
         // Try to load recent predictions
@@ -476,15 +491,17 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   async function getMLPrediction(organism, antibiotic) {
+    console.log('🚀 getMLPrediction called with:', { organism, antibiotic });
     showMLLoading();
 
     try {
       const mlPayload = {
         organism: organism,
-        antibiotic: ANTIBIOTIC_MAP[antibiotic]
+        antibiotic: ANTIBIOTIC_MAP[antibiotic] || antibiotic
       };
 
-      console.log("ML payload:", mlPayload);
+      console.log("📦 ML payload:", mlPayload);
+      console.log("🌐 API URL:", `${ML_API_URL}/predict`);
 
       const response = await fetch(`${ML_API_URL}/predict`, {
         method: "POST",
@@ -492,17 +509,20 @@ document.addEventListener('DOMContentLoaded', function() {
         body: JSON.stringify(mlPayload)
       });
 
+      console.log("📡 Response status:", response.status);
       const data = await response.json();
+      console.log("📥 Response data:", data);
 
       if (!response.ok) {
-        console.error("ML API error:", data);
+        console.error("❌ ML API error:", data);
         throw new Error(data.error || "ML API failed");
       }
 
+      console.log("✅ Calling handlePrediction...");
       handlePrediction(data); // ✅ ALWAYS reached now
 
     } catch (err) {
-      console.error("ML Prediction Error:", err);
+      console.error("💥 ML Prediction Error:", err);
       displayMLError();
     }
   }

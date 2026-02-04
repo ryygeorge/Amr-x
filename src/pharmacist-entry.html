@@ -19,6 +19,7 @@
     </div>
     <div class="nav-right">
       <a href="pharma.html" class="nav-link">Dashboard</a>
+      <a href="analytics.html" class="nav-link">Analytics</a>
       <a href="pharmacist-entry.html" class="nav-link active">Pharmacist Entry</a>
       <a href="upload-data.html" class="nav-link">Upload Data</a>
       <a href="index.html" class="nav-link">Home</a>
@@ -32,56 +33,90 @@
 
 <main>
   <section class="form-section">
-    <h2>Pharmacist Data Entry</h2>
+    <h2>Pharmacist Entry</h2>
     <p class="form-subtitle">
-      Record culture results and prescriptions to keep AMR trends up to date.
+      Record confirmed culture results and prescriptions. This data contributes to district AMR analytics.
     </p>
+    
+    <!-- Info Box -->
+    <div style="background: #dbeafe; border-left: 4px solid #3b82f6; padding: 12px; margin-bottom: 20px; border-radius: 6px;">
+      <p style="margin: 0; font-size: 13px; color: #1e3a8a;">
+        <strong>💡 Why we collect this data:</strong><br>
+        • <strong>Organism + Antibiotic Results</strong> → Calculate district resistance rates (RWUI)<br>
+        • <strong>Prescription Details</strong> → Track if prescribing matches culture results (antibiotic stewardship)<br>
+        • <strong>Clinical Notes</strong> → Understand severity patterns and patient context
+      </p>
+    </div>
 
     <!-- Single form with the working id -->
-    <form id="pharmacist-form" class="medicine-form">
+    <form id="pharmacist-form" class="medicine-form" autocomplete="off">
+      <!-- District (auto-filled, readonly) -->
       <div class="form-group">
-        <label for="species">Bacterial species</label>
+        <label for="district">District</label>
         <input
           type="text"
-          id="species"
-          name="species"
-          required
-          placeholder="E. coli, Klebsiella, Pseudomonas, etc."
+          id="district"
+          name="district"
+          readonly
+          autocomplete="off"
+          style="background-color: #f3f4f6; cursor: not-allowed;"
+          placeholder="Loading district..."
         >
+        <small style="color: #6b7280;">Auto-filled from your profile</small>
+      </div>
+
+      <!-- Organism (dropdown, searchable) -->
+      <div class="form-group">
+        <label for="organism">Bacterial Organism <span style="color: red;">*</span></label>
+        <select id="organism" name="organism" required>
+          <option value="">-- Select organism --</option>
+          <option value="Escherichia coli">Escherichia coli</option>
+          <option value="Klebsiella pneumoniae">Klebsiella pneumoniae</option>
+          <option value="Staphylococcus aureus">Staphylococcus aureus</option>
+          <option value="Pseudomonas aeruginosa">Pseudomonas aeruginosa</option>
+          <option value="Acinetobacter baumannii">Acinetobacter baumannii</option>
+          <option value="Enterococcus faecalis">Enterococcus faecalis</option>
+          <option value="Enterococcus faecium">Enterococcus faecium</option>
+          <option value="Streptococcus pneumoniae">Streptococcus pneumoniae</option>
+          <option value="Salmonella species">Salmonella species</option>
+          <option value="Shigella species">Shigella species</option>
+        </select>
+      </div>
+
+      <!-- Antibiotics (multi-select with R/S/I) -->
+      <div class="form-group">
+        <label>Antibiotic Susceptibility Results</label>
+        <div id="antibiotic-container">
+          <button type="button" id="add-antibiotic-btn" class="secondary-btn">+ Add Antibiotic Test</button>
+        </div>
       </div>
 
       <div class="form-group">
-        <label for="susceptibility">Antibiotic susceptibility results (optional)</label>
-        <textarea
-          id="susceptibility"
-          name="susceptibility"
-          rows="3"
-          placeholder="E.g. Sensitive to: piperacillin-tazobactam; Resistant to: ceftriaxone, ciprofloxacin"
-        ></textarea>
-      </div>
-
-      <div class="form-group">
-        <label for="prescriptionDetails">Prescription details</label>
+        <label for="prescriptionDetails">Prescription Details <span style="color: red;">*</span></label>
         <textarea
           id="prescriptionDetails"
           name="prescriptionDetails"
           rows="3"
           required
-          placeholder="Drug name, dose, route, frequency, duration"
+          autocomplete="off"
+          placeholder="e.g., Ceftriaxone 1g IV q12h for 7 days"
         ></textarea>
+        <small style="color: #6b7280; font-size: 12px;">Record what antibiotic was actually prescribed</small>
       </div>
 
       <div class="form-group">
-        <label for="clinicalNotes">Clinical notes</label>
+        <label for="clinicalNotes">Clinical Notes (Optional)</label>
         <textarea
           id="clinicalNotes"
           name="clinicalNotes"
           rows="3"
-          placeholder="Diagnosis, severity, comorbidities, other relevant notes"
+          autocomplete="off"
+          placeholder="e.g., UTI, moderate severity, no comorbidities"
         ></textarea>
+        <small style="color: #6b7280; font-size: 12px;">Add clinical context if needed</small>
       </div>
 
-      <button type="submit" class="card-btn">Submit Data</button>
+      <button type="submit" class="card-btn">Submit Entry</button>
     </form>
 
     <div id="successMsg" class="success-message"></div>
@@ -100,24 +135,106 @@
 
   const form = document.getElementById('pharmacist-form');
   const successMsg = document.getElementById('successMsg');
+  const districtInput = document.getElementById('district');
+  const addAntibioticBtn = document.getElementById('add-antibiotic-btn');
+  const antibioticContainer = document.getElementById('antibiotic-container');
+
+  // Standardized antibiotic list
+  const antibiotics = [
+    'Amikacin', 'Amoxicillin', 'Amoxicillin-Clavulanate', 'Ampicillin',
+    'Azithromycin', 'Aztreonam', 'Cefazolin', 'Cefepime', 'Cefixime',
+    'Cefotaxime', 'Ceftazidime', 'Ceftriaxone', 'Cefuroxime',
+    'Chloramphenicol', 'Ciprofloxacin', 'Clarithromycin', 'Clindamycin',
+    'Colistin', 'Daptomycin', 'Doxycycline', 'Ertapenem', 'Erythromycin',
+    'Gentamicin', 'Imipenem', 'Levofloxacin', 'Linezolid', 'Meropenem',
+    'Metronidazole', 'Moxifloxacin', 'Nitrofurantoin', 'Oxacillin',
+    'Penicillin', 'Piperacillin-Tazobactam', 'Tetracycline',
+    'Tigecycline', 'Trimethoprim-Sulfamethoxazole', 'Vancomycin'
+  ];
+
+  let antibioticTests = [];
+
+  // Auto-fill district on page load
+  window.addEventListener('DOMContentLoaded', () => {
+    const district = localStorage.getItem('district') || 'Unknown';
+    districtInput.value = district;
+    
+    if (district === 'Unknown') {
+      showMessage('⚠️ District not found. Please login again.', 'error');
+    }
+  });
+
+  // Add antibiotic test row
+  addAntibioticBtn.addEventListener('click', () => {
+    const testId = Date.now();
+    const testRow = document.createElement('div');
+    testRow.className = 'antibiotic-test-row';
+    testRow.dataset.testId = testId;
+    
+    testRow.innerHTML = `
+      <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px;">
+        <select class="antibiotic-select" style="flex: 2;">
+          <option value="">-- Select antibiotic --</option>
+          ${antibiotics.map(ab => `<option value="${ab}">${ab}</option>`).join('')}
+        </select>
+        <select class="result-select" style="flex: 1;">
+          <option value="">Result</option>
+          <option value="R">R (Resistant)</option>
+          <option value="S">S (Susceptible)</option>
+          <option value="I">I (Intermediate)</option>
+        </select>
+        <button type="button" class="remove-test-btn" data-test-id="${testId}" style="padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer;">Remove</button>
+      </div>
+    `;
+    
+    antibioticContainer.insertBefore(testRow, addAntibioticBtn);
+    
+    // Add remove handler
+    testRow.querySelector('.remove-test-btn').addEventListener('click', (e) => {
+      const id = e.target.dataset.testId;
+      const row = document.querySelector(`[data-test-id="${id}"]`).closest('.antibiotic-test-row');
+      row.remove();
+    });
+  });
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
     // Get form values
-    const species = document.getElementById('species').value.trim();
-    const susceptibility = document.getElementById('susceptibility').value.trim();
+    const organism = document.getElementById('organism').value.trim();
+    const district = districtInput.value.trim();
     const prescriptionDetails = document.getElementById('prescriptionDetails').value.trim();
     const clinicalNotes = document.getElementById('clinicalNotes').value.trim();
+    
+    // Validate district
+    if (!district || district === 'Unknown') {
+      showMessage('❌ District not found. Please login again.', 'error');
+      return;
+    }
+    
+    // Collect antibiotic test results
+    const testRows = document.querySelectorAll('.antibiotic-test-row');
+    const antibioticResults = [];
+    
+    for (const row of testRows) {
+      const antibiotic = row.querySelector('.antibiotic-select').value;
+      const result = row.querySelector('.result-select').value;
+      
+      if (antibiotic && result) {
+        antibioticResults.push(`${antibiotic}: ${result}`);
+      }
+    }
+    
+    const susceptibility = antibioticResults.join('; ');
     
     // Get current user
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     
     if (userError || !user) {
-      showMessage('Please login first!', 'error');
+      showMessage('❌ Please login first!', 'error');
       return;
     }
-    
+
     // Disable submit button
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
@@ -125,28 +242,33 @@
     submitBtn.textContent = 'Submitting...';
     
     try {
-      // Insert into Supabase - USE LOWERCASE COLUMN NAMES!
+      // Insert into Supabase - USE UNDERSCORE COLUMN NAMES
       const { data, error } = await supabase
         .from('pharmacist_entries')
         .insert([
           {
             user_id: user.id,
-            bacterialspecies: species,                     // LOWERCASE
-            antibioticresults: susceptibility,             // LOWERCASE
-            prescriptiondetails: prescriptionDetails,      // LOWERCASE
-            clinicalnotes: clinicalNotes                   // LOWERCASE
+            district: district,
+            bacterial_species: organism,                   // Use underscore
+            antibiotic_results: susceptibility,            // Use underscore
+            prescription_details: prescriptionDetails,     // Use underscore
+            clinical_notes: clinicalNotes                  // Use underscore
           }
         ]);
       
       if (error) throw error;
       
-      showMessage('✅ Entry submitted successfully! Redirecting to dashboard...', 'success');
+      showMessage('✅ Entry saved. This data contributes to district AMR analytics.', 'success');
       form.reset();
+      districtInput.value = district; // Keep district filled
       
-      // Redirect to dashboard after 1.5 seconds
+      // Clear antibiotic tests
+      document.querySelectorAll('.antibiotic-test-row').forEach(row => row.remove());
+      
+      // Redirect to analytics after 2 seconds
       setTimeout(() => {
-        window.location.href = 'pharma.html';
-      }, 1500);
+        window.location.href = 'analytics.html';
+      }, 2000);
       
     } catch (error) {
       console.error('Submission error:', error);
@@ -173,9 +295,25 @@
     }
   }
 
-  // Also add CSS for message types
+  // Add CSS for antibiotic test rows and message types
   const style = document.createElement('style');
   style.textContent = `
+    .antibiotic-test-row {
+      margin-bottom: 8px;
+    }
+    .secondary-btn {
+      padding: 8px 16px;
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 8px;
+    }
+    .secondary-btn:hover {
+      background-color: #2563eb;
+    }
     .success-message.success {
       background-color: #10b981;
       color: white;
@@ -189,6 +327,29 @@
       padding: 12px;
       border-radius: 8px;
       margin-top: 16px;
+    }
+    select, input[type="text"], textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    select:focus, input:focus, textarea:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    /* Fix autofill white background */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    textarea:-webkit-autofill,
+    textarea:-webkit-autofill:hover,
+    textarea:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0px 1000px #ffffff inset !important;
+      box-shadow: 0 0 0px 1000px #ffffff inset !important;
+      -webkit-text-fill-color: #000000 !important;
     }
   `;
   document.head.appendChild(style);
