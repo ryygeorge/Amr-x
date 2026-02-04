@@ -31,8 +31,10 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   fileInput.addEventListener("change", () => {
+    if (!fileInput.files.length) return;
     displayFiles(fileInput.files);
   });
+
 
   function displayFiles(files) {
     fileList.innerHTML = "";
@@ -46,7 +48,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     uploadBtn.style.display = "inline-flex";
     uploadBtn.disabled = false;
+    uploadArea?.classList.add("has-file");
+
   }
+
+  function resetUploadUI() {
+    // Reset file input
+    fileInput.value = "";
+
+    // Clear file list
+    fileList.innerHTML = "";
+
+    // Reset button fully
+    uploadBtn.textContent = uploadBtn.dataset.originalText || "Upload Files";
+    uploadBtn.disabled = true;
+    uploadBtn.style.display = "none";
+    uploadBtn.style.background = uploadBtn.dataset.originalBg || "";
+
+    // Reset drop area state
+    uploadArea?.classList.remove("has-file");
+  }
+
 
   /* ---------------- MAIN UPLOAD ---------------- */
 
@@ -60,7 +82,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     uploadBtn.disabled = true;
-    uploadBtn.textContent = "Uploading…";
+    uploadBtn.textContent = "Uploading...";
+    uploadBtn.dataset.originalText = "Upload Files";
+    uploadBtn.dataset.originalBg = uploadBtn.style.background;
+
 
     try {
       // 1️⃣ Get logged-in user
@@ -101,6 +126,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (uploadError) throw uploadError;
 
       console.log("✅ File uploaded to storage");
+      // ✅ TEMPORARY UI SUCCESS (storage-level success)
+      uploadBtn.textContent = "Uploaded ✓";
+      uploadBtn.style.background = "#16a34a";
+
 
       // 5️⃣ Notify backend to ingest
       const res = await fetch("http://localhost:3001/api/ingest-upload", {
@@ -129,18 +158,20 @@ document.addEventListener("DOMContentLoaded", () => {
       fileList.innerHTML = "";
 
       setTimeout(() => {
-        uploadBtn.textContent = "Upload Files";
-        uploadBtn.style.display = "none";
-        uploadBtn.disabled = false;
-        uploadBtn.style.background = "";
-      }, 2500);
+        resetUploadUI();
+      }, 2000);
+
+
 
     } catch (err) {
       console.error("❌ Upload failed:", err);
       alert(`Upload failed: ${err.message}`);
 
-      uploadBtn.textContent = "Upload Files";
+      uploadBtn.textContent = uploadBtn.dataset.originalText || "Upload Files";
       uploadBtn.disabled = false;
+      uploadBtn.style.background = uploadBtn.dataset.originalBg || "";
+      resetUploadUI();
+
     }
   });
 });

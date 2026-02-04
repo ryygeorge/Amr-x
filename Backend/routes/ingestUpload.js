@@ -1,6 +1,8 @@
+import crypto from "crypto";
 import express from "express";
 import XLSX from "xlsx";
 import { supabase } from "../lib/supabase.js";
+
 
 const router = express.Router();
 
@@ -35,7 +37,7 @@ const looksLikeAntibiotic = h => {
   return c.length >= 2 && c.length <= 6;
 };
 
-function normalizeRows(rows, district, sourceFile) {
+function normalizeRows(rows, district, sourceFile, pharmacistId) {
   const headers = Object.keys(rows[0]);
   const isLong =
     headers.includes("antibiotic") && headers.includes("result");
@@ -50,6 +52,7 @@ function normalizeRows(rows, district, sourceFile) {
           antibiotic: normalizeAntibiotic(r.antibiotic),
           result: r.result.toUpperCase(),
           district,
+          pharmacist_id: pharmacistId,
           source_file: sourceFile
         });
       }
@@ -72,6 +75,7 @@ function normalizeRows(rows, district, sourceFile) {
           antibiotic: normalizeAntibiotic(abx),
           result: r[abx].toUpperCase(),
           district,
+          pharmacist_id: pharmacistId,
           source_file: sourceFile
         });
       }
@@ -82,11 +86,15 @@ function normalizeRows(rows, district, sourceFile) {
 }
 
 router.post("/", async (req, res) => {
-  const { filePath, district } = req.body;
+  const uploadId = crypto.randomUUID();
+  const { filePath, district, pharmacistId } = req.body;
 
-  if (!filePath || !district) {
-    return res.status(400).json({ error: "Missing filePath or district" });
+  if (!filePath || !district || !pharmacistId) {
+    return res.status(400).json({
+      error: "Missing filePath, district, or pharmacistId"
+    });
   }
+
 
   try {
     const { data, error } = await supabase
@@ -95,6 +103,14 @@ router.post("/", async (req, res) => {
       .download(filePath);
 
     if (error) throw error;
+    await supabase.from("uploads").insert({
+      id: uploadId,
+      pharmacist_id: pharmacistId,
+      district,
+      file_path: filePath,
+      file_name: filePath.split("/").pop(),
+      status: "stored"
+    });
 
     const buffer = Buffer.from(await data.arrayBuffer());
 
@@ -102,7 +118,7 @@ router.post("/", async (req, res) => {
     const sheet = wb.Sheets[wb.SheetNames[0]];
     const rows = XLSX.utils.sheet_to_json(sheet, { defval: null });
 
-    const records = normalizeRows(rows, district, filePath);
+    const records = normalizeRows(rows, district, filePath, pharmacistId);
 
     if (!records.length) {
       throw new Error("No valid R/S/I values found");
@@ -113,12 +129,29 @@ router.post("/", async (req, res) => {
       .insert(records);
 
     if (insertError) throw insertError;
+    await supabase
+      .from("uploads")
+      .update({
+        status: "ingested",
+        row_count: records.length
+      })
+      .eq("id", uploadId);
+
 
     res.json({ ok: true, inserted: records.length });
 
   } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
+      await supabase
+        .from("uploads")
+        .update({
+          status: "failed",
+          error_message: err.message
+        })
+        .eq("id", uploadId);
+
+      res.status(400).json({ error: err.message });
+    }
+
 });
 
 export default router;

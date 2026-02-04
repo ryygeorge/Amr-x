@@ -51,7 +51,8 @@
       <p>
         <strong>ML Model Active:</strong> AMR-Predict v2.1 &nbsp;|&nbsp; 
         <strong>Accuracy:</strong> <span id="mlAccuracy">Loading...</span> &nbsp;|&nbsp;
-        <strong>Last Updated:</strong> <span id="mlLastUpdate">-</span>
+        <strong>Last Updated:</strong> <span id="mlLastUpdate">-</span> &nbsp;|&nbsp;
+        <strong>Total Predictions:</strong> <span id="totalPredictions">0</span>
       </p>
     </div>
 
@@ -62,27 +63,368 @@
         <div style="padding: 15px;">
           <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-direction: column;">
             <select id="mlOrganism" class="district-dropdown" style="padding: 12px;">
-              <option value="">Select Bacteria...</option>
-              <option value="ESCHERICHIA COLI">E. coli</option>
-              <option value="KLEBSIELLA PNEUMONIAE">K. pneumoniae</option>
-              <option value="STAPHYLOCOCCUS AUREUS">S. aureus</option>
-              <option value="PSEUDOMONAS AERUGINOSA">P. aeruginosa</option>
-              <option value="ACINETOBACTER BAUMANNII">A. baumannii</option>
-              <option value="ENTEROBACTER CLOACAE">E. cloacae</option>
-              <option value="STREPTOCOCCUS PNEUMONIAE">S. pneumoniae</option>
+              <option value="">Select Organism...</option>
+              <option value="ABIOTROPHIA SPECIES (OR GRANULICATELLA SPECIES)">ABIOTROPHIA SPECIES (OR GRANULICATELLA SPECIES)</option>
+              <option value="ACHROMOBACTER SPECIES">ACHROMOBACTER SPECIES</option>
+              <option value="ACHROMOBACTER XYLOSOXIDANS">ACHROMOBACTER XYLOSOXIDANS</option>
+              <option value="ACID FAST BACILLI">ACID FAST BACILLI</option>
+              <option value="ACID FAST BACILLI DETECTED IN LIQUID MEDIUM">ACID FAST BACILLI DETECTED IN LIQUID MEDIUM</option>
+              <option value="ACINETOBACTER BAUMANNII">ACINETOBACTER BAUMANNII</option>
+              <option value="ACINETOBACTER BAUMANNII COMPLEX">ACINETOBACTER BAUMANNII COMPLEX</option>
+              <option value="ACINETOBACTER HAEMOLYTICUS">ACINETOBACTER HAEMOLYTICUS</option>
+              <option value="ACINETOBACTER LWOFFI">ACINETOBACTER LWOFFI</option>
+              <option value="ACINETOBACTER SPECIES">ACINETOBACTER SPECIES</option>
+              <option value="ACTINOMYCES SPECIES">ACTINOMYCES SPECIES</option>
+              <option value="AEROCOCCUS SPECIES">AEROCOCCUS SPECIES</option>
+              <option value="AEROCOCCUS URINAE">AEROCOCCUS URINAE</option>
+              <option value="AEROMONAS CAVIAE">AEROMONAS CAVIAE</option>
+              <option value="AEROMONAS HYDROPHILA GROUP">AEROMONAS HYDROPHILA GROUP</option>
+              <option value="AEROMONAS SPECIES">AEROMONAS SPECIES</option>
+              <option value="AEROMONAS VERONII">AEROMONAS VERONII</option>
+              <option value="ALCALIGENES FAECALIS">ALCALIGENES FAECALIS</option>
+              <option value="ALCALIGENES SPECIES">ALCALIGENES SPECIES</option>
+              <option value="ANAEROBIC GRAM NEGATIVE RODS">ANAEROBIC GRAM NEGATIVE RODS</option>
+              <option value="ANAEROBIC GRAM POSITIVE COCCI">ANAEROBIC GRAM POSITIVE COCCI</option>
+              <option value="ANAEROBIC GRAM POSITIVE RODS">ANAEROBIC GRAM POSITIVE RODS</option>
+              <option value="ARCANOBACTERIUM HAEMOLYTICUM">ARCANOBACTERIUM HAEMOLYTICUM</option>
+              <option value="BACILLUS SPECIES">BACILLUS SPECIES</option>
+              <option value="BACTEROIDES CACCAE">BACTEROIDES CACCAE</option>
+              <option value="BACTEROIDES FRAGILIS">BACTEROIDES FRAGILIS</option>
+              <option value="BACTEROIDES OVATUS">BACTEROIDES OVATUS</option>
+              <option value="BACTEROIDES SPECIES">BACTEROIDES SPECIES</option>
+              <option value="BACTEROIDES SPECIES NOT FRAGILIS">BACTEROIDES SPECIES NOT FRAGILIS</option>
+              <option value="BACTEROIDES THETAIOTAOMICRON">BACTEROIDES THETAIOTAOMICRON</option>
+              <option value="BACTEROIDES UNIFORMIS">BACTEROIDES UNIFORMIS</option>
+              <option value="BACTEROIDES UREOLYTICUS">BACTEROIDES UREOLYTICUS</option>
+              <option value="BACTEROIDES VULGATUS">BACTEROIDES VULGATUS</option>
+              <option value="BETA STREPTOCOCCUS GROUP C">BETA STREPTOCOCCUS GROUP C</option>
+              <option value="BETA STREPTOCOCCUS GROUP G">BETA STREPTOCOCCUS GROUP G</option>
+              <option value="BETA STREPTOCOCCUS SPECIES">BETA STREPTOCOCCUS SPECIES</option>
+              <option value="BORDETELLA BRONCHISEPTICA">BORDETELLA BRONCHISEPTICA</option>
+              <option value="BREVIBACTERIUM SPECIES">BREVIBACTERIUM SPECIES</option>
+              <option value="BREVUNDIMONAS">BREVUNDIMONAS</option>
+              <option value="BURKHOLDERIA CENOCEPACIA">BURKHOLDERIA CENOCEPACIA</option>
+              <option value="BURKHOLDERIA CEPACIA">BURKHOLDERIA CEPACIA</option>
+              <option value="BURKHOLDERIA CEPACIA COMPLEX">BURKHOLDERIA CEPACIA COMPLEX</option>
+              <option value="BURKHOLDERIA CEPACIA COMPLEX GENOMOVAR I">BURKHOLDERIA CEPACIA COMPLEX GENOMOVAR I</option>
+              <option value="BURKHOLDERIA GLADIOLI">BURKHOLDERIA GLADIOLI</option>
+              <option value="BURKHOLDERIA MULTIVORANS">BURKHOLDERIA MULTIVORANS</option>
+              <option value="BURKHOLDERIA VIETNAMIENSIS">BURKHOLDERIA VIETNAMIENSIS</option>
+              <option value="CAMPYLOBACTER SPECIES">CAMPYLOBACTER SPECIES</option>
+              <option value="CHROMOGENIC AFB, NOT M.TUBERCULOSIS">CHROMOGENIC AFB, NOT M.TUBERCULOSIS</option>
+              <option value="CHRYSEOBACTERIUM INDOLOGENES">CHRYSEOBACTERIUM INDOLOGENES</option>
+              <option value="CHRYSEOBACTERIUM SPECIES">CHRYSEOBACTERIUM SPECIES</option>
+              <option value="CHRYSEOMONAS LUTEOLA">CHRYSEOMONAS LUTEOLA</option>
+              <option value="CITROBACTER AMALONATICUS COMPLEX">CITROBACTER AMALONATICUS COMPLEX</option>
+              <option value="CITROBACTER BRAAKII">CITROBACTER BRAAKII</option>
+              <option value="CITROBACTER FREUNDII">CITROBACTER FREUNDII</option>
+              <option value="CITROBACTER FREUNDII COMPLEX">CITROBACTER FREUNDII COMPLEX</option>
+              <option value="CITROBACTER FREUNDII COMPLEX (CARBAPENEM RESISTANT)">CITROBACTER FREUNDII COMPLEX (CARBAPENEM RESISTANT)</option>
+              <option value="CITROBACTER KOSERI">CITROBACTER KOSERI</option>
+              <option value="CITROBACTER KOSERI (CARBAPENEM RESISTANT)">CITROBACTER KOSERI (CARBAPENEM RESISTANT)</option>
+              <option value="CITROBACTER SPECIES">CITROBACTER SPECIES</option>
+              <option value="CITROBACTER YOUNGAE">CITROBACTER YOUNGAE</option>
+              <option value="CLOSTRIDIUM CLOSTRIDIOFORME">CLOSTRIDIUM CLOSTRIDIOFORME</option>
+              <option value="CLOSTRIDIUM INNOCUUM">CLOSTRIDIUM INNOCUUM</option>
+              <option value="CLOSTRIDIUM PARAPUTRIFICUM">CLOSTRIDIUM PARAPUTRIFICUM</option>
+              <option value="CLOSTRIDIUM PERFRINGENS">CLOSTRIDIUM PERFRINGENS</option>
+              <option value="CLOSTRIDIUM RAMOSUM">CLOSTRIDIUM RAMOSUM</option>
+              <option value="CLOSTRIDIUM SEPTICUM">CLOSTRIDIUM SEPTICUM</option>
+              <option value="CLOSTRIDIUM SORDELLII">CLOSTRIDIUM SORDELLII</option>
+              <option value="CLOSTRIDIUM SPECIES">CLOSTRIDIUM SPECIES</option>
+              <option value="CLOSTRIDIUM SPECIES, NOT PERFRINGENS">CLOSTRIDIUM SPECIES, NOT PERFRINGENS</option>
+              <option value="CLOSTRIDIUM TERTIUM">CLOSTRIDIUM TERTIUM</option>
+              <option value="COAG NEGATIVE STAPHYLOCOCCUS">COAG NEGATIVE STAPHYLOCOCCUS</option>
+              <option value="COMAMONAS ACIDOVORANS">COMAMONAS ACIDOVORANS</option>
+              <option value="CORYNEBAC. STRIATUM/AMYCOLATUM">CORYNEBAC. STRIATUM/AMYCOLATUM</option>
+              <option value="CORYNEBACTERIUM ACCOLENS">CORYNEBACTERIUM ACCOLENS</option>
+              <option value="CORYNEBACTERIUM AMYCOLATUM">CORYNEBACTERIUM AMYCOLATUM</option>
+              <option value="CORYNEBACTERIUM DIPTHERIAE">CORYNEBACTERIUM DIPTHERIAE</option>
+              <option value="CORYNEBACTERIUM GROUP F-1">CORYNEBACTERIUM GROUP F-1</option>
+              <option value="CORYNEBACTERIUM JEIKEIUM">CORYNEBACTERIUM JEIKEIUM</option>
+              <option value="CORYNEBACTERIUM MACGINLEYI">CORYNEBACTERIUM MACGINLEYI</option>
+              <option value="CORYNEBACTERIUM PROPINQUUM">CORYNEBACTERIUM PROPINQUUM</option>
+              <option value="CORYNEBACTERIUM PSEUDODIPHTHERITICUM">CORYNEBACTERIUM PSEUDODIPHTHERITICUM</option>
+              <option value="CORYNEBACTERIUM SPECIES">CORYNEBACTERIUM SPECIES</option>
+              <option value="CORYNEBACTERIUM SPECIES, NOT C. UREALYTICUM">CORYNEBACTERIUM SPECIES, NOT C. UREALYTICUM</option>
+              <option value="CORYNEBACTERIUM STRIATUM">CORYNEBACTERIUM STRIATUM</option>
+              <option value="CORYNEBACTERIUM UREALYTICUM">CORYNEBACTERIUM UREALYTICUM</option>
+              <option value="CRONOBACTER SAKAZAKII">CRONOBACTER SAKAZAKII</option>
+              <option value="CULTURE POSITIVE GRAM NEGATIVE COCCI">CULTURE POSITIVE GRAM NEGATIVE COCCI</option>
+              <option value="DERMABACTER HOMINIS">DERMABACTER HOMINIS</option>
+              <option value="DIPHTHEROIDS - CORYNEBACTERIUM SPECIES">DIPHTHEROIDS - CORYNEBACTERIUM SPECIES</option>
+              <option value="EGGERTHELLA LENTA">EGGERTHELLA LENTA</option>
+              <option value="ELIZABETHKINGIA MENINGOSEPTICA">ELIZABETHKINGIA MENINGOSEPTICA</option>
+              <option value="ELIZABETHKINGIA SPECIES">ELIZABETHKINGIA SPECIES</option>
+              <option value="ENTERIC GRAM NEGATIVE RODS">ENTERIC GRAM NEGATIVE RODS</option>
+              <option value="ENTEROBACTER AMNIGENUS 1">ENTEROBACTER AMNIGENUS 1</option>
+              <option value="ENTEROBACTER ASBURIAE">ENTEROBACTER ASBURIAE</option>
+              <option value="ENTEROBACTER CANCEROGENUS">ENTEROBACTER CANCEROGENUS</option>
+              <option value="ENTEROBACTER CLOACAE">ENTEROBACTER CLOACAE</option>
+              <option value="ENTEROBACTER CLOACAE COMPLEX">ENTEROBACTER CLOACAE COMPLEX</option>
+              <option value="ENTEROBACTER CLOACAE COMPLEX (CARBAPENEM RESISTANT)">ENTEROBACTER CLOACAE COMPLEX (CARBAPENEM RESISTANT)</option>
+              <option value="ENTEROBACTER GERGOVIAE">ENTEROBACTER GERGOVIAE</option>
+              <option value="ENTEROBACTER SPECIES">ENTEROBACTER SPECIES</option>
+              <option value="ENTEROBACTER TAYLORAE">ENTEROBACTER TAYLORAE</option>
+              <option value="ENTEROCOCCUS AVIUM">ENTEROCOCCUS AVIUM</option>
+              <option value="ENTEROCOCCUS CASSELIFLAVUS">ENTEROCOCCUS CASSELIFLAVUS</option>
+              <option value="ENTEROCOCCUS DURANS">ENTEROCOCCUS DURANS</option>
+              <option value="ENTEROCOCCUS DURANS/HIRAE">ENTEROCOCCUS DURANS/HIRAE</option>
+              <option value="ENTEROCOCCUS FAECALIS">ENTEROCOCCUS FAECALIS</option>
+              <option value="ENTEROCOCCUS FAECALIS - VANCO RESISTANT">ENTEROCOCCUS FAECALIS - VANCO RESISTANT</option>
+              <option value="ENTEROCOCCUS FAECIUM">ENTEROCOCCUS FAECIUM</option>
+              <option value="ENTEROCOCCUS FAECIUM - VANCO RESISTANT">ENTEROCOCCUS FAECIUM - VANCO RESISTANT</option>
+              <option value="ENTEROCOCCUS GALLINARUM">ENTEROCOCCUS GALLINARUM</option>
+              <option value="ENTEROCOCCUS RAFFINOSUS">ENTEROCOCCUS RAFFINOSUS</option>
+              <option value="ENTEROCOCCUS SPECIES">ENTEROCOCCUS SPECIES</option>
+              <option value="ESCHERICHIA COLI">ESCHERICHIA COLI</option>
+              <option value="ESCHERICHIA FERGUSONII">ESCHERICHIA FERGUSONII</option>
+              <option value="ESCHERICHIA HERMANII">ESCHERICHIA HERMANII</option>
+              <option value="ESCHERICHIA SPECIES">ESCHERICHIA SPECIES</option>
+              <option value="ESCHERICHIA VULNERIS">ESCHERICHIA VULNERIS</option>
+              <option value="EUBACTERIUM LENTUM">EUBACTERIUM LENTUM</option>
+              <option value="EWINGELLA AMERICANA">EWINGELLA AMERICANA</option>
+              <option value="FLAVOBACTERIUM SPECIES">FLAVOBACTERIUM SPECIES</option>
+              <option value="FUSOBACTERIUM NECROPHORUM">FUSOBACTERIUM NECROPHORUM</option>
+              <option value="FUSOBACTERIUM NUCLEATUM">FUSOBACTERIUM NUCLEATUM</option>
+              <option value="FUSOBACTERIUM SPECIES">FUSOBACTERIUM SPECIES</option>
+              <option value="GORDONIA SPECIES">GORDONIA SPECIES</option>
+              <option value="GRAM NEGATIVE RODS">GRAM NEGATIVE RODS</option>
+              <option value="GRAM NEGATIVE RODS - NONFERM, UNIDENTIFIED">GRAM NEGATIVE RODS - NONFERM, UNIDENTIFIED</option>
+              <option value="GRAM POSITIVE RODS">GRAM POSITIVE RODS</option>
+              <option value="HAEMOPHILUS ACTINOMYCETEMCOMITANS">HAEMOPHILUS ACTINOMYCETEMCOMITANS</option>
+              <option value="HAFNIA">HAFNIA</option>
+              <option value="HAFNIA ALVEI">HAFNIA ALVEI</option>
+              <option value="HAFNIA ALVEI (CARBAPENEM RESISTANT)">HAFNIA ALVEI (CARBAPENEM RESISTANT)</option>
+              <option value="KLEBSIELLA AEROGENES">KLEBSIELLA AEROGENES</option>
+              <option value="KLEBSIELLA AEROGENES (CARBAPENEM RESISTANT)">KLEBSIELLA AEROGENES (CARBAPENEM RESISTANT)</option>
+              <option value="KLEBSIELLA OXYTOCA">KLEBSIELLA OXYTOCA</option>
+              <option value="KLEBSIELLA OZAENAE">KLEBSIELLA OZAENAE</option>
+              <option value="KLEBSIELLA PNEUMONIAE">KLEBSIELLA PNEUMONIAE</option>
+              <option value="KLEBSIELLA PNEUMONIAE (CARBAPENEM RESISTANT)">KLEBSIELLA PNEUMONIAE (CARBAPENEM RESISTANT)</option>
+              <option value="KLEBSIELLA PNEUMONIAE SSP. OZAENAE">KLEBSIELLA PNEUMONIAE SSP. OZAENAE</option>
+              <option value="KLEBSIELLA SPECIES">KLEBSIELLA SPECIES</option>
+              <option value="KLUYVERA ASCORBATA">KLUYVERA ASCORBATA</option>
+              <option value="KLUYVERA CRYOCRESCENS">KLUYVERA CRYOCRESCENS</option>
+              <option value="KLUYVERA SPECIES">KLUYVERA SPECIES</option>
+              <option value="LACTOBACILLUS CASEI">LACTOBACILLUS CASEI</option>
+              <option value="LACTOBACILLUS RHAMNOSUS">LACTOBACILLUS RHAMNOSUS</option>
+              <option value="LACTOBACILLUS SPECIES">LACTOBACILLUS SPECIES</option>
+              <option value="LACTOSE FERMENTING GRAM NEGATIVE RODS">LACTOSE FERMENTING GRAM NEGATIVE RODS</option>
+              <option value="LECLERCIA ADECARBOXYLATA">LECLERCIA ADECARBOXYLATA</option>
+              <option value="LEUCONOSTOC SPECIES">LEUCONOSTOC SPECIES</option>
+              <option value="LISTERIA MONOCYTOGENES">LISTERIA MONOCYTOGENES</option>
+              <option value="LISTERIA SPECIES">LISTERIA SPECIES</option>
+              <option value="MICROBACTERIUM SPECIES">MICROBACTERIUM SPECIES</option>
+              <option value="MIXED GENITAL FLORA">MIXED GENITAL FLORA</option>
+              <option value="MORAXELLA NON-LIQUEFACIENS">MORAXELLA NON-LIQUEFACIENS</option>
+              <option value="MORAXELLA OSLOENSIS">MORAXELLA OSLOENSIS</option>
+              <option value="MORGANELLA MORGANII">MORGANELLA MORGANII</option>
+              <option value="MUCOID PSEUDOMONAS AERUGINOSA">MUCOID PSEUDOMONAS AERUGINOSA</option>
+              <option value="MYCOBACTERIUM ABSCESSUS">MYCOBACTERIUM ABSCESSUS</option>
+              <option value="MYCOBACTERIUM ABSCESSUS GROUP">MYCOBACTERIUM ABSCESSUS GROUP</option>
+              <option value="MYCOBACTERIUM AVIUM COMPLEX">MYCOBACTERIUM AVIUM COMPLEX</option>
+              <option value="MYCOBACTERIUM AVIUM COMPLEX BY DNA PROBE">MYCOBACTERIUM AVIUM COMPLEX BY DNA PROBE</option>
+              <option value="MYCOBACTERIUM CHELONAE">MYCOBACTERIUM CHELONAE</option>
+              <option value="MYCOBACTERIUM FORTUITUM">MYCOBACTERIUM FORTUITUM</option>
+              <option value="MYCOBACTERIUM FORTUITUM SPECIES GROUP">MYCOBACTERIUM FORTUITUM SPECIES GROUP</option>
+              <option value="MYCOBACTERIUM IMMUNOGENUM">MYCOBACTERIUM IMMUNOGENUM</option>
+              <option value="MYCOBACTERIUM NEOAURUM">MYCOBACTERIUM NEOAURUM</option>
+              <option value="MYCOBACTERIUM SPECIES">MYCOBACTERIUM SPECIES</option>
+              <option value="MYCOBACTERIUM SPECIES - RAPID GROWER">MYCOBACTERIUM SPECIES - RAPID GROWER</option>
+              <option value="MYCOBACTERIUM XENOPI">MYCOBACTERIUM XENOPI</option>
+              <option value="MYROIDES SPECIES">MYROIDES SPECIES</option>
+              <option value="NOCARDIA ASTEROIDES">NOCARDIA ASTEROIDES</option>
+              <option value="NOCARDIA CYRIACIGEORGICA">NOCARDIA CYRIACIGEORGICA</option>
+              <option value="NOCARDIA FARCINICA">NOCARDIA FARCINICA</option>
+              <option value="NOCARDIA NOVA">NOCARDIA NOVA</option>
+              <option value="NOCARDIA NOVA COMPLEX">NOCARDIA NOVA COMPLEX</option>
+              <option value="NOCARDIA SPECIES">NOCARDIA SPECIES</option>
+              <option value="NOCARDIA TRANSVALENSIS">NOCARDIA TRANSVALENSIS</option>
+              <option value="NOCARDIA TRANSVALENSIS COMPLEX">NOCARDIA TRANSVALENSIS COMPLEX</option>
+              <option value="NON FERMENTING GRAM NEGATIVE RODS">NON FERMENTING GRAM NEGATIVE RODS</option>
+              <option value="NON LACTOSE FERMENTING GRAM NEGATIVE RODS">NON LACTOSE FERMENTING GRAM NEGATIVE RODS</option>
+              <option value="NON SPORE-FORMING ANAEROBIC GRAM POSITIVE RODS">NON SPORE-FORMING ANAEROBIC GRAM POSITIVE RODS</option>
+              <option value="NON-FERMENTING GRAM NEGATIVE RODS - NOT P.AERUGINOSA">NON-FERMENTING GRAM NEGATIVE RODS - NOT P.AERUGINOSA</option>
+              <option value="NONFERMENTING GRAM NEGATIVE RODS - UNIDENTIFIED">NONFERMENTING GRAM NEGATIVE RODS - UNIDENTIFIED</option>
+              <option value="NORCARDIA WALLACEI">NORCARDIA WALLACEI</option>
+              <option value="OCHROBACTRUM">OCHROBACTRUM</option>
+              <option value="OCHROBACTRUM ANTHROPI">OCHROBACTRUM ANTHROPI</option>
+              <option value="OLIGELLA URETHRALIS">OLIGELLA URETHRALIS</option>
+              <option value="PAENIBACILLUS SPECIES">PAENIBACILLUS SPECIES</option>
+              <option value="PANTOEA AGGLOMERANS">PANTOEA AGGLOMERANS</option>
+              <option value="PANTOEA SPECIES">PANTOEA SPECIES</option>
+              <option value="PARABACTEROIDES DISTASONIS">PARABACTEROIDES DISTASONIS</option>
+              <option value="PARABACTEROIDES SPECIES">PARABACTEROIDES SPECIES</option>
+              <option value="PASTEURELLA MULTOCIDA">PASTEURELLA MULTOCIDA</option>
+              <option value="PEDIOCOCCUS SP.">PEDIOCOCCUS SP.</option>
+              <option value="PEPTOSTREPTOCOCCUS SPECIES">PEPTOSTREPTOCOCCUS SPECIES</option>
+              <option value="PREVOTELLA SPECIES">PREVOTELLA SPECIES</option>
+              <option value="PROTEUS MIRABILIS">PROTEUS MIRABILIS</option>
+              <option value="PROTEUS SPECIES">PROTEUS SPECIES</option>
+              <option value="PROTEUS VULGARIS GROUP">PROTEUS VULGARIS GROUP</option>
+              <option value="PROVIDENCIA RETTGERI">PROVIDENCIA RETTGERI</option>
+              <option value="PROVIDENCIA SPECIES">PROVIDENCIA SPECIES</option>
+              <option value="PROVIDENCIA STUARTII">PROVIDENCIA STUARTII</option>
+              <option value="PSEUDOMONAS AERUGINOSA">PSEUDOMONAS AERUGINOSA</option>
+              <option value="PSEUDOMONAS AERUGINOSA (NON-MUCOID CF)">PSEUDOMONAS AERUGINOSA (NON-MUCOID CF)</option>
+              <option value="PSEUDOMONAS FLUORESCENS">PSEUDOMONAS FLUORESCENS</option>
+              <option value="PSEUDOMONAS FLUORESCENS GROUP">PSEUDOMONAS FLUORESCENS GROUP</option>
+              <option value="PSEUDOMONAS MENDOCINA">PSEUDOMONAS MENDOCINA</option>
+              <option value="PSEUDOMONAS ORYZIHABITANS">PSEUDOMONAS ORYZIHABITANS</option>
+              <option value="PSEUDOMONAS PUTIDA">PSEUDOMONAS PUTIDA</option>
+              <option value="PSEUDOMONAS PUTIDA GROUP">PSEUDOMONAS PUTIDA GROUP</option>
+              <option value="PSEUDOMONAS SPECIES">PSEUDOMONAS SPECIES</option>
+              <option value="PSEUDOMONAS SPECIES - FLUORESCENS/PUTIDA GROUP">PSEUDOMONAS SPECIES - FLUORESCENS/PUTIDA GROUP</option>
+              <option value="PSEUDOMONAS SPECIES - NOT P.AERUGINOSA">PSEUDOMONAS SPECIES - NOT P.AERUGINOSA</option>
+              <option value="PSEUDOMONAS STUTZERI">PSEUDOMONAS STUTZERI</option>
+              <option value="PSEUDOMONAS STUTZERI GROUP">PSEUDOMONAS STUTZERI GROUP</option>
+              <option value="RAHNELLA">RAHNELLA</option>
+              <option value="RALSTONIA MANNITOLILYTICA">RALSTONIA MANNITOLILYTICA</option>
+              <option value="RALSTONIA SPECIES">RALSTONIA SPECIES</option>
+              <option value="RAOULTELLA">RAOULTELLA</option>
+              <option value="RAOULTELLA ORNITHINOLYTICA">RAOULTELLA ORNITHINOLYTICA</option>
+              <option value="RAOULTELLA PLANTICOLA">RAOULTELLA PLANTICOLA</option>
+              <option value="RHIZOBIUM RADIOBACTER">RHIZOBIUM RADIOBACTER</option>
+              <option value="SALMONELLA ENTERICA">SALMONELLA ENTERICA</option>
+              <option value="SALMONELLA SPECIES">SALMONELLA SPECIES</option>
+              <option value="SALMONELLA TYPHI">SALMONELLA TYPHI</option>
+              <option value="SCHISTOSOMA HAEMATOBIUM OVA">SCHISTOSOMA HAEMATOBIUM OVA</option>
+              <option value="SERRATIA LIQUEFACIENS">SERRATIA LIQUEFACIENS</option>
+              <option value="SERRATIA MARCESCENS">SERRATIA MARCESCENS</option>
+              <option value="SERRATIA MARCESCENS (CARBAPENEM RESISTANT)">SERRATIA MARCESCENS (CARBAPENEM RESISTANT)</option>
+              <option value="SERRATIA ODORIFERA">SERRATIA ODORIFERA</option>
+              <option value="SERRATIA PLYMUTHICA">SERRATIA PLYMUTHICA</option>
+              <option value="SERRATIA RUBIDAEA">SERRATIA RUBIDAEA</option>
+              <option value="SERRATIA SPECIES">SERRATIA SPECIES</option>
+              <option value="SHEWANELLA PUTREFACIENS">SHEWANELLA PUTREFACIENS</option>
+              <option value="SHIGELLA SPECIES">SHIGELLA SPECIES</option>
+              <option value="SPHINGOBACTERIUM MULTIVORUM">SPHINGOBACTERIUM MULTIVORUM</option>
+              <option value="SPHINGOBACTERIUM SPIRITIVORUM">SPHINGOBACTERIUM SPIRITIVORUM</option>
+              <option value="SPHINGOMONAS">SPHINGOMONAS</option>
+              <option value="SPHINGOMONAS PAUCIMOBILIS/PARAPAUCIMOBILIS">SPHINGOMONAS PAUCIMOBILIS/PARAPAUCIMOBILIS</option>
+              <option value="STAPH AUREUS {MRSA}">STAPH AUREUS {MRSA}</option>
+              <option value="STAPH AUREUS(COLONY VARIANT - SMALL COLONY OR OTHER MORPHOTYPE)">STAPH AUREUS(COLONY VARIANT - SMALL COLONY OR OTHER MORPHOTYPE)</option>
+              <option value="STAPH NEG NOT LUGDUNENSIS">STAPH NEG NOT LUGDUNENSIS</option>
+              <option value="STAPHYLOCOCCUS AUREUS">STAPHYLOCOCCUS AUREUS</option>
+              <option value="STAPHYLOCOCCUS COHNII">STAPHYLOCOCCUS COHNII</option>
+              <option value="STAPHYLOCOCCUS EPIDERMIDIS">STAPHYLOCOCCUS EPIDERMIDIS</option>
+              <option value="STAPHYLOCOCCUS HAEMOLYTICUS">STAPHYLOCOCCUS HAEMOLYTICUS</option>
+              <option value="STAPHYLOCOCCUS LUGDUNENSIS">STAPHYLOCOCCUS LUGDUNENSIS</option>
+              <option value="STAPHYLOCOCCUS SAPROPHYTICUS">STAPHYLOCOCCUS SAPROPHYTICUS</option>
+              <option value="STAPHYLOCOCCUS SPECIES">STAPHYLOCOCCUS SPECIES</option>
+              <option value="STAPHYLOCOCCUS SPECIES - COAG NEGATIVE, NOT STAPH SAPROPHYTICUS">STAPHYLOCOCCUS SPECIES - COAG NEGATIVE, NOT STAPH SAPROPHYTICUS</option>
+              <option value="STAPHYLOCOCCUS SPECIES -NOT STAPH. AUREUS">STAPHYLOCOCCUS SPECIES -NOT STAPH. AUREUS</option>
+              <option value="STAPHYLOCOCCUS SPECIES, COAG PENDING">STAPHYLOCOCCUS SPECIES, COAG PENDING</option>
+              <option value="STENOTROPHOMONAS MALTOPHILIA">STENOTROPHOMONAS MALTOPHILIA</option>
+              <option value="STREP. GRP D NOT ENTEROCOCCI">STREP. GRP D NOT ENTEROCOCCI</option>
+              <option value="STREPTOCOCCUS AGALACTIAE (GROUP B)">STREPTOCOCCUS AGALACTIAE (GROUP B)</option>
+              <option value="STREPTOCOCCUS AGALACTIAE {GROUP B}">STREPTOCOCCUS AGALACTIAE {GROUP B}</option>
+              <option value="STREPTOCOCCUS ANGINOSUS">STREPTOCOCCUS ANGINOSUS</option>
+              <option value="STREPTOCOCCUS ANGINOSUS GROUP">STREPTOCOCCUS ANGINOSUS GROUP</option>
+              <option value="STREPTOCOCCUS BOVIS">STREPTOCOCCUS BOVIS</option>
+              <option value="STREPTOCOCCUS BOVIS GP.">STREPTOCOCCUS BOVIS GP.</option>
+              <option value="STREPTOCOCCUS CONSTELLATUS">STREPTOCOCCUS CONSTELLATUS</option>
+              <option value="STREPTOCOCCUS DYSGALACTIAE">STREPTOCOCCUS DYSGALACTIAE</option>
+              <option value="STREPTOCOCCUS DYSGALACTIAE SUBSP. EQUISIMILIS (GROUP C/G STR]">STREPTOCOCCUS DYSGALACTIAE SUBSP. EQUISIMILIS (GROUP C/G STR]</option>
+              <option value="STREPTOCOCCUS GALLOLYTICUS">STREPTOCOCCUS GALLOLYTICUS</option>
+              <option value="STREPTOCOCCUS GALLOLYTICUS, SUBSP. GALLOLYTICUS">STREPTOCOCCUS GALLOLYTICUS, SUBSP. GALLOLYTICUS</option>
+              <option value="STREPTOCOCCUS GALLOLYTICUS, SUBSP. PASTEURIANUS">STREPTOCOCCUS GALLOLYTICUS, SUBSP. PASTEURIANUS</option>
+              <option value="STREPTOCOCCUS GORDONII">STREPTOCOCCUS GORDONII</option>
+              <option value="STREPTOCOCCUS INTERMEDIUS">STREPTOCOCCUS INTERMEDIUS</option>
+              <option value="STREPTOCOCCUS MITIS">STREPTOCOCCUS MITIS</option>
+              <option value="STREPTOCOCCUS MITIS GROUP">STREPTOCOCCUS MITIS GROUP</option>
+              <option value="STREPTOCOCCUS MITIS/STREPTOCOCCUS ORALIS">STREPTOCOCCUS MITIS/STREPTOCOCCUS ORALIS</option>
+              <option value="STREPTOCOCCUS MUTANS">STREPTOCOCCUS MUTANS</option>
+              <option value="STREPTOCOCCUS MUTANS GROUP">STREPTOCOCCUS MUTANS GROUP</option>
+              <option value="STREPTOCOCCUS ORALIS">STREPTOCOCCUS ORALIS</option>
+              <option value="STREPTOCOCCUS PARASANGUINIS">STREPTOCOCCUS PARASANGUINIS</option>
+              <option value="STREPTOCOCCUS PNEUMONIAE">STREPTOCOCCUS PNEUMONIAE</option>
+              <option value="STREPTOCOCCUS PYOGENES (GROUP A)">STREPTOCOCCUS PYOGENES (GROUP A)</option>
+              <option value="STREPTOCOCCUS PYOGENES {GROUP A}">STREPTOCOCCUS PYOGENES {GROUP A}</option>
+              <option value="STREPTOCOCCUS SALIVARIUS">STREPTOCOCCUS SALIVARIUS</option>
+              <option value="STREPTOCOCCUS SALIVARIUS GROUP">STREPTOCOCCUS SALIVARIUS GROUP</option>
+              <option value="STREPTOCOCCUS SANGUINIS">STREPTOCOCCUS SANGUINIS</option>
+              <option value="STREPTOCOCCUS SANGUIS">STREPTOCOCCUS SANGUIS</option>
+              <option value="STREPTOCOCCUS SPECIES">STREPTOCOCCUS SPECIES</option>
+              <option value="STREPTOCOCCUS SPECIES - ALPHA HEMOLYTIC">STREPTOCOCCUS SPECIES - ALPHA HEMOLYTIC</option>
+              <option value="STREPTOCOCCUS SPECIES - ALPHA HEMOLYTIC, NOT S.PNEUMO">STREPTOCOCCUS SPECIES - ALPHA HEMOLYTIC, NOT S.PNEUMO</option>
+              <option value="TSUKAMURELLA PULMONIS">TSUKAMURELLA PULMONIS</option>
+              <option value="TSUKAMURELLA SPECIES">TSUKAMURELLA SPECIES</option>
+              <option value="VEILLONELLA SPECIES">VEILLONELLA SPECIES</option>
+              <option value="VIRIDANS GROUP STREPTOCOCCI">VIRIDANS GROUP STREPTOCOCCI</option>
+              <option value="VIRIDANS GROUP STREPTOCOCCI NOT S. PNEUMONIAE">VIRIDANS GROUP STREPTOCOCCI NOT S. PNEUMONIAE</option>
+              <option value="YERSINIA ENTEROCOLITICA">YERSINIA ENTEROCOLITICA</option>
+              <option value="ZZAEROMONAS CAVIAE COMPLEX">ZZAEROMONAS CAVIAE COMPLEX</option>
+              <option value="ZZAEROMONAS HYDROPHILA COMPLEX">ZZAEROMONAS HYDROPHILA COMPLEX</option>
+              <option value="ZZAEROMONAS VERONII COMPLEX">ZZAEROMONAS VERONII COMPLEX</option>
+              <option value="ZZZBACTEROIDES DISTASONIS">ZZZBACTEROIDES DISTASONIS</option>
+              <option value="ZZZBACTEROIDES FRAGILIS GROUP">ZZZBACTEROIDES FRAGILIS GROUP</option>
+              <option value="ZZZBACTEROIDES NOT B. FRAGILIS GRP">ZZZBACTEROIDES NOT B. FRAGILIS GRP</option>
+              <option value="ZZZCITROBACTER AMALONATICUS">ZZZCITROBACTER AMALONATICUS</option>
+              <option value="ZZZCITROBACTER FARMERI">ZZZCITROBACTER FARMERI</option>
+              <option value="ZZZCLOSTRIDIUM SPECIES">ZZZCLOSTRIDIUM SPECIES</option>
+              <option value="ZZZENTEROBACTER AEROGENES">ZZZENTEROBACTER AEROGENES</option>
+              <option value="ZZZMYCOBACTERIUM MUCOGENICUM">ZZZMYCOBACTERIUM MUCOGENICUM</option>
+              <option value="ZZZPROPIONIBACTERIUM ACNES">ZZZPROPIONIBACTERIUM ACNES</option>
+              <option value="ZZZPROTEUS PENNERI">ZZZPROTEUS PENNERI</option>
+              <option value="ZZZPROTEUS VULGARIS">ZZZPROTEUS VULGARIS</option>
+              <option value="ZZZSTREPTOCOCCUS GALLOLYTICUS SUBSP. GALLOLYTICUS">ZZZSTREPTOCOCCUS GALLOLYTICUS SUBSP. GALLOLYTICUS</option>
+              <option value="ZZZSTREPTOCOCCUS GALLOLYTICUS SUBSP. PASTEURIANUS">ZZZSTREPTOCOCCUS GALLOLYTICUS SUBSP. PASTEURIANUS</option>
             </select>
             
             <select id="mlAntibiotic" class="district-dropdown" style="padding: 12px;">
               <option value="">Select Antibiotic...</option>
-              <option value="CIPROFLOXACIN">Ciprofloxacin</option>
-              <option value="AMOXICILLIN">Amoxicillin</option>
-              <option value="CEFTRIAXONE">Ceftriaxone</option>
-              <option value="AZITHROMYCIN">Azithromycin</option>
-              <option value="VANCOMYCIN">Vancomycin</option>
-              <option value="MEROPENEM">Meropenem</option>
-              <option value="GENTAMICIN">Gentamicin</option>
-              <option value="AMPICILLIN">Ampicillin</option>
+              <option value="Amikacin">Amikacin</option>
+              <option value="Amoxicillin/Clavulanic Acid">Amoxicillin/Clavulanic Acid</option>
+              <option value="Ampicillin">Ampicillin</option>
+              <option value="Ampicillin/Sulbactam">Ampicillin/Sulbactam</option>
+              <option value="Aztreonam">Aztreonam</option>
+              <option value="Cefazolin">Cefazolin</option>
+              <option value="Cefepime">Cefepime</option>
+              <option value="Cefiderocol">Cefiderocol</option>
+              <option value="Cefotaxime">Cefotaxime</option>
+              <option value="Cefotetan">Cefotetan</option>
+              <option value="Cefoxitin">Cefoxitin</option>
+              <option value="Cefpodoxime">Cefpodoxime</option>
+              <option value="Ceftaroline">Ceftaroline</option>
+              <option value="Ceftazidime">Ceftazidime</option>
+              <option value="Ceftolozane/Tazobactam">Ceftolozane/Tazobactam</option>
+              <option value="Ceftriaxone">Ceftriaxone</option>
+              <option value="Cephalexin/Cephalothin">Cephalexin/Cephalothin</option>
+              <option value="Chloramphenicol">Chloramphenicol</option>
+              <option value="Ciprofloxacin">Ciprofloxacin</option>
+              <option value="Clarithromycin">Clarithromycin</option>
+              <option value="Clindamycin">Clindamycin</option>
+              <option value="Colistin">Colistin</option>
+              <option value="Daptomycin">Daptomycin</option>
+              <option value="Doxycycline">Doxycycline</option>
+              <option value="Ertapenem">Ertapenem</option>
+              <option value="Erythromycin">Erythromycin</option>
+              <option value="Gentamicin">Gentamicin</option>
+              <option value="Imipenem">Imipenem</option>
+              <option value="Levofloxacin">Levofloxacin</option>
+              <option value="Linezolid">Linezolid</option>
+              <option value="Meropenem">Meropenem</option>
+              <option value="Metronidazole">Metronidazole</option>
+              <option value="Minocycline">Minocycline</option>
+              <option value="Moxifloxacin">Moxifloxacin</option>
+              <option value="Nitrofurantoin">Nitrofurantoin</option>
+              <option value="Oxacillin">Oxacillin</option>
+              <option value="Penicillin">Penicillin</option>
+              <option value="Piperacillin">Piperacillin</option>
+              <option value="Piperacillin/Tazobactam">Piperacillin/Tazobactam</option>
+              <option value="Quinupristin/Dalfopristin">Quinupristin/Dalfopristin</option>
+              <option value="Streptomycin">Streptomycin</option>
+              <option value="Tetracycline">Tetracycline</option>
+              <option value="Ticarcillin">Ticarcillin</option>
+              <option value="Ticarcillin/Clavulanic Acid">Ticarcillin/Clavulanic Acid</option>
+              <option value="Tigecycline">Tigecycline</option>
+              <option value="Tobramycin">Tobramycin</option>
+              <option value="Trimethoprim/Sulfamethoxazole">Trimethoprim/Sulfamethoxazole</option>
+              <option value="Vancomycin">Vancomycin</option>
             </select>
+
           </div>
           <button id="mlPredictBtn" class="profile-logout-btn" 
                   style="background: linear-gradient(120deg, #22c1c3, #38bdf8); width: 100%; margin-bottom: 10px;">
@@ -104,65 +446,35 @@
           </div>
         </div>
       </div>
-
-      <!-- ML Model Performance -->
-      <div class="graph-box">
-        <h3>⚙️ ML Model Health</h3>
-        <div id="mlHealth" style="padding: 15px;">
-          <div style="margin-bottom: 15px;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-              <span style="color: #cbd5f5;">Model Accuracy</span>
-              <span id="modelAccuracy" style="color: #22c1c3; font-weight: 600;">-</span>
-            </div>
-            <div style="height: 8px; background: rgba(51,65,85,0.5); border-radius: 4px; overflow: hidden;">
-              <div id="accuracyBar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #22c1c3, #38bdf8); border-radius: 4px;"></div>
-            </div>
-          </div>
-          
-          <div style="margin-bottom: 15px;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-              <span style="color: #cbd5f5;">Prediction Speed</span>
-              <span id="predictionSpeed" style="color: #10b981; font-weight: 600;">-</span>
-            </div>
-          </div>
-          
-          <div style="margin-bottom: 15px;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-              <span style="color: #cbd5f5;">Total Predictions</span>
-              <span id="totalPredictions" style="color: #38bdf8; font-weight: 600;">0</span>
-            </div>
-          </div>
-          
-          <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid rgba(51,65,85,0.5);">
-            <div style="font-size: 0.85rem; color: #9ca3c9;">
-              <strong>Model Version:</strong> AMR-Predict v2.1<br>
-              <strong>Last Trained:</strong> -<br>
-              <strong>Data Points:</strong> Loading...
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- ML-Generated AMR Table -->
     <div class="data-table">
       <h3>ML-Generated AMR Risk Assessment</h3>
-      <table id="mlAmrTable">
-        <thead>
-          <tr>
-            <th>Organism</th>
-            <th>Antibiotic</th>
-            <th>Resistance %</th>
-            <th>Risk Level</th>
-            <th>ML Confidence</th>
-            <th>Recommendation</th>
-          </tr>
-        </thead>
-        <tbody id="mlTableBody">
-          <tr><td colspan="6" style="text-align: center; padding: 30px; color: #9ca3c9;">No ML predictions available yet</td></tr>
-        </tbody>
-      </table>
+
+      <div class="table-scroll-wrapper">
+        <table id="mlAmrTable">
+          <thead>
+            <tr>
+              <th>Organism</th>
+              <th>Antibiotic</th>
+              <th>Resistance %</th>
+              <th>Risk Level</th>
+              <th>ML Confidence</th>
+              <th>Recommendation</th>
+            </tr>
+          </thead>
+          <tbody id="mlTableBody">
+            <tr>
+              <td colspan="6" style="text-align:center; padding:30px; color:#9ca3c9;">
+                No ML predictions available yet
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+
   </section>
 
   <!-- Original Charts Section -->
@@ -331,11 +643,10 @@
 })();
 </script>
 
-
-
 <!-- ML Dashboard Script -->
 <script type="module">
 import { saveMLPrediction } from './scripts/pharma-supabase.js';
+import { supabase } from './scripts/supabase-init.js';
 document.addEventListener('DOMContentLoaded', function() {
   // ML API Configuration
   const ML_API_URL = 'https://amrx-ml-api.onrender.com/api/v1';
@@ -354,7 +665,7 @@ document.addEventListener('DOMContentLoaded', function() {
     "AMOXICILLIN": "Amoxicillin/Clavulanic Acid",
     "AMPICILLIN": "Ampicillin",
     "CEFTRIAXONE": "Ceftriaxone",
-    "AZITHROMYCIN": "Azithromycin", // ⚠️ only works if in CSV (yours has Clarithromycin, not Azithro)
+    "AZITHROMYCIN": "Azithromycin",
     "VANCOMYCIN": "Vancomycin",
     "MEROPENEM": "Meropenem",
     "GENTAMICIN": "Gentamicin",
@@ -385,45 +696,39 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize with empty/loading state
     document.getElementById('mlAccuracy').textContent = 'Loading...';
     document.getElementById('mlLastUpdate').textContent = '-';
-    
-    // Update health panel with empty state
-    document.getElementById('modelAccuracy').textContent = '-';
-    document.getElementById('accuracyBar').style.width = '0%';
-    document.getElementById('predictionSpeed').textContent = '-';
     document.getElementById('totalPredictions').textContent = '0';
     
     // Try to fetch real ML model stats
-    /*fetchMLModelStats();*/
+    fetchMLModelStats();
   }
 
   function fetchMLModelStats() {
-    fetch(`${ML_API_URL}/ml-stats`)
-      .then(response => response.json())
+    fetch(`${ML_API_URL}/info`)
+      .then(res => res.json())
       .then(data => {
-        if (data.accuracy) {
-          document.getElementById('mlAccuracy').textContent = `${data.accuracy}%`;
-          document.getElementById('modelAccuracy').textContent = `${data.accuracy}%`;
-          document.getElementById('accuracyBar').style.width = `${data.accuracy}%`;
-        }
+        // Model status
+        document.getElementById('mlAccuracy').textContent =
+          data.status ? data.status.toUpperCase() : 'READY';
+
+        // Last updated
         if (data.last_updated) {
-          document.getElementById('mlLastUpdate').textContent = formatTime(data.last_updated);
+          document.getElementById('mlLastUpdate').textContent =
+            formatTime(data.last_updated);
+        } else {
+          document.getElementById('mlLastUpdate').textContent = '-';
         }
-        if (data.avg_speed) {
-          document.getElementById('predictionSpeed').textContent = `${data.avg_speed}s`;
-        }
-        if (data.total_predictions !== undefined) {
-          document.getElementById('totalPredictions').textContent = data.total_predictions.toLocaleString();
-        }
-        
-        // Try to load recent predictions
-        if (data.recent_predictions && data.recent_predictions.length > 0) {
-          updateMLTable(data.recent_predictions);
-        }
+
+        // Total predictions = frontend only
+        // (incremented when user predicts)
+        document.getElementById('totalPredictions').textContent =
+          document.getElementById('totalPredictions').textContent || '0';
       })
-      .catch(error => {
-        console.warn('Failed to fetch ML model stats:', error);
+      .catch(err => {
+        console.warn('ML info unavailable:', err);
+        document.getElementById('mlAccuracy').textContent = 'OFFLINE';
       });
   }
+
 
   function formatTime(dateString) {
     if (!dateString) return '-';
@@ -480,7 +785,7 @@ document.addEventListener('DOMContentLoaded', function() {
     try {
       const mlPayload = {
         organism: organism,
-        antibiotic: ANTIBIOTIC_MAP[antibiotic]
+        antibiotic: antibiotic
       };
 
       console.log("ML payload:", mlPayload);
@@ -498,7 +803,7 @@ document.addEventListener('DOMContentLoaded', function() {
         throw new Error(data.error || "ML API failed");
       }
 
-      handlePrediction(data); // ✅ ALWAYS reached now
+      handlePrediction(data);
 
     } catch (err) {
       console.error("ML Prediction Error:", err);
@@ -510,7 +815,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const normalized = {
       organism: prediction.organism,
       antibiotic: prediction.antibiotic,
-      resistance_probability: prediction.probability, // number
+      resistance_probability: prediction.probability,
       confidence: prediction.probability,
       risk_level: prediction.risk_level,
       recommendation: getRecommendation(prediction.risk_level),
@@ -523,12 +828,21 @@ document.addEventListener('DOMContentLoaded', function() {
     addPredictionToTable(normalized);
     updatePredictionCount();
 
-    // Optional (later): save to Supabase
-    // saveMLPrediction(normalized);
+    // Optional: save to Supabase
+    // Save to Supabase with authenticated user
+    supabase.auth.getUser().then(({ data }) => {
+      if (!data?.user) {
+        console.warn('No authenticated user, skipping ML save');
+        return;
+      }
+
+      saveMLPrediction({
+        ...normalized,
+        user_id: data.user.id
+      });
+    });
+
   }
-
-
-
 
   function showMLLoading() {
     document.getElementById('mlResult').innerHTML = `
@@ -596,7 +910,6 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             <div style="font-size: 0.85rem; color: #cbd5f5;">
               <strong>Recommendation:</strong> ${prediction.recommendation || getRecommendation(prediction.risk_level)}
-
             </div>
           </div>
           <div style="font-size: 0.75rem; color: #94a3b8; text-align: center; padding-top: 10px; border-top: 1px solid rgba(51,65,85,0.5);">
@@ -664,13 +977,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const countElement = document.getElementById('totalPredictions');
     if (!countElement) return;
 
-    // SAFE: no regex
     const raw = countElement.textContent || '0';
     const current = parseInt(raw.split(',').join(''), 10) || 0;
-
     countElement.textContent = (current + 1).toLocaleString();
   }
-
 
   // Add CSS animation
   const style = document.createElement('style');
@@ -702,16 +1012,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Try to fetch real heatmap data
     
-    
     // Setup district dropdown
     setupDistrictDropdown();
     
     // Load district insights
     
   }
-
-  // Fetch real heatmap data
-
 
   // Add ML-based heatmap
   function addMLHeatmap(districtData) {
@@ -749,9 +1055,6 @@ document.addEventListener('DOMContentLoaded', function() {
       }).addTo(map);
     }
   }
-
-  // Load district insights
-
 
   function updateDistrictInsightsDisplay(districts) {
     const insightsContainer = document.getElementById('mlDistrictRisks');
@@ -816,13 +1119,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         return;
       }
-      
-      
     });
   }
-
-  // Fetch ML info for selected district
-
 
   // Show ML info for selected district
   function showDistrictMLInfo(districtKey, district) {
@@ -1155,7 +1453,6 @@ function getRecommendation(risk) {
 </script>
 
 <script type="module" src="scripts/supabase-init.js"></script>
-<script type="module" src="scripts/pharma-supabase.js"></script>
 <script type="module" src="scripts/auth-ui.js"></script>
 </body>
 </html>
