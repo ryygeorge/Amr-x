@@ -15,9 +15,33 @@ const MAX_INPUT_LENGTH = 300;
 const MAX_OUTPUT_TOKENS = 200;
 const REQUEST_TIMEOUT = 8000; // 8 seconds
 
+// Educational fallback responses (when API is unavailable)
+const FALLBACK_RESPONSES = {
+  'amr': 'Antimicrobial Resistance (AMR) occurs when bacteria, viruses, fungi and parasites change over time and no longer respond to medicines, making infections harder to treat. This is a natural process accelerated by misuse and overuse of antimicrobials in humans, animals and plants.',
+  'resistance': 'Antibiotic resistance develops when bacteria evolve mechanisms to survive antibiotic exposure. This can happen through genetic mutations or by acquiring resistance genes from other bacteria through horizontal gene transfer.',
+  'global': 'AMR is a global health threat causing an estimated 700,000 deaths annually worldwide. Without action, it could cause 10 million deaths per year by 2050 and cost the global economy $100 trillion.',
+  'prevent': 'AMR can be prevented through proper antibiotic stewardship, completing prescribed courses, avoiding antibiotics for viral infections, good hygiene practices, and vaccination to prevent infections.',
+  'default': 'I can help with general AMR education. Try asking about what AMR is, why it\'s a global threat, how resistance develops, or how to prevent it.'
+};
+
+/**
+ * Generate educational fallback response
+ */
+function getFallbackResponse(question) {
+  const lowerQuestion = question.toLowerCase();
+  
+  for (const [keyword, response] of Object.entries(FALLBACK_RESPONSES)) {
+    if (lowerQuestion.includes(keyword)) {
+      return response;
+    }
+  }
+  
+  return FALLBACK_RESPONSES.default;
+}
+
 // In-memory rate limiting (simple implementation)
 const userQuestionCounts = new Map();
-const MAX_QUESTIONS_PER_DAY = 5;
+const MAX_QUESTIONS_PER_DAY = 10;
 
 /**
  * Check if user has exceeded rate limit
@@ -32,7 +56,7 @@ function checkRateLimit(userId) {
     return {
       allowed: false,
       remaining: 0,
-      message: 'Daily question limit reached (5/day). Please try again tomorrow.'
+      message: 'Daily question limit reached (10/day). Please try again tomorrow.'
     };
   }
   
@@ -87,7 +111,8 @@ async function callHuggingFace(question) {
     throw new Error('HF_API_KEY not configured');
   }
   
-  const modelEndpoint = 'https://api-inference.huggingface.co/models/google/flan-t5-base';
+  // HuggingFace Serverless Inference API
+  const modelEndpoint = `https://api-inference.huggingface.co/models/google/flan-t5-base`;
   
   // Format the question for educational context
   const formattedInput = `Answer this educational question about antimicrobial resistance in 2-3 sentences: ${question}`;
@@ -121,6 +146,15 @@ async function callHuggingFace(question) {
       
       if (response.status === 503) {
         throw new Error('Model is loading, please try again in a moment');
+      }
+      
+      if (response.status === 410) {
+        console.warn('⚠️ HuggingFace API endpoint deprecated. Chatbot may need updates.');
+        throw new Error('Chatbot service needs updating. Please check later.');
+      }
+      
+      if (response.status === 404) {
+        throw new Error('Model not found. Please check configuration.');
       }
       
       throw new Error(`API error: ${response.status}`);
@@ -170,8 +204,14 @@ async function askChatbot(question, userId = 'anonymous') {
       };
     }
     
-    // 3. Call HuggingFace API
-    const rawAnswer = await callHuggingFace(validation.question);
+    // 3. Try HuggingFace API, fallback to educational responses
+    let rawAnswer;
+    try {
+      rawAnswer = await callHuggingFace(validation.question);
+    } catch (apiError) {
+      console.warn('HuggingFace API unavailable, using fallback response:', apiError.message);
+      rawAnswer = getFallbackResponse(validation.question);
+    }
     
     // 4. Add disclaimer
     const disclaimer = "\n\n⚠️ This assistant provides educational information only, not medical advice.";

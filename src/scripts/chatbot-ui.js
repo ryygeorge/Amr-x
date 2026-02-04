@@ -4,7 +4,7 @@
 let chatModal = null;
 let chatMessages = null;
 let chatInput = null;
-let questionsRemaining = 5;
+let questionsRemaining = 10;
 
 const BACKEND_URL = 'http://localhost:3001';
 const MAX_MESSAGE_LENGTH = 300;
@@ -79,7 +79,7 @@ function createChatModal() {
       </div>
       
       <div class="chatbot-footer">
-        <small>Powered by AI • Educational purposes only • ${questionsRemaining}/5 questions remaining</small>
+        <small>Powered by AI • Educational purposes only • ${questionsRemaining}/10 questions remaining</small>
       </div>
     </div>
   `;
@@ -230,7 +230,7 @@ async function sendMessage() {
 function updateFooter() {
   const footer = chatModal.querySelector('.chatbot-footer small');
   if (footer) {
-    footer.textContent = `Powered by AI • Educational purposes only • ${questionsRemaining}/5 questions remaining`;
+    footer.textContent = `Powered by AI • Educational purposes only • ${questionsRemaining}/10 questions remaining`;
   }
 }
 
