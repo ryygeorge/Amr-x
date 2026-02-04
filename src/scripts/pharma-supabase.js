@@ -119,16 +119,20 @@ function dispatchPharmEntriesEvent(items) {
   try {
     // Convert to Firebase-like format for backward compatibility
     const firebaseLikeItems = items.map(item => ({
-      species: item.species || item.bacterialSpecies || item.bacterialspecies || '',
-      bacterialSpecies: item.bacterialSpecies || item.bacterialspecies || '',
+      species: item.bacterial_species || item.species || item.bacterialSpecies || item.bacterialspecies || '',
+      bacterialSpecies: item.bacterial_species || item.bacterialSpecies || item.bacterialspecies || '',
       bacterial: item.bacterial || '',
       bacteria: item.bacteria || '',
-      prescriptionDetails: item.prescriptionDetails || item.prescriptiondetails || item.prescription || '',
-      prescription: item.prescription || item.prescriptiondetails || '',
-      susceptibility: item.susceptibility || item.antibioticResults || item.antibioticresults || '',
-      antibioticResults: item.antibioticResults || item.antibioticresults || '',
-      clinicalNotes: item.clinicalNotes || item.clinicalnotes || item.notes || '',
-      notes: item.notes || item.clinicalnotes || '',
+      bacterial_species: item.bacterial_species || '',
+      prescriptionDetails: item.prescription_details || item.prescriptionDetails || item.prescriptiondetails || item.prescription || '',
+      prescription: item.prescription || item.prescriptiondetails || item.prescription_details || '',
+      prescription_details: item.prescription_details || '',
+      susceptibility: item.antibiotic_results || item.susceptibility || item.antibioticResults || item.antibioticresults || '',
+      antibioticResults: item.antibiotic_results || item.antibioticResults || item.antibioticresults || '',
+      antibiotic_results: item.antibiotic_results || '',
+      clinicalNotes: item.clinical_notes || item.clinicalNotes || item.clinicalnotes || item.notes || '',
+      notes: item.notes || item.clinicalnotes || item.clinical_notes || '',
+      clinical_notes: item.clinical_notes || '',
       createdAt: item.created_at ? {
         seconds: Math.floor(new Date(item.created_at).getTime() / 1000),
         nanoseconds: 0
@@ -151,30 +155,30 @@ function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 }
 
-// Normalization helpers - UPDATED TO HANDLE LOWERCASE COLUMNS
+// Normalization helpers - PRIORITIZES SNAKE_CASE (actual DB format)
 function getField(docObj, candidates) {
   if (!docObj) return undefined;
   
-  // First check the candidates as given (original case)
+  // FIRST: Check snake_case (actual Supabase column format)
+  for (const k of candidates) {
+    const snakeKey = k.replace(/([A-Z])/g, "_$1").toLowerCase().replace(/^_/, '');
+    if (Object.prototype.hasOwnProperty.call(docObj, snakeKey) && docObj[snakeKey] !== undefined && docObj[snakeKey] !== null && docObj[snakeKey] !== '') {
+      return docObj[snakeKey];
+    }
+  }
+  
+  // Then check the candidates as given (camelCase)
   for (const k of candidates) {
     if (Object.prototype.hasOwnProperty.call(docObj, k) && docObj[k] !== undefined && docObj[k] !== null && docObj[k] !== '') {
       return docObj[k];
     }
   }
   
-  // Then check lowercase versions of candidates
+  // Then check lowercase versions
   for (const k of candidates) {
     const lowerKey = k.toLowerCase();
     if (Object.prototype.hasOwnProperty.call(docObj, lowerKey) && docObj[lowerKey] !== undefined && docObj[lowerKey] !== null && docObj[lowerKey] !== '') {
       return docObj[lowerKey];
-    }
-  }
-  
-  // Then check snake_case versions
-  for (const k of candidates) {
-    const snakeKey = k.replace(/([A-Z])/g, "_$1").toLowerCase();
-    if (Object.prototype.hasOwnProperty.call(docObj, snakeKey) && docObj[snakeKey] !== undefined && docObj[snakeKey] !== null && docObj[snakeKey] !== '') {
-      return docObj[snakeKey];
     }
   }
   
@@ -213,11 +217,11 @@ function renderTable(items) {
   }
 
   const rowsHtml = items.slice(0, 50).map(doc => {
-    // Check multiple possible column names (including lowercase)
-    const species = getField(doc, ['species','bacterialSpecies','bacterialspecies','bacterial','bacteria']);
-    const prescription = getField(doc, ['prescriptionDetails','prescriptiondetails','prescription','prescriptionDetail','prescription_detail']);
-    const susceptibility = getField(doc, ['susceptibility','antibioticResults','antibioticresults','antibioticSusceptibilityResults','susceptibilityResults','antibiotic_susceptibility_results']);
-    const clinicalNotes = getField(doc, ['clinicalNotes','clinicalnotes','notes','clinical','clinical_notes']);
+    // EXACT database column names first (snake_case from pharmacist_entries table)
+    const species = getField(doc, ['bacterial_species','species','bacterialSpecies','bacterialspecies','bacterial','bacteria']);
+    const prescription = getField(doc, ['prescription_details','prescriptionDetails','prescriptiondetails','prescription','prescriptionDetail']);
+    const susceptibility = getField(doc, ['antibiotic_results','susceptibility','antibioticResults','antibioticresults','antibioticSusceptibilityResults','susceptibilityResults']);
+    const clinicalNotes = getField(doc, ['clinical_notes','clinicalNotes','clinicalnotes','notes','clinical']);
     const createdAt = getField(doc, ['created_at','createdAt','timestamp','time']) || doc.created_at;
 
     const timeStr = formatTimestamp(createdAt);
@@ -245,7 +249,7 @@ function buildSpeciesCounts(items) {
   if (!items) return [];
   
   for (const d of items) {
-    const val = getField(d, ['species','bacterialSpecies','bacterialspecies','bacterial','bacteria']);
+    const val = getField(d, ['bacterial_species','species','bacterialSpecies','bacterialspecies','bacterial','bacteria']);
     if (!val) continue;
     
     // Clean up the species name
@@ -317,7 +321,7 @@ function generateInsights(items) {
 
   // Check for resistance patterns
   const susText = items.map(d => 
-    (getField(d, ['susceptibility','antibioticResults','antibioticresults','antibiotic_susceptibility_results']) || '')
+    (getField(d, ['antibiotic_results','susceptibility','antibioticResults','antibioticresults','antibiotic_susceptibility_results']) || '')
     .toString()
     .toLowerCase()
   ).join(' || ');
@@ -335,7 +339,7 @@ function generateInsights(items) {
 
   // Check clinical notes for flags
   const notesText = items.map(d => 
-    (getField(d, ['clinicalNotes','clinicalnotes','notes','clinical_notes']) || '')
+    (getField(d, ['clinical_notes','clinicalNotes','clinicalnotes','notes','clinical']) || '')
     .toString()
     .toLowerCase()
   ).join(' || ');
@@ -355,6 +359,82 @@ function generateInsights(items) {
   }
 
   return insights;
+}
+
+// NEW: Build district resistance analytics
+function buildDistrictAnalytics(items) {
+  const districtData = {};
+  
+  for (const d of items) {
+    const district = getField(d, ['district', 'location']) || 'Unknown';
+    const mlProb = parseFloat(d.ml_resistance_probability);
+    
+    if (!districtData[district]) {
+      districtData[district] = { total: 0, totalPressure: 0, validEntries: 0, entries: [] };
+    }
+    
+    districtData[district].entries.push(d);
+    
+    // Only count entries with valid ML baseline for pressure calculation
+    if (typeof mlProb === 'number' && !isNaN(mlProb) && mlProb > 0) {
+      districtData[district].totalPressure += mlProb;
+      districtData[district].validEntries++;
+    }
+    
+    // Track total usage events (all entries)
+    districtData[district].total++;
+  }
+  
+  // Calculate pressure rates and sort
+  const analytics = Object.entries(districtData)
+    .map(([district, data]) => ({
+      district,
+      total: data.total,
+      validEntries: data.validEntries,
+      totalPressure: data.totalPressure,
+      rate: data.validEntries > 0 ? (data.totalPressure / data.validEntries) * 100 : 0
+    }))
+    .filter(d => d.district !== 'Unknown' && d.validEntries >= 1) // At least 1 entry with ML baseline
+    .sort((a, b) => b.rate - a.rate);
+  
+  return analytics;
+}
+
+// NEW: Render district analytics
+function renderDistrictAnalytics(analytics) {
+  const container = document.getElementById('mlDistrictRisks');
+  if (!container) return;
+  
+  if (!analytics || analytics.length === 0) {
+    container.innerHTML = `
+      <div style="color: #9ca3c9; text-align: center; padding: 20px;">
+        <div style="font-size: 36px; margin-bottom: 10px; opacity: 0.5;">🗺️</div>
+        <p>Submit entries with ML baselines to see district pressure analysis</p>
+      </div>
+    `;
+    return;
+  }
+  
+  container.innerHTML = analytics.slice(0, 5).map(item => {
+    const riskColor = item.rate >= 60 ? '#ef4444' : item.rate >= 40 ? '#f59e0b' : item.rate >= 20 ? '#fbbf24' : '#10b981';
+    const riskLabel = item.rate >= 60 ? 'CRITICAL' : item.rate >= 40 ? 'HIGH' : item.rate >= 20 ? 'MEDIUM' : 'LOW';
+    
+    return `
+      <div style="padding: 12px; margin-bottom: 10px; background: rgba(30,41,59,0.5); border-radius: 8px; border-left: 4px solid ${riskColor};">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="font-weight: 600; color: #cbd5e1; font-size: 14px;">📍 ${escapeHtml(item.district)}</span>
+          <span style="background: ${riskColor}; color: white; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 700;">${riskLabel} RISK</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; margin-bottom: 6px;">
+          <span>Resistance Pressure: <strong style="color: ${riskColor};">${item.rate.toFixed(1)}%</strong></span>
+          <span>${item.validEntries}/${item.total} ML-tracked</span>
+        </div>
+        <div style="height: 6px; background: rgba(51,65,85,0.5); border-radius: 3px; overflow: hidden;">
+          <div style="height: 100%; width: ${Math.min(item.rate, 100)}%; background: ${riskColor}; border-radius: 3px;"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 // Chart helpers
@@ -528,24 +608,23 @@ function drawLineDaily(labels, values) {
     // Draw timeline chart
     const dailyPairs = buildDailyCounts(initialData || []);
     if (dailyPairs.length) {
-      const lineLabels = dailyPairs.map(p => {
-        const date = new Date(p[0]);
-        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      });
-      const lineValues = dailyPairs.map(p => p[1]);
-      drawLineDaily(lineLabels, lineValues);
+      drawLineDaily(dailyPairs.map(p => p[0]), dailyPairs.map(p => p[1]));
     } else {
-      const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-      drawLineDaily([today], [0]);
+      drawLineDaily(['Today'], [0]);
     }
 
-    // Generate insights
+    // Render insights
     const insights = generateInsights(initialData || []);
     if (insightsEl) {
       insightsEl.innerHTML = insights.map(x => `<div style="margin-bottom:8px">${x}</div>`).join('');
     }
     
-    updateSummary((initialData || []).length);
+    // NEW: Render district analytics
+    const districtAnalytics = buildDistrictAnalytics(initialData || []);
+    renderDistrictAnalytics(districtAnalytics);
+
+    // Update summary
+    updateSummary(initialData?.length || 0);
 
     // Set up real-time subscription
     const channel = supabase
@@ -591,6 +670,10 @@ function drawLineDaily(labels, values) {
             const insights = generateInsights(updatedData);
             if (insightsEl) insightsEl.innerHTML = insights.map(x => `<div style="margin-bottom:8px">${x}</div>`).join('');
             
+            // Update district analytics
+            const districtAnalytics = buildDistrictAnalytics(updatedData);
+            renderDistrictAnalytics(districtAnalytics);
+            
             updateSummary(updatedData.length);
           }
         }
@@ -614,7 +697,7 @@ function drawLineDaily(labels, values) {
 })();
 
 // Export for potential use in other modules
-export { renderTable, buildSpeciesCounts, buildDailyCounts, generateInsights };
+export { renderTable, buildSpeciesCounts, buildDailyCounts, generateInsights, buildDistrictAnalytics, renderDistrictAnalytics };
 
 // ===============================
 // ML PREDICTION → SUPABASE SAVE

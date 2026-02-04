@@ -59,10 +59,10 @@
           name="district"
           readonly
           autocomplete="off"
-          style="background-color: #f3f4f6; cursor: not-allowed;"
+          style="background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%); color: #0c4a6e; font-weight: 600; cursor: not-allowed; border: 2px solid #0ea5e9;"
           placeholder="Loading district..."
         >
-        <small style="color: #6b7280;">Auto-filled from your profile</small>
+        <small style="color: #0369a1; font-weight: 500;">📍 Auto-filled from your login profile (cannot be changed)</small>
       </div>
 
       <!-- Organism (dropdown, searchable) -->
@@ -92,16 +92,15 @@
       </div>
 
       <div class="form-group">
-        <label for="prescriptionDetails">Prescription Details <span style="color: red;">*</span></label>
+        <label for="prescriptionDetails">Prescription Details (Optional)</label>
         <textarea
           id="prescriptionDetails"
           name="prescriptionDetails"
-          rows="3"
-          required
+          rows="4"
           autocomplete="off"
-          placeholder="e.g., Ceftriaxone 1g IV q12h for 7 days"
+          placeholder="Example: Ceftriaxone 1g IV every 12 hours for 7 days&#10;&#10;Include: Drug name, dose, route (IV/PO), frequency, duration&#10;This helps track antibiotic stewardship patterns."
         ></textarea>
-        <small style="color: #6b7280; font-size: 12px;">Record what antibiotic was actually prescribed</small>
+        <small style="color: #6b7280; font-size: 12px;">💊 Track what was prescribed vs. culture results (optional but helpful for stewardship)</small>
       </div>
 
       <div class="form-group">
@@ -154,6 +153,18 @@
 
   let antibioticTests = [];
 
+  // Helper: Extract first antibiotic from results string
+  function extractFirstAntibiotic(text) {
+    if (!text) return null;
+    const normalized = text.toLowerCase();
+    for (const abx of antibiotics) {
+      if (normalized.includes(abx.toLowerCase())) {
+        return abx;
+      }
+    }
+    return null;
+  }
+
   // Auto-fill district on page load
   window.addEventListener('DOMContentLoaded', () => {
     const district = localStorage.getItem('district') || 'Unknown';
@@ -203,8 +214,8 @@
     // Get form values
     const organism = document.getElementById('organism').value.trim();
     const district = districtInput.value.trim();
-    const prescriptionDetails = document.getElementById('prescriptionDetails').value.trim();
-    const clinicalNotes = document.getElementById('clinicalNotes').value.trim();
+    const prescriptionDetails = document.getElementById('prescriptionDetails').value.trim() || null; // Optional
+    const clinicalNotes = document.getElementById('clinicalNotes').value.trim() || null; // Optional
     
     // Validate district
     if (!district || district === 'Unknown') {
@@ -239,20 +250,48 @@
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.textContent;
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting...';
+    submitBtn.textContent = 'Getting ML baseline...';
     
     try {
-      // Insert into Supabase - USE UNDERSCORE COLUMN NAMES
+      // STEP 1: Get ML baseline resistance probability
+      let mlProbability = null;
+      
+      try {
+        const mlResponse = await fetch('https://amrx-ml-api.onrender.com/api/v1/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            organism: organism.toUpperCase(),
+            antibiotic: extractFirstAntibiotic(susceptibility) || 'Ciprofloxacin'
+          })
+        });
+        
+        if (mlResponse.ok) {
+          const mlData = await mlResponse.json();
+          mlProbability = mlData.probability;
+          console.log('✅ ML Probability:', mlProbability);
+        } else {
+          console.warn('⚠️ ML API unavailable, storing entry without ML probability');
+        }
+      } catch (mlError) {
+        console.warn('⚠️ ML API error:', mlError.message);
+        // Continue without ML probability - entry is still valuable
+      }
+      
+      submitBtn.textContent = 'Saving entry...';
+      
+      // STEP 2: Insert into Supabase with ML probability
       const { data, error } = await supabase
         .from('pharmacist_entries')
         .insert([
           {
             user_id: user.id,
             district: district,
-            bacterial_species: organism,                   // Use underscore
-            antibiotic_results: susceptibility,            // Use underscore
-            prescription_details: prescriptionDetails,     // Use underscore
-            clinical_notes: clinicalNotes                  // Use underscore
+            bacterial_species: organism,
+            antibiotic_results: susceptibility,
+            prescription_details: prescriptionDetails,
+            clinical_notes: clinicalNotes,
+            ml_resistance_probability: mlProbability  // NEW: ML baseline probability
           }
         ]);
       

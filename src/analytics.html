@@ -12,7 +12,7 @@
   <!-- Navigation -->
   <nav style="background: #0f172a; padding: 15px 30px; border-bottom: 1px solid #1e293b;">
     <div style="max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;">
-      <h1 style="color: #0ea5e9; margin: 0;">District AMR Analytics (RWUI)</h1>
+      <h1 style="color: #0ea5e9; margin: 0;">Resistance Pressure Analytics (RWUI)</h1>
       <div style="display:flex; gap:10px;">
         <a href="pharma.html" style="padding: 8px 16px; background: #1e293b; color: white; border-radius: 6px; text-decoration:none;">Back to Dashboard</a>
         <button id="logoutBtn" style="padding: 8px 16px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer;">Logout</button>
@@ -23,9 +23,9 @@
   <div class="analytics-container">
     <!-- Info Banner -->
     <div style="background: #dbeafe; border-left: 4px solid #3b82f6; padding: 16px; margin-bottom: 24px; border-radius: 8px;">
-      <h3 style="margin: 0 0 8px 0; color: #1e40af; font-size: 16px;">📊 Showing AMR analytics for your district based on confirmed pharmacist entries</h3>
+      <h3 style="margin: 0 0 8px 0; color: #1e40af; font-size: 16px;">📊 Resistance Pressure Model (ML-Baseline Anchored)</h3>
       <p style="margin: 0; color: #1e3a8a; font-size: 14px;">
-        <strong>RWUI reflects population-level resistance trends.</strong> It updates only when pharmacist entries are submitted. This data helps guide empirical antibiotic choices in your region.
+        <strong>RWUI models resistance PRESSURE, not confirmed outcomes.</strong> Each pharmacist entry is a usage event. ML provides baseline resistance probability. This helps identify high-pressure antibiotics in your district.
       </p>
     </div>
 
@@ -56,19 +56,19 @@
     <!-- Summary Cards -->
     <section class="summary-cards">
       <div class="card">
-        <div class="card-label">Total Entries Analyzed</div>
+        <div class="card-label">Total Usage Events</div>
         <div class="card-value" id="totalEntries">-</div>
       </div>
       <div class="card">
-        <div class="card-label">Average RWUI</div>
+        <div class="card-label">Average Pressure</div>
         <div class="card-value" id="averageRWUI">-</div>
       </div>
       <div class="card" style="border-left: 4px solid #ef4444;">
-        <div class="card-label">Critical Risk Cases</div>
+        <div class="card-label">Critical Pressure</div>
         <div class="card-value" id="criticalCount">-</div>
       </div>
       <div class="card" style="border-left: 4px solid #f59e0b;">
-        <div class="card-label">High Risk Cases</div>
+        <div class="card-label">High Pressure</div>
         <div class="card-value" id="highCount">-</div>
       </div>
     </section>
@@ -76,7 +76,7 @@
     <!-- Charts Section -->
     <section class="charts-section">
       <div class="chart-container">
-        <h3>Resistance Rate by Organism</h3>
+        <h3>Baseline Resistance Pressure by Organism</h3>
         <canvas id="resistanceChart"></canvas>
       </div>
 
@@ -86,27 +86,9 @@
       </div>
     </section>
 
-    <!-- Top Antibiotics Ranking -->
-    <section class="table-section">
-      <h2>Top Resistant Antibiotics</h2>
-      <div class="table-scroll-wrapper">
-        <table class="metrics-table">
-          <thead>
-            <tr>
-              <th>Antibiotic</th>
-              <th>RWUI (%)</th>
-              <th>Total Tests</th>
-              <th>Resistant</th>
-            </tr>
-          </thead>
-          <tbody id="antibioticsTableBody">
-            <tr>
-              <td colspan="4" style="text-align: center; padding: 30px; color: #9ca3c9;">Loading...</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
+    <!-- Top Antibiotics - Hidden in Pressure Model -->
+    <!-- Pressure model uses ML baseline, not R/S/I counts -->
+    <!-- Future: Could show top pressure-contributing antibiotics -->
 
     <!-- Metrics Table -->
     <section class="table-section">
@@ -117,15 +99,16 @@
             <tr>
               <th>Organism</th>
               <th>District</th>
-              <th>RWUI (%)</th>
+              <th>Pressure (%)</th>
               <th>Risk Level</th>
-              <th>Total Tests</th>
-              <th>Resistant</th>
+              <th>Trend</th>
+              <th>Confidence</th>
+              <th>Usage Events</th>
             </tr>
           </thead>
           <tbody id="metricsTableBody">
             <tr>
-              <td colspan="6" style="text-align: center; padding: 30px; color: #9ca3c9;">Loading...</td>
+              <td colspan="7" style="text-align: center; padding: 30px; color: #9ca3c9;">Loading...</td>
             </tr>
           </tbody>
         </table>
