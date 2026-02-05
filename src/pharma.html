@@ -40,8 +40,14 @@
 <main>
   <!-- Greeting -->
   <section class="pharma-section greeting-section">
-    <h1 id="welcomeText">Welcome, Pharmacist!</h1>
-    <p class="greeting-subtitle">Your AMR Dashboard</p>
+    <h1 id="welcomeText">Welcome, Hospital Pharmacy User!</h1>
+    <p class="greeting-subtitle">Hospital AMR Surveillance Dashboard</p>
+    <p style="font-size:13px; color:#94a3b8; margin-top:6px; max-width: 900px;">
+      <strong>Prototype assumption:</strong>
+      AMR-X models an integrated hospital environment where laboratory microbiology
+      results are available to the pharmacy information system.
+    </p>
+
   </section>
 
   <section class="pharma-section">
@@ -52,7 +58,7 @@
           <strong style="font-size: 16px; color: #cbd5e1;">District AMR Analytics (RWUI)</strong>
         </div>
         <p style="margin: 0; color: #94a3b8; font-size: 14px; line-height: 1.5;">
-          View resistance pressure trends, risk levels, and district-wide analytics based on ML-enhanced pharmacist usage data.
+          View resistance pressure trends, risk levels, and district-wide analytics based on laboratory-linked pharmacy data and ML-assisted risk modeling.
         </p>
       </div>
       <a href="analytics.html" 
@@ -484,7 +490,7 @@
     
     <div class="pharma-content">
       <div class="graph-box">
-        <h3>Antibiotic Resistance Patterns</h3>
+        <h3>Observed Resistance Patterns (Lab-linked)</h3>
         <canvas id="barChart" height="200"></canvas>
       </div>
       <div class="graph-box">
@@ -492,7 +498,7 @@
         <canvas id="pieChart" height="200"></canvas>
       </div>
       <div class="graph-box" style="min-width:300px;">
-        <h3>🔥 Top Resistance Concerns</h3>
+        <h3>🔥 High-Risk Resistance Signals</h3>
         <div id="resistanceAlerts" style="padding: 15px;">
           <div style="text-align: center; color: #64748b; padding: 20px;">
             <div style="font-size: 36px; margin-bottom: 10px; opacity: 0.5;">🧬</div>
@@ -536,7 +542,7 @@
 
     <div class="data-table">
       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
-        <h3 style="margin: 0;">Recent Pharmacist Entries</h3>
+        <h3 style="margin: 0;">Recent Hospital Pharmacy Entries</h3>
         <a href="pharmacist-entry.html" 
            style="background: linear-gradient(135deg, #10b981, #059669); 
                   color: white; 
@@ -576,7 +582,7 @@
 
   <!-- Kerala Districts AMR Map - ML Enhanced -->
   <section class="pharma-section">
-    <h2>Kerala AMR Heatmap • ML-Predicted Risk</h2>
+    <h2>Kerala AMR Heatmap • Modeled Resistance Risk</h2>
     
     <div class="summary-box" style="margin-bottom: 25px;">
       <p>
