@@ -92,48 +92,64 @@ v
 
 ## 🖥️ Screenshots
 
-> All screenshots are stored in `src/assets/`
+> Representative UI views from the AMR-X surveillance and analytics platform.
+
+---
 
 ### 🏠 Home & Navigation
 ![Home](src/assets/home.png)
 ![Home Alt](src/assets/home2.png)
+
+**Landing interface for AMR-X**, providing navigation to analytics dashboards, data ingestion, and user portals.
 
 ---
 
 ### 👤 User Dashboard
 ![User Dashboard](src/assets/amr%20dashboard%20user.png)
 
+Personalized dashboard showing **user-level access to AMR analytics**, summaries, and reporting tools.
+
 ---
 
 ### 📊 Analytics Dashboard
 ![AMR Analytics Dashboard](src/assets/AMR%20Analytics%20Dashboard.png)
+
+District-level **AMR surveillance dashboard** visualizing RWUI trends, resistance risk categories, and antibiotic usage patterns.
 
 ---
 
 ### 🏥 Hospital Pharmacy Logs
 ![Hospital Pharmacy Logs](src/assets/hospital%20pharmacy%20logs.png)
 
+Interface for **hospital pharmacy-linked antibiotic usage records**, forming the primary input for resistance pressure estimation.
+
 ---
 
 ### 🧪 Integrated Pharmacy Environment
 ![Integrated Pharmacy Entry](src/assets/integrated%20pharmacy%20entry.png)
+
+Simulated **integrated hospital pharmacy environment**, where antibiotic usage is contextualized with laboratory-linked infection data.
 
 ---
 
 ### 📈 Data Ingestion
 ![Data Ingestion](src/assets/data%20ingestion.png)
 
+Excel-based **data ingestion pipeline**, supporting structured upload and normalization of pharmacy and surveillance datasets.
+
 ---
 
 ### 🗺️ District Heatmap (Kerala)
 ![Kerala AMR Heatmap](src/assets/kerala%20amr%20heatmap.png)
 
+Geospatial **district-level AMR heatmap** (Kerala), illustrating regional resistance pressure using RWUI values.
+
 ---
 
-### 🔐 Portal & Auth
+### 🔐 Portal & Authentication
 ![Choose Portal](src/assets/choose%20portal.png)
 
----
+Role-based **portal selection and authentication interface** for users, pharmacists, and administrators.
 
 ## 🧮 RWUI Definition
 
