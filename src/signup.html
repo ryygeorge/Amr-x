@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AMR-X | Pharmacist Sign Up</title>
+  <title>AMR-X | Hospital Pharmacy Sign Up</title>
   <link rel="stylesheet" href="styles/signup.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -158,9 +158,9 @@
   <div class="auth-glow"></div>
 
   <section class="auth-card">
-    <h1>Pharmacist Sign Up <span class="kerala-badge">Kerala</span></h1>
+    <h1>Hospital Pharmacy User Sign Up <span class="kerala-badge">Kerala</span></h1>
     <p class="subtitle">
-      Register your pharmacy to join the AMR-X surveillance network and contribute to antibiotic resistance tracking.
+      Register your pharmacy to join the AMR-X surveillance network and contribute to Resistance Signal tracking.
     </p>
 
     <form class="auth-form" id="signupForm">
@@ -176,14 +176,14 @@
       
       <!-- Pharmacy Details - Clean White Section -->
       <div class="pharmacy-section">
-        <div class="section-title">Pharmacy Details</div>
+        <div class="section-title">Health Care Organisation Details</div>
         
-        <label for="pharmacyName">Pharmacy / Clinic Name</label>
+        <label for="pharmacyName">Hospital Pharmacy Name</label>
         <input type="text" id="pharmacyName" class="clean-input" placeholder="e.g., City Medical Store" required>
         
         <div class="info-note">
           🌟 <strong>Kerala District Selection</strong><br>
-          Select the district where your pharmacy is located. This helps track antibiotic resistance patterns locally.
+          Select the district where your Hospital Pharmacy is located. This helps track Resistance Signal patterns locally.
         </div>
         
         <label for="districtSelect">Select Your District</label>
@@ -360,8 +360,8 @@
       // Show success message
       setTimeout(() => {
         alert(`🎉 Welcome to AMR-X Kerala, ${fullName.split(' ')[0]}!\n\n` +
-              `Pharmacist account created for ${pharmacyName} in ${district} district.\n\n` +
-              `Please check your email to verify your account. You can then login and upload antibiotic resistance data.`);
+              `Hospital Pharmacy User account created for ${pharmacyName} in ${district} district.\n\n` +
+              `Please check your email to verify your account. You can then login and upload Resistance Signal data.`);
         window.location.href = 'login.html?role=pharma';
       }, 1000);
       

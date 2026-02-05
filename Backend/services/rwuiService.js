@@ -1,6 +1,6 @@
 // Backend/services/rwuiService.js
 // RWUI Analytics - Read from pharmacist_entries
-// RWUI = Resistance Rate = resistant_count / total_count
+// RWUI = Resistance Pressure Index = resistant_count / total_count
 
 import { supabase } from '../lib/supabase.js';
 
@@ -67,7 +67,7 @@ async function fetchEntries(filters = {}) {
 
 /**
  * Get RWUI metrics from pharmacist_entries
- * Computes resistance rates by parsing antibiotic_results field
+ * Computes Resistance Pressure Index by parsing antibiotic_results field
  */
 export async function getRWUIMetrics(filters = {}) {
   try {

@@ -1,11 +1,11 @@
 // Backend/examples/hookRWUIExample.js
-// EXAMPLE: How to integrate RWUI updates into your pharmacist entry flow
+// EXAMPLE: How to integrate RWUI updates into your hospital pharmacy entry flow
 // DO NOT COPY-PASTE - Adapt to your existing code
 
 import { updateRWUI } from '../services/rwuiService.js';
 
 /**
- * EXAMPLE: After saving a pharmacist entry and getting ML prediction
+ * EXAMPLE: After saving a hospital pharmacy entry and getting ML prediction
  */
 async function savePharmacistEntryExample(entryData, mlPrediction) {
   try {
@@ -89,7 +89,7 @@ router.post('/pharmacist-entry', async (req, res) => {
 /**
  * INTEGRATION CHECKLIST:
  * 
- * 1. Find where pharmacist entries are saved in your backend
+ * 1. Find where hospital pharmacy entries are saved in your backend
  * 2. After successful save + ML prediction, add:
  *    updateRWUI({ organism, antibiotic, district, resistance_probability })
  *      .catch(err => console.error('RWUI update failed:', err));

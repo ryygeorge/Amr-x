@@ -34,7 +34,7 @@ pharmaSignupBtn?.addEventListener("click", (e) => {
   e.preventDefault();
 
   if (currentSession?.user) {
-    // Already logged in → go straight to pharmacist dashboard
+    // Already logged in → go straight to Hospital Pharmacy Dashboard
     go("pharma.html");
   } else {
     // Not logged in → take to pharmacist-focused signup

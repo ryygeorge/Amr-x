@@ -1,11 +1,11 @@
 // src/scripts/pharmacist-resistance-check.js
-// Real-time resistance indicator for pharmacist entry form
+// Real-time resistance indicator for hospital pharmacy entry form
 
 const BACKEND_URL = 'http://localhost:3001';
 
 /**
- * When pharmacist enters a bacterial species,
- * show them the resistance rate from analytics
+ * When a hospital pharmacy user enters a bacterial species,
+ * show them the Resistance Pressure Index from analytics
  */
 export async function checkResistanceData(species, district = 'Kottayam') {
   try {
@@ -58,7 +58,7 @@ function showResistanceAlert(metric) {
 
   text.innerHTML = `
     <div style="margin: 5px 0;">
-      <strong>Resistance Rate in ${metric.district}:</strong> ${rwuiPercent}%
+      <strong>Resistance Pressure Index in ${metric.district}:</strong> ${rwuiPercent}%
     </div>
     <div style="margin: 5px 0;">
       <strong>Tests:</strong> ${metric.total_count} | <strong>Resistant:</strong> ${metric.resistant_count}

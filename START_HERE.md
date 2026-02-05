@@ -8,7 +8,7 @@
 
 ## 🎯 In 30 Seconds
 
-1. **Backend**: Already built (calculates RWUI from pharmacist data)
+1. **Backend**: Already built (calculates RWUI from Hospital Pharmacy User data)
 2. **Frontend**: Just created (beautiful interactive dashboard)
 3. **Documentation**: Complete guides for every aspect
 
@@ -42,7 +42,7 @@ Option C: File open
 ### Step 3: View Your Data
 Dashboard loads automatically with:
 - ✅ Summary cards (total entries, avg resistance, risk counts)
-- ✅ Resistance rate by organism (bar chart)
+- ✅ Resistance Pressure Index by organism (bar chart)
 - ✅ Risk distribution (pie chart)
 - ✅ Detailed metrics table
 - ✅ Filter controls
@@ -133,7 +133,7 @@ JavaScript fetches from backend
 GET /api/analytics/rwui
 GET /api/analytics/summary
     ↓
-Backend queries pharmacist_entries table
+Backend queries the `pharmacist_entries` table (hospital pharmacy usage events)
     ↓
 Calculates RWUI = resistant/total for each organism
     ↓

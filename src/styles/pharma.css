@@ -396,7 +396,7 @@ footer {
   }
 }
 
-/* === ADDITIONAL SMALL STYLES FOR PHARMACIST LOGS INSIGHTS & LAYOUT === */
+/* === ADDITIONAL SMALL STYLES FOR HOSPITAL PHARMACY LOGS INSIGHTS & LAYOUT === */
 #pharmInsights { color: #cbd5f5; line-height: 1.35; }
 #pharmInsights strong { color: #e5e7eb; }
 
@@ -481,7 +481,7 @@ footer {
   color: white;
 }
 
-/* ML Prediction Widget */
+/* ML-Assisted Risk Estimate Widget */
 .ml-prediction-result {
   transition: all 0.3s ease;
   animation: fadeIn 0.5s ease;
@@ -634,7 +634,7 @@ footer {
   transition: width 1s ease;
 }
 
-/* ML Prediction Input Enhancements */
+/* ML-Assisted Risk Estimate Input Enhancements */
 .ml-input-group {
   display: flex;
   gap: 10px;

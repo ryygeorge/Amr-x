@@ -29,9 +29,9 @@ async function checkAndRedirectAdmins() {
     // Check if we just came from an admin redirect attempt
     const adminRedirectAttempted = localStorage.getItem('adminRedirectAttempted');
     if (adminRedirectAttempted === 'true') {
-      console.log('Already attempted admin redirect, allowing access to pharmacist page');
+      console.log('Already attempted admin redirect, allowing access to hospital pharmacy page');
       localStorage.removeItem('adminRedirectAttempted');
-      return false; // Don't redirect, allow access to pharmacist page
+      return false; // Don't redirect, allow access to hospital pharmacy page
     }
     
     const { data: { user }, error } = await supabase.auth.getUser();
@@ -42,7 +42,7 @@ async function checkAndRedirectAdmins() {
     }
     
     if (user && isAdminEmail(user.email)) {
-      // Admin trying to access pharmacist page - redirect to admin
+      // Admin trying to access hospital pharmacy page - redirect to admin
       console.log('Admin detected, redirecting to admin panel...');
       window.location.href = 'admin.html';
       return true; // Redirect happened
@@ -58,7 +58,7 @@ async function checkAndRedirectAdmins() {
 // END OF ADMIN CHECK
 // ============================================
 
-// Check authentication and get pharmacist info
+// Check authentication and get hospital pharmacy user info
 async function checkPharmacistAuth() {
   try {
     // Get current user
@@ -91,12 +91,12 @@ async function checkPharmacistAuth() {
     const greetingSubtitle = document.querySelector('.greeting-subtitle');
     
     if (welcomeText && pharmacist) {
-      const firstName = pharmacist.full_name?.split(' ')[0] || pharmacist.pharmacy_name || 'Pharmacist';
+      const firstName = pharmacist.full_name?.split(' ')[0] || pharmacist.pharmacy_name || 'Hospital Pharmacy User';
       welcomeText.textContent = `Welcome, ${firstName}!`;
     }
     
     if (greetingSubtitle && pharmacist) {
-      greetingSubtitle.textContent = `AMR-X Dashboard for ${pharmacist.pharmacy_name} in ${pharmacist.district} District, Kerala`;
+      greetingSubtitle.textContent = `Hospital Pharmacy Dashboard for ${pharmacist.pharmacy_name} in ${pharmacist.district} District, Kerala`;
     }
 
     return {
@@ -211,7 +211,7 @@ function safeDestroyChartOnCanvas(canvasEl) {
 function renderTable(items) {
   if (!tbody) return;
   if (!items || items.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5">No pharmacist entries yet</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5">No Hospital Pharmacy Data Entries yet</td></tr>`;
     dispatchPharmEntriesEvent([]);
     return;
   }
@@ -560,12 +560,12 @@ function drawLineDaily(labels, values) {
     // Check authentication and get pharmacist info
     const pharmacist = await checkPharmacistAuth();
     if (!pharmacist) {
-      console.log('No authenticated pharmacist');
+      console.log('No authenticated hospital pharmacy user');
       if (tbody) tbody.innerHTML = `<tr><td colspan="5">Please login to view data</td></tr>`;
       return;
     }
 
-    console.log('✅ Pharmacist found:', pharmacist.name, 'from', pharmacist.district);
+    console.log('✅ Hospital pharmacy user found:', pharmacist.name, 'from', pharmacist.district);
 
     // Initial fetch - filter by pharmacist's user_id
     const { data: initialData, error } = await supabase
@@ -700,7 +700,7 @@ function drawLineDaily(labels, values) {
 export { renderTable, buildSpeciesCounts, buildDailyCounts, generateInsights, buildDistrictAnalytics, renderDistrictAnalytics };
 
 // ===============================
-// ML PREDICTION → SUPABASE SAVE
+// ML-Assisted Risk Estimate → SUPABASE SAVE
 // ===============================
 export async function saveMLPrediction(prediction) {
   const payload = {
@@ -720,7 +720,7 @@ export async function saveMLPrediction(prediction) {
     throw error;
   }
 
-  console.log('ML prediction saved');
+  console.log('ML-Assisted Risk Estimate saved');
   return data;
 }
 

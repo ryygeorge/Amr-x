@@ -21,7 +21,7 @@
       <a href="pharma.html" class="nav-link">Dashboard</a>
       <a href="analytics.html" class="nav-link">Analytics</a>
       <a href="pharmacist-entry.html" class="nav-link active">Hospital Pharmacy Data Entry</a>
-      <a href="upload-data.html" class="nav-link">Upload Data</a>
+      <a href="upload-data.html" class="nav-link">Data Ingestion</a>
       <a href="index.html" class="nav-link">Home</a>
     </div>
 
@@ -33,7 +33,7 @@
 
 <main>
   <section class="form-section">
-    <h2>Pharmacist Entry</h2>
+    <h2>Integrated Pharmacy Entry</h2>
     <p class="form-subtitle">
       Record laboratory-confirmed culture results and linked prescriptions
       within an integrated hospital pharmacy system.
@@ -44,7 +44,7 @@
     <div style="background: #dbeafe; border-left: 4px solid #3b82f6; padding: 12px; margin-bottom: 20px; border-radius: 6px;">
       <p style="margin: 0; font-size: 13px; color: #1e3a8a;">
         <strong>💡 Why we collect this data:</strong><br>
-        • <strong>Organism + Antibiotic Results</strong> → Calculate district resistance rates (RWUI)<br>
+        • <strong>Organism + Antibiotic Results</strong> → Calculate Resistance Pressure Index (RWUI)<br>
         • <strong>Prescription Details</strong> → Track if prescribing matches culture results (antibiotic stewardship)<br>
         • <strong>Clinical Notes</strong> → Understand severity patterns and patient context
       </p>
@@ -117,7 +117,7 @@
         <small style="color: #6b7280; font-size: 12px;">Add clinical context if needed</small>
       </div>
 
-      <button type="submit" class="card-btn">Submit Entry</button>
+      <button type="submit" class="card-btn">Submit Usage Record</button>
     </form>
 
     <div id="successMsg" class="success-message"></div>
@@ -126,6 +126,7 @@
 
 <footer>
   <p>&copy; 2025 AMR-X</p>
+  <p style="font-size:12px; color:#6b7280; margin-top:6px;">Prototype assumption: AMR-X models an integrated hospital environment where laboratory microbiology results are accessible to the pharmacy information system.</p>
 </footer>
 
 <!-- Paste this at the bottom of pharmacist-entry.html, before </body> -->

@@ -49,7 +49,7 @@ loginForm.addEventListener("submit", async (e) => {
       return; // Stop execution here for admin
     }
 
-    // 3) For non-admin users, continue with pharmacist logic
+    // 3) For non-admin users, continue with hospital pharmacy user logic
     localStorage.setItem("isAdmin", "false"); // Mark as non-admin
     localStorage.removeItem("adminRedirectAttempted"); // Clear any flags
 
@@ -113,8 +113,8 @@ loginForm.addEventListener("submit", async (e) => {
     localStorage.setItem("pharmacyName", pharmacyName);
     localStorage.setItem("district", district);
 
-    // 6) Redirect to pharmacist dashboard
-    console.log("Pharmacist login detected, redirecting to pharmacist dashboard");
+    // 6) Redirect to Hospital Pharmacy Dashboard
+    console.log("Hospital Pharmacy User login detected, redirecting to Hospital Pharmacy Dashboard");
     window.location.href = "pharma.html";
 
   } catch (error) {

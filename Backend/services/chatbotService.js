@@ -18,7 +18,7 @@ const REQUEST_TIMEOUT = 8000; // 8 seconds
 // Educational fallback responses (when API is unavailable)
 const FALLBACK_RESPONSES = {
   'amr': 'Antimicrobial Resistance (AMR) occurs when bacteria, viruses, fungi and parasites change over time and no longer respond to medicines, making infections harder to treat. This is a natural process accelerated by misuse and overuse of antimicrobials in humans, animals and plants.',
-  'resistance': 'Antibiotic resistance develops when bacteria evolve mechanisms to survive antibiotic exposure. This can happen through genetic mutations or by acquiring resistance genes from other bacteria through horizontal gene transfer.',
+  'resistance': 'Resistance Signal develops when bacteria evolve mechanisms to survive antibiotic exposure. This can happen through genetic mutations or by acquiring resistance genes from other bacteria through horizontal gene transfer.',
   'global': 'AMR is a global health threat causing an estimated 700,000 deaths annually worldwide. Without action, it could cause 10 million deaths per year by 2050 and cost the global economy $100 trillion.',
   'prevent': 'AMR can be prevented through proper antibiotic stewardship, completing prescribed courses, avoiding antibiotics for viral infections, good hygiene practices, and vaccination to prevent infections.',
   'default': 'I can help with general AMR education. Try asking about what AMR is, why it\'s a global threat, how resistance develops, or how to prevent it.'

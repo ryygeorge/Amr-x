@@ -53,7 +53,7 @@ header {
   padding-right: 110px; /* space for profile */
 }
 
-/* For .navbar-based pages (pharmacist pages), reserve space via nav-right margin */
+/* For .navbar-based pages (hospital pharmacy pages), reserve space via nav-right margin */
 .navbar .nav-right {
   margin-right: 110px; /* space for profile */
 }

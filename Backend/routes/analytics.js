@@ -8,7 +8,7 @@ const router = express.Router();
 
 /**
  * GET /api/analytics/rwui
- * Get RWUI (resistance rate) metrics from pharmacist_entries
+ * Get RWUI (Resistance Pressure Index) metrics from pharmacist_entries
  * 
  * Query params:
  * - organism: Filter by organism name (optional)

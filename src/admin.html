@@ -45,14 +45,14 @@
   <div class="container">
     <header>
       <h1>AMR-X Kerala Admin Panel</h1>
-      <p>Manage pharmacists and monitor district-wise uploads</p>
+      <p>Manage Hospital Pharmacy Users and monitor district-wise uploads</p>
     </header>
     
     <div class="stats-grid" id="statsGrid">
       <!-- Filled by JavaScript -->
     </div>
     
-    <h2 style="margin-bottom: 15px;">Pharmacists by District</h2>
+    <h2 style="margin-bottom: 15px;">Hospital Pharmacy Users by District</h2>
     <table id="pharmacistsTable">
       <thead>
         <tr id="navbar">
@@ -108,7 +108,7 @@
                 <p style="font-size: 18px; margin-bottom: 30px; color: #cbd5e1;">This page is for administrators only.</p>
                 <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
                   <button onclick="window.location.href='pharma.html'" style="background: #3b82f6; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; cursor: pointer; transition: all 0.3s;">
-                    Go to Pharmacist Dashboard
+                    Go to Hospital Pharmacy Dashboard
                   </button>
                   <button onclick="window.location.href='login.html'" style="background: #64748b; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; cursor: pointer; transition: all 0.3s;">
                     Login with Different Account
@@ -175,7 +175,7 @@
         // Update stats grid
         document.getElementById('statsGrid').innerHTML = `
           <div class="stat-card">
-            <h3>Total Pharmacists</h3>
+            <h3>Total Hospital Pharmacy Users</h3>
             <div class="number">${totalPharmacists}</div>
           </div>
           <div class="stat-card">
@@ -198,7 +198,7 @@
     
     async function loadPharmacists() {
       try {
-        // 1️⃣ Get pharmacists
+        // 1️⃣ Get hospital pharmacy users
         const { data: pharmacists, error: pharmaError } = await supabase
           .from('pharmacists')
           .select('*')
@@ -225,7 +225,7 @@
       
         if (!pharmacists || pharmacists.length === 0) {
           tbody.innerHTML =
-            '<tr><td colspan="6" style="text-align:center; padding:30px;">No pharmacists found</td></tr>';
+            '<tr><td colspan="6" style="text-align:center; padding:30px;">No Hospital Pharmacy Users found</td></tr>';
           return;
         }
       
@@ -263,7 +263,7 @@
     
     // Global function for button click
     window.verifyPharmacist = async (pharmacistId) => {
-      if (!confirm('Are you sure you want to verify this pharmacist?')) return;
+      if (!confirm('Are you sure you want to verify this Hospital Pharmacy User?')) return;
       
       try {
         const { error } = await supabase
@@ -272,11 +272,11 @@
           .eq('id', pharmacistId);
         
         if (!error) {
-          alert('Pharmacist verified successfully!');
+          alert('Hospital Pharmacy User verified successfully!');
           loadPharmacists();
           loadStats();
         } else {
-          alert('Error verifying pharmacist: ' + error.message);
+          alert('Error verifying Hospital Pharmacy User: ' + error.message);
         }
       } catch (error) {
         alert('Error: ' + error.message);

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Pharmacist Dashboard | AMR-X</title>
+  <title>Hospital Pharmacy Dashboard | AMR-X</title>
   <link rel="stylesheet" href="styles/pharma.css">
   <link rel="stylesheet" href="styles/chatbot.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -27,8 +27,8 @@
     <div class="nav-right">
       <a href="pharma.html" class="nav-link active">Dashboard</a>
       <a href="analytics.html" class="nav-link">Analytics</a>
-      <a href="pharmacist-entry.html" class="nav-link">Pharmacist Entry</a>
-      <a href="upload-data.html" class="nav-link">Upload Data</a>
+      <a href="pharmacist-entry.html" class="nav-link">Integrated Pharmacy Entry</a>
+      <a href="upload-data.html" class="nav-link">Data Ingestion</a>
       <a href="index.html" class="nav-link">Home</a>
     </div>
 
@@ -42,11 +42,7 @@
   <section class="pharma-section greeting-section">
     <h1 id="welcomeText">Welcome, Hospital Pharmacy User!</h1>
     <p class="greeting-subtitle">Hospital AMR Surveillance Dashboard</p>
-    <p style="font-size:13px; color:#94a3b8; margin-top:6px; max-width: 900px;">
-      <strong>Prototype assumption:</strong>
-      AMR-X models an integrated hospital environment where laboratory microbiology
-      results are available to the pharmacy information system.
-    </p>
+    <p style="font-size:13px; color:#94a3b8; margin-top:6px; max-width: 900px;">Prototype assumption: AMR-X models an integrated hospital environment where laboratory microbiology results are accessible to the pharmacy information system.</p>
 
   </section>
 
@@ -81,15 +77,15 @@
 
   <!-- AMR Dashboard with ML Integration -->
   <section class="pharma-section">
-    <h2>Experimental ML Predictor (Individual Use)</h2>
+    <h2>Experimental ML-Assisted Risk Estimate (Individual Use)</h2>
     
     <!-- ML Summary Box -->
     <div class="summary-box" style="background: linear-gradient(120deg, rgba(15,23,42,0.98), rgba(15,23,42,0.8));">
       <p>
-        <strong>ML Model Active:</strong> AMR-Predict v2.1 &nbsp;|&nbsp; 
+        <!-- <strong>ML Model Active:</strong> AMR-Predict v2.1 &nbsp;|&nbsp; 
         <strong>Accuracy:</strong> <span id="mlAccuracy">Loading...</span> &nbsp;|&nbsp;
         <strong>Last Updated:</strong> <span id="mlLastUpdate">-</span> &nbsp;|&nbsp;
-        <strong>Total Predictions:</strong> <span id="totalPredictions">0</span>
+        <strong>Total Predictions:</strong> <span id="totalPredictions">0</span> -->
     <!-- ML Clarification Box -->
     <div class="summary-box" style="background: linear-gradient(120deg, rgba(99,102,241,0.15), rgba(59,130,246,0.1)); border-left: 4px solid #6366f1;">
       <p style="margin: 0; font-size: 14px; color: #cbd5e1;">
@@ -431,7 +427,7 @@
           </div>
           <button id="mlPredictBtn" class="profile-logout-btn" 
                   style="background: linear-gradient(120deg, #22c1c3, #38bdf8); width: 100%; margin-bottom: 10px;">
-            Get ML Prediction
+            Get ML-Assisted Risk Estimate
           </button>
           <p style="font-size: 0.8rem; color: #9ca3c9; text-align: center;">
             Session-based prediction only (not saved)
@@ -439,14 +435,14 @@
         </div>
       </div>
 
-      <!-- ML Prediction Result Display -->
+      <!-- ML-Assisted Risk Estimate Result Display -->
       <div class="graph-box" style="min-width: 340px;">
-        <h3>📊 ML Prediction Result</h3>
+        <h3>📊 ML-Assisted Risk Estimate Result</h3>
         <h4>Global AMR Dataset</h4>
         <div id="mlResult" style="padding: 20px; text-align: center; color: #9ca3c9; min-height: 200px; display: flex; align-items: center; justify-content: center;">
           <div>
             <p>Enter bacteria + antibiotic</p>
-            <p style="font-size: 0.9rem; margin-top: 10px;">to see ML prediction</p>
+            <p style="font-size: 0.9rem; margin-top: 10px;">to see ML-Assisted Risk Estimate</p>
           </div>
         </div>
       </div>
@@ -464,14 +460,14 @@
               <th>Antibiotic</th>
               <th>Resistance %</th>
               <th>Risk Level</th>
-              <th>ML Confidence</th>
+              <!-- <th>ML Confidence</th> -->
               <th>Recommendation</th>
             </tr>
           </thead>
           <tbody id="mlTableBody">
             <tr>
               <td colspan="6" style="text-align:center; padding:30px; color:#9ca3c9;">
-                No ML predictions available yet
+                No ML-Assisted Risk Estimates available yet
               </td>
             </tr>
           </tbody>
@@ -490,7 +486,7 @@
     
     <div class="pharma-content">
       <div class="graph-box">
-        <h3>Observed Resistance Patterns (Lab-linked)</h3>
+        <h3>Observed Resistance (Lab-linked)</h3>
         <canvas id="barChart" height="200"></canvas>
       </div>
       <div class="graph-box">
@@ -509,11 +505,11 @@
     </div>
   </section>
 
-  <!-- Pharmacist Logs section -->
+  <!-- Hospital Pharmacy Logs section -->
   <section class="pharma-section" id="pharmacist-logs">
     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
       <span style="font-size: 28px;">📊</span>
-      <h2 style="margin: 0;">Pharmacist Logs</h2>
+      <h2 style="margin: 0;">Hospital Pharmacy Logs</h2>
     </div>
 
     <div class="summary-box" style="background: linear-gradient(135deg, rgba(16,185,129,0.1), rgba(5,150,105,0.05)); border-left: 4px solid #10b981;">
@@ -572,7 +568,7 @@
             <td colspan="5" style="text-align: center; padding: 40px; color: #64748b;">
               <div style="font-size: 48px; margin-bottom: 10px; opacity: 0.5;">📋</div>
               <div style="font-size: 16px; font-weight: 600; margin-bottom: 5px;">No entries yet</div>
-              <div style="font-size: 14px; opacity: 0.8;">Submit your first pharmacist entry to start tracking AMR data</div>
+              <div style="font-size: 14px; opacity: 0.8;">Submit your first health care entry to start tracking AMR data</div>
             </td>
           </tr>
         </tbody>
@@ -659,7 +655,7 @@
 </main>
 
 <footer>
-  <p>&copy; 2025 AMR-X | ML-Powered AMR Prediction System</p>
+  <p>&copy; 2025 AMR-X | ML-Powered Modeled Resistance Risk System</p>
 </footer>
 
 <!-- Greeting script -->
@@ -810,7 +806,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const tbody = document.getElementById('mlTableBody');
     
     if (!predictions || predictions.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 30px; color: #9ca3c9;">No ML predictions available</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 30px; color: #9ca3c9;">No ML-Assisted Risk Estimates available</td></tr>';
       return;
     }
     
@@ -1011,7 +1007,7 @@ document.addEventListener('DOMContentLoaded', function() {
               <strong>Combination:</strong> ${organism.split(' ')[0]} + ${antibiotic}
             </div>
             <div style="font-size: 0.85rem; color: #cbd5f5; margin-bottom: 5px;">
-              <strong>ML Confidence:</strong> ${(confidence * 100).toFixed(0)}%
+  
             </div>
             <div style="font-size: 0.85rem; color: #cbd5f5;">
               <strong>Recommendation:</strong> ${prediction.recommendation || getRecommendation(prediction.risk_level)}
@@ -1050,7 +1046,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const tbody = document.getElementById('mlTableBody');
     
     // Remove "no predictions" row if present
-    if (tbody.innerHTML.includes('No ML predictions')) {
+    if (tbody.innerHTML.includes('No ML-Assisted Risk Estimates')) {
       tbody.innerHTML = '';
     }
     
@@ -1365,7 +1361,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<!-- Pharmacist UI listener -->
+<!-- Hospital Pharmacy UI listener -->
 <script>
 (function () {
   let pharmBarChart = null;
@@ -1469,7 +1465,7 @@ document.addEventListener('DOMContentLoaded', function() {
       tb.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 40px; color: #64748b;">
         <div style="font-size: 48px; margin-bottom: 10px; opacity: 0.5;">📋</div>
         <div style="font-size: 16px; font-weight: 600; margin-bottom: 5px;">No entries yet</div>
-        <div style="font-size: 14px; opacity: 0.8;">Submit your first pharmacist entry to start tracking AMR data</div>
+        <div style="font-size: 14px; opacity: 0.8;">Submit your first hospital health entry to start tracking AMR data</div>
       </td></tr>`;
     } else {
       const rows = entries.slice().sort((a,b)=> b.ts - a.ts).slice(0, 30).map(e => {
@@ -1527,7 +1523,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Extract resistance data
     const { resistanceByAntibiotic, resistanceByOrganism } = extractResistanceData(entries);
 
-    // Render Antibiotic Resistance Chart (barChart)
+    // Render Resistance Signal Chart (barChart)
     try { clearCanvas('barChart'); } catch(e){}
     const barCtx = document.getElementById('barChart');
     if (barCtx && Object.keys(resistanceByAntibiotic).length > 0) {
@@ -1546,7 +1542,7 @@ document.addEventListener('DOMContentLoaded', function() {
           data: { 
             labels: abxLabels, 
             datasets: [{ 
-              label: 'Resistance Rate (%)', 
+              label: 'Resistance Pressure Index (%)', 
               data: resistanceRates, 
               backgroundColor: resistanceRates.map(rate => 
                 rate >= 60 ? '#ef4444' : rate >= 40 ? '#f59e0b' : '#10b981'

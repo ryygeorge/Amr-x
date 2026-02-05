@@ -86,7 +86,7 @@ signupForm.addEventListener("submit", async (e) => {
     // Wait a moment for auth to settle
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    console.log("💾 Creating pharmacist profile...");
+    console.log("💾 Creating hospital pharmacy user profile...");
     // 🔴 CRITICAL CHANGE 2: Try with ID first, fallback without
     let profileError = null;
     
@@ -153,7 +153,7 @@ signupForm.addEventListener("submit", async (e) => {
       throw profileError;
     }
 
-    console.log("✅ Pharmacist profile created");
+    console.log("✅ Hospital pharmacy user profile created");
 
     // 🔴 CRITICAL CHANGE 3: Update auth metadata AFTER successful insert
     try {

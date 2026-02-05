@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
         throw new Error("User not logged in");
       }
 
-      // 2️⃣ Get pharmacist profile (district)
+      // 2️⃣ Get hospital pharmacy user profile (district)
       const { data: pharmacist, error: profileError } =
         await window.supabase
           .from("pharmacists")
