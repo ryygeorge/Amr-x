@@ -1,25 +1,45 @@
-# Node
+# =====================
+# Node / JS
+# =====================
 node_modules/
 npm-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-package-lock.json
 
-# Env & secrets
+# =====================
+# Environment & Secrets
+# =====================
 .env
 .env.*
+!.env.example
+
 serviceAccountKey.json
 *.secret.json
+supabase.json
+supabase/.env
+supabase/.temp
 
-# Uploads and build artifacts
+# =====================
+# Uploads & Data
+# =====================
 uploads/
+*.csv
+*.xlsx
+
+# =====================
+# Build & Coverage
+# =====================
 dist/
 build/
 coverage/
 
-# OS/editor cruft
+# =====================
+# OS / Editor
+# =====================
 .DS_Store
 Thumbs.db
+
 .vscode/*
 !.vscode/settings.json
 !.vscode/extensions.json
+.idea/
