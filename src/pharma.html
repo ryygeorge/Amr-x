@@ -13,6 +13,8 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <!-- Heatmap Plugin -->
   <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+  <!-- Tom Select -->
+  <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
 </head>
 <body>
 
@@ -1780,10 +1782,33 @@ function getRecommendation(risk) {
       return 'Clinical judgment required.';
   }
 }
+
+
 </script>
 
 <script type="module" src="scripts/supabase-init.js"></script>
 <script type="module" src="scripts/auth-ui.js"></script>
 <script type="module" src="scripts/chatbot-ui.js"></script>
+<!-- Tom Script -->
+<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+<script>
+  new TomSelect("#mlOrganism",{
+    create:false,
+    maxOptions:307,
+    highlight:true,
+    sortField:{
+        field:"text",
+        direction:"asc"
+    },
+    placeholder:"Select Organism..."
+});
+
+new TomSelect("#mlAntibiotic",{
+    create:false,
+    maxOptions:15,
+    highlight:true,
+    placeholder:"Select Antibiotic..."
+});
+</script>
 </body>
 </html>
