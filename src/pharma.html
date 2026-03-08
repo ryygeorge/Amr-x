@@ -41,7 +41,7 @@
 
 <main>
   <!-- Greeting -->
-  <section class="pharma-section greeting-section">
+  <section class="pharma-section greeting-section reveal">
     <h1 id="welcomeText">Welcome, Hospital Pharmacy User!</h1>
     <p class="greeting-subtitle">Hospital AMR Surveillance Dashboard</p>
     <p style="font-size:13px; color:#94a3b8; margin-top:6px; max-width: 900px;">Prototype assumption: AMR-X models an integrated hospital environment where laboratory microbiology results are accessible to the pharmacy information system.</p>
@@ -49,7 +49,7 @@
   </section>
 
   <section class="pharma-section">
-    <div class="summary-box" style="display:flex; align-items:center; justify-content:space-between; gap:16px; background: linear-gradient(135deg, rgba(14,165,233,0.1), rgba(59,130,246,0.05)); border-left: 4px solid #0ea5e9; padding: 20px;">
+    <div class="summary-box reveal" style="display:flex; align-items:center; justify-content:space-between; gap:16px;">
       <div style="flex: 1;">
         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
           <span style="font-size: 24px;">📊</span>
@@ -487,11 +487,11 @@
     </div>
     
     <div class="pharma-content">
-      <div class="graph-box">
+      <div class="graph-box reveal">
         <h3>Observed Resistance (Lab-linked)</h3>
         <canvas id="barChart" height="200"></canvas>
       </div>
-      <div class="graph-box">
+      <div class="graph-box reveal">
         <h3>Organism Distribution</h3>
         <canvas id="pieChart" height="200"></canvas>
       </div>
@@ -510,12 +510,12 @@
     </div>
 
     <div class="pharma-content">
-      <div class="graph-box">
+      <div class="graph-box reveal">
         <h3>Species Counts</h3>
         <canvas id="pharmBar" height="200"></canvas>
       </div>
 
-      <div class="graph-box">
+      <div class="graph-box reveal">
         <h3>Entries Over Time</h3>
         <canvas id="pharmLine" height="200"></canvas>
       </div>
@@ -529,7 +529,7 @@
       </div>
     </div>
 
-    <div class="data-table">
+    <div class="data-table reveal">
       <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
         <h3 style="margin: 0;">Recent Hospital Pharmacy Entries</h3>
         <a href="pharmacist-entry.html" 
@@ -670,29 +670,7 @@
     const welcomeEl = document.getElementById('welcomeText');
     if (welcomeEl) welcomeEl.textContent = `Welcome, ${firstName}!`;
   }
-  <div class="kpi-grid">
 
-    <div class="kpi-card">
-      <h4>Total Logs</h4>
-      <span id="kpiTotalLogs">0</span>
-    </div>
-
-    <div class="kpi-card">
-      <h4>Top Organism</h4>
-      <span id="kpiTopOrganism">–</span>
-    </div>
-
-    <div class="kpi-card">
-      <h4>Entries Today</h4>
-      <span id="kpiToday">0</span>
-    </div>
-
-    <div class="kpi-card">
-      <h4>District</h4>
-      <span id="kpiDistrict">–</span>
-    </div>
-
-  </div>
 })();
 </script>
 
@@ -1823,6 +1801,23 @@ new TomSelect("#mlAntibiotic",{
     maxOptions:15,
     highlight:true,
     placeholder:"Select Antibiotic..."
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  const reveals = document.querySelectorAll(".reveal");
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("active");
+      }
+    });
+  }, { threshold: 0.1 });
+
+  reveals.forEach(el => observer.observe(el));
+
 });
 </script>
 </body>

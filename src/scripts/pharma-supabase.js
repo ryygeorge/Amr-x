@@ -702,7 +702,13 @@ export { renderTable, buildSpeciesCounts, buildDailyCounts, generateInsights, bu
 function updateKPIs(items){
 
   const total = items.length;
-  document.getElementById("kpiTotalLogs").textContent = total;
+
+  const elTotal = document.getElementById("kpiTotalLogs");
+  const elTop = document.getElementById("kpiTopOrganism");
+  const elToday = document.getElementById("kpiToday");
+  const elDistrict = document.getElementById("kpiDistrict");
+
+  if(elTotal) elTotal.textContent = total;
 
   if(total === 0) return;
 
@@ -716,8 +722,8 @@ function updateKPIs(items){
   const top = Object.entries(speciesCounts)
       .sort((a,b)=>b[1]-a[1])[0];
 
-  if(top){
-    document.getElementById("kpiTopOrganism").textContent = top[0];
+  if(top && elTop){
+    elTop.textContent = top[0];
   }
 
   const today = new Date().toISOString().slice(0,10);
@@ -726,7 +732,9 @@ function updateKPIs(items){
      return i.created_at?.slice(0,10) === today;
   }).length;
 
-  document.getElementById("kpiToday").textContent = todayCount;
+  if(elToday){
+    elToday.textContent = todayCount;
+  }
 
 }
 // ===============================

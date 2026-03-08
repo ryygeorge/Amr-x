@@ -1,5 +1,11 @@
 /* THEME C – MATTE CHARCOAL / CALM PHARMA */
-
+:root{
+  --accent:#22e3ff;
+  --accent-soft:#22c1c3;
+  --danger:#ef4444;
+  --warning:#f59e0b;
+  --success:#10b981;
+}
 /* GLOBAL */
 * {
   box-sizing: border-box;
@@ -9,11 +15,12 @@
 
 body {
   position: relative;
-  font-family: 'Inter', Arial, sans-serif;
-  background: #020617;
-  color: #e5e7eb;
-  min-height: 100vh;
-  overflow-x: hidden;
+  font-family: 'Manrope', 'Inter', Arial, sans-serif;
+  background:
+    radial-gradient(circle at 20% 20%, #0f172a, transparent 40%),
+    radial-gradient(circle at 80% 80%, #020617, transparent 40%),
+    linear-gradient(135deg,#020617,#030712,#020617);
+  color:#e5e7eb;
 }
 
 /* BACKGROUND GRADIENT (no image) */
@@ -34,8 +41,12 @@ header {
   top: 0;
   width: 100%;
   z-index: 50;
-  background: linear-gradient(to bottom, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.4), transparent);
-  backdrop-filter: blur(12px);
+
+  background: rgba(15,23,42,0.7);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border-bottom: 1px solid rgba(148,163,184,0.08);
 }
 
 /* ====== Profile chip & header spacing ====== */
@@ -126,6 +137,7 @@ header {
 .profile-menu-header strong { color: #e5e7eb; }
 
 .profile-logout-btn {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
   margin-top: 6px;
   width: 100%;
   border-radius: 999px;
@@ -140,7 +152,9 @@ header {
   transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 .profile-logout-btn:hover { transform: translateY(-1px); box-shadow: 0 10px 26px rgba(127,29,29,0.85); }
-
+.profile-logout-btn:active {
+  transform: translateY(1px) scale(0.98);
+}
 
 .navbar {
   display: flex;
@@ -179,9 +193,12 @@ header {
 .site-title {
   font-size: 1.2rem;
   font-weight: 800;
-  color: #e5e7eb;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+
+  background: linear-gradient(90deg,#22c1c3,#38bdf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .nav-right {
@@ -281,12 +298,19 @@ main {
   background: #020617;
   border-radius: 22px;
   box-shadow: 0 16px 40px rgba(15, 23, 42, 1);
-  padding: 18px 22px 18px 22px;
+  padding: 18px 22px;
   min-width: 320px;
   max-width: 380px;
   flex: 1 1 340px;
   text-align: center;
   border: 1px solid rgba(51, 65, 85, 0.95);
+
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.graph-box:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 26px 60px rgba(0,0,0,0.6);
 }
 
 .graph-box h3 {
@@ -861,4 +885,22 @@ footer {
   font-size:1.6rem;
   font-weight:700;
   color:#22c1c3;
+}
+/* Slide-up animation base state */
+.reveal {
+  opacity: 0;
+  transform: translateY(15px);
+  transition: all 0.5s cubic-bezier(.25,.8,.25,1);
+}
+/* When element becomes visible */
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+.graph-box.reveal {
+  transition-delay: 0.1s;
+}
+
+.data-table.reveal {
+  transition-delay: 0.15s;
 }
