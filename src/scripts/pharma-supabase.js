@@ -625,6 +625,7 @@ function drawLineDaily(labels, values) {
 
     // Update summary
     updateSummary(initialData?.length || 0);
+    updateKPIs(initialData || []);
 
     // Set up real-time subscription
     const channel = supabase
@@ -698,7 +699,36 @@ function drawLineDaily(labels, values) {
 
 // Export for potential use in other modules
 export { renderTable, buildSpeciesCounts, buildDailyCounts, generateInsights, buildDistrictAnalytics, renderDistrictAnalytics };
+function updateKPIs(items){
 
+  const total = items.length;
+  document.getElementById("kpiTotalLogs").textContent = total;
+
+  if(total === 0) return;
+
+  const speciesCounts = {};
+
+  items.forEach(i=>{
+    const sp = i.bacterial_species || "Unknown";
+    speciesCounts[sp] = (speciesCounts[sp] || 0) + 1;
+  });
+
+  const top = Object.entries(speciesCounts)
+      .sort((a,b)=>b[1]-a[1])[0];
+
+  if(top){
+    document.getElementById("kpiTopOrganism").textContent = top[0];
+  }
+
+  const today = new Date().toISOString().slice(0,10);
+
+  const todayCount = items.filter(i=>{
+     return i.created_at?.slice(0,10) === today;
+  }).length;
+
+  document.getElementById("kpiToday").textContent = todayCount;
+
+}
 // ===============================
 // ML-Assisted Risk Estimate → SUPABASE SAVE
 // ===============================

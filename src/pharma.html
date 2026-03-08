@@ -495,15 +495,6 @@
         <h3>Organism Distribution</h3>
         <canvas id="pieChart" height="200"></canvas>
       </div>
-      <div class="graph-box" style="min-width:300px;">
-        <h3>🔥 High-Risk Resistance Signals</h3>
-        <div id="resistanceAlerts" style="padding: 15px;">
-          <div style="text-align: center; color: #64748b; padding: 20px;">
-            <div style="font-size: 36px; margin-bottom: 10px; opacity: 0.5;">🧬</div>
-            <div style="font-size: 14px;">Loading resistance analysis...</div>
-          </div>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -679,6 +670,29 @@
     const welcomeEl = document.getElementById('welcomeText');
     if (welcomeEl) welcomeEl.textContent = `Welcome, ${firstName}!`;
   }
+  <div class="kpi-grid">
+
+    <div class="kpi-card">
+      <h4>Total Logs</h4>
+      <span id="kpiTotalLogs">0</span>
+    </div>
+
+    <div class="kpi-card">
+      <h4>Top Organism</h4>
+      <span id="kpiTopOrganism">–</span>
+    </div>
+
+    <div class="kpi-card">
+      <h4>Entries Today</h4>
+      <span id="kpiToday">0</span>
+    </div>
+
+    <div class="kpi-card">
+      <h4>District</h4>
+      <span id="kpiDistrict">–</span>
+    </div>
+
+  </div>
 })();
 </script>
 
