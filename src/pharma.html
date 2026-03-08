@@ -780,7 +780,8 @@ document.addEventListener('DOMContentLoaded', function() {
       })
       .catch(err => {
         console.warn('ML info unavailable:', err);
-        document.getElementById('mlAccuracy').textContent = 'OFFLINE';
+        const acc = document.getElementById('mlAccuracy');
+        if (acc) acc.textContent = 'OFFLINE';
       });
   }
 
@@ -1634,7 +1635,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Calculate ML pressure by organism
     const pressureByOrganism = {};
-    for (const item of allItems) {
+    for (const item of entries) {
       const organism = item.bacterial_species || item.species || 'Unknown';
       const mlProb = parseFloat(item.ml_resistance_probability);
       
