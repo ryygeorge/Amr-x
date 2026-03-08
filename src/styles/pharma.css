@@ -726,3 +726,109 @@ footer {
 .table-scroll-wrapper::-webkit-scrollbar-thumb:hover {
   background: #38bdf8;
 }
+
+/* ===== TomSelect style override to match district-dropdown ===== */
+
+.ts-wrapper {
+  width: 100%;
+}
+
+/* Main control */
+.ts-control {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid rgba(51, 65, 85, 0.9);
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.95);
+  color: #e5e7eb;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  /* same arrow as original select */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23e5e7eb' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 16px;
+}
+
+/* Input text */
+.ts-control input {
+  color: #e5e7eb;
+}
+
+/* Hover effect */
+.ts-control:hover {
+  border-color: #22c1c3;
+  box-shadow: 0 0 0 3px rgba(34, 193, 195, 0.1);
+}
+
+/* Focus effect */
+.ts-control.focus {
+  border-color: #22c1c3;
+  box-shadow: 0 0 0 3px rgba(34, 193, 195, 0.2);
+}
+
+/* Dropdown menu */
+.ts-dropdown {
+  background: rgba(15, 23, 42, 0.98);
+  border: 2px solid rgba(51, 65, 85, 0.9);
+  border-radius: 12px;
+  margin-top: 6px;
+}
+
+/* Options */
+.ts-dropdown .option {
+  padding: 10px 14px;
+  color: #e5e7eb;
+}
+
+/* Hover option */
+.ts-dropdown .option:hover {
+  background: rgba(34, 193, 195, 0.15);
+}
+
+/* ===== FINAL TomSelect Dark Theme Fix ===== */
+
+/* main input box */
+.ts-wrapper.single .ts-control{
+  background: rgba(15, 23, 42, 0.95) !important;
+  border: 2px solid rgba(51, 65, 85, 0.9) !important;
+  border-radius: 12px !important;
+  color: #e5e7eb !important;
+  padding: 12px 16px !important;
+}
+
+/* search text */
+.ts-control input{
+  color:#e5e7eb !important;
+}
+
+/* dropdown panel */
+.ts-dropdown{
+  background:#0f172a !important;
+  border:1px solid rgba(51,65,85,0.9) !important;
+  border-radius:12px !important;
+  box-shadow:0 20px 40px rgba(0,0,0,0.5) !important;
+}
+
+/* options */
+.ts-dropdown .option{
+  color:#e5e7eb !important;
+  padding:10px 16px !important;
+}
+
+/* hover option */
+.ts-dropdown .option:hover{
+  background:rgba(34,193,195,0.15) !important;
+}
+
+/* selected option */
+.ts-dropdown .option.selected{
+  background:rgba(34,193,195,0.25) !important;
+}
+
+/* remove light grey highlight */
+.ts-dropdown .active{
+  background:rgba(34,193,195,0.15) !important;
+}
