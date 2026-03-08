@@ -78,8 +78,8 @@ function injectProfileStyles() {
 
     .profile-menu {
       position:absolute;
-      top:60px;
-      right:24px;
+      top:calc(100% + 8px);
+      right:0;
       min-width:190px;
       padding:10px;
       border-radius:14px;
@@ -128,7 +128,7 @@ function renderProfileUI(displayName) {
     })();
 
   clearProfile();
-
+  placeholder.style.pointerEvents = "auto";
   const firstName = displayName.split(" ")[0];
   const initial = firstName.charAt(0).toUpperCase();
 
@@ -167,7 +167,7 @@ function renderProfileUI(displayName) {
   });
 
   placeholder.appendChild(chip);
-  document.body.appendChild(menu);
+  placeholder.appendChild(menu);
 
   profileChip = chip;
   profileMenu = menu;
